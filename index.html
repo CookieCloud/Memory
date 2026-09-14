@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 1.08
+    Version: 1.09
 -->
 <html lang="ca">
 <head>
@@ -628,11 +628,15 @@ body.landscape-mode .menu{justify-content:flex-start}
             </span>
           </button>
 
-          <div class="acciona" style="margin-top:6px;">
-            <button class="btn-soft" id="historyMenuBtn" style="width:100%;justify-content:center;max-width:320px;">
-              <span class="material-symbols-rounded">bar_chart</span> Historial de partides
-            </button>
-          </div>
+          <!-- Nou botó d'historial amb disseny de joc -->
+          <button class="game-card" id="historyMenuBtn" style="--tint:#64748b;--tint-deep:#475569">
+            <span class="ico"><span class="material-symbols-rounded">bar_chart</span></span>
+            <span class="txt">
+              <b>Historial de partides</b>
+              <small>Consulta els teus rècords i les estadístiques de les partides jugades.</small>
+            </span>
+          </button>
+
         </div>
       </section>
 
@@ -758,7 +762,7 @@ body.landscape-mode .menu{justify-content:flex-start}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v1.08</span>
+      <span class="version" id="version">v1.09</span>
     </div>
   </footer>
 </div>
@@ -1233,7 +1237,10 @@ restartBtn.addEventListener('click', () => {
 });
 
 document.querySelectorAll('.game-card').forEach(card => {
-  card.addEventListener('click', () => obrirNivell(card.dataset.joc));
+  // Ignorem la targeta de l'historial que té un funcionament especial
+  if (card.id !== 'historyMenuBtn') {
+    card.addEventListener('click', () => obrirNivell(card.dataset.joc));
+  }
 });
 
 /* ═══════════════════════════════════════════════════════
