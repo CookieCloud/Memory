@@ -10,7 +10,8 @@ const FITXERS = [
   './memory32x32.png',
   './memory180x180.png',
   './memory192x192.png',
-  './memory512x512.png'
+  './memory512x512.png',
+  './memory-maskable512.png'
 ];
 
 self.addEventListener('install', e => {
