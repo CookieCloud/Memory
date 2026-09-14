@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.01
+    Version: 2.02
 -->
 <html lang="ca">
 <head>
@@ -706,7 +706,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.01</span>
+      <span class="version" id="version">v2.02</span>
     </div>
   </footer>
 </div>
@@ -716,7 +716,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
   <div class="modal modal-info">
     <span class="material-symbols-rounded modal-icon" style="font-size:56px">extension</span>
     <h2 id="welcomeTitle">Com vols jugar?</h2>
-    <p class="credit">A Memòria pots jugar utilitzant la nostra col·lecció de dibuixos (icones), o bé utilitzant les teves pròpies fotos.</p>
+    <p class="credit">A "Memory" pots jugar utilitzant la col·lecció de dibuixos (icones), o bé utilitzant les fotos fetes per nosaltres.</p>
     <div style="display:flex;gap:12px;margin:16px 0;width:100%;justify-content:center;">
        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
           <div style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border)">
@@ -734,7 +734,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
         <span class="material-symbols-rounded">brush</span> Dibuixos
       </button>
       <button class="btn-big" id="btnTriaFotos" style="--accent:#10b981;--accent-deep:#047857">
-        <span class="material-symbols-rounded">image</span> Les meves fotos
+        <span class="material-symbols-rounded">image</span> Fotos
       </button>
     </div>
   </div>
@@ -902,7 +902,7 @@ const COLOR_TEMA = { dia:'#ff9f45', nit:'#14101c' };
 const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?', sequencia:'Seqüència', canvi:'Què ha canviat?', onera:'On era?' };
 
 const AJUDA = {
-  home: '<ul><li>Tria un joc de la llista.</li><li>Utilitza el botó del pinzell/imatge per alternar entre jugar amb icones o amb les teves pròpies fotos.</li><li>La majoria de jocs tenen compte enrere: quan arriba a zero, s\'acaba.</li></ul>',
+  home: '<ul><li>Tria un joc de la llista.</li><li>Utilitza el botó del pinzell/imatge per alternar entre jugar amb icones o amb les nostres fotos.</li><li>La majoria de jocs tenen compte enrere: quan arriba a zero, s\'acaba.</li></ul>',
   parelles: '<ul><li>Totes les cartes comencen cap per avall.</li><li>Toca dues cartes per girar-les i trobar les parelles.</li></ul>',
   escena: '<ul><li>Apareix una escena amb uns quants objectes/fotos.</li><li>Després tria els que has vist d\'una llista barrejada i prem "Comprovar".</li></ul>',
   sequencia: '<ul><li>Observa quin element s\'encén i toca\'l.</li><li>A cada ronda s\'afegeix un pas nou a la mateixa seqüència.</li></ul>',
