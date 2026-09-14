@@ -1,34 +1,15 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 1.04
+    Version: 1.05
 
     QUÈ HI HA
-    - Menú inicial amb la tria de joc (de moment, dos)
-    - Joc 1 "Parelles": cartes cap per avall amb icones de Google; es giren de dues
-      en dues i, si coincideixen, queden destapades
-    - Joc 2 "Què hi havia?": s'ensenya una escena amb objectes durant uns segons i
-      després cal triar-los d'una llista amb distractors
-    - Compte enrere visible a tots dos jocs, celebració a cada encert i
-      felicitació final
-    - Tema dia/nit, orientació vertical/horitzontal, safe-area iOS/Android,
-      finestres emergents d'ajuda i informació: tot heretat del Trencaclosques
-
-    NOTA SOBRE LES ICONES
-    La font es demana amb "icon_names", de manera que només es baixen les icones
-    llistades. Si n'afegeixes cap de nova al joc (POOL) o a la interfície, cal
-    afegir-la també a la llista de l'enllaç, en ordre alfabètic.
-
-    CANVIS v1.02
-    - Joc "Parelles": les cartes no es veien. El contenidor de les dues cares era
-      un element en línia i no agafava mida, de manera que les cares quedaven a zero
-    - Joc "Què hi havia?": l'escena i la llista es veien alhora. L'atribut hidden
-      no podia amb els display:flex / grid del full d'estil
-    - L'escena ara es reparteix en files i columnes, no en una sola fila llarga
-
-    PENDENT (previst per a més endavant)
-    - Triar entre jugar amb símbols o amb fotografies
-    - Més jocs al menú
+    - Menú inicial amb la tria de joc
+    - Joc 1 "Parelles": cartes cap per avall
+    - Joc 2 "Què hi havia?": s'ensenya una escena per recordar
+    - Joc 3 "Seqüència": patró d'il·luminació il·limitat
+    - Joc 4 "Què ha canviat?": memòria visuoespacial de detall
+    - Joc 5 "On era?": evocació espacial pura
 -->
 <html lang="ca">
 <head>
@@ -47,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <!-- Icones: eixos fixos i només les usades (interfície + joc), en ordre alfabètic -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&icon_names=ac_unit,anchor,arrow_back,auto_awesome,bolt,brush,cake,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,flight,forest,grid_view,headphones,help,home,icecream,info,key,light_mode,lightbulb,local_florist,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,timer,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&icon_names=ac_unit,anchor,arrow_back,auto_awesome,bolt,brush,cake,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,home,icecream,info,key,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,timer,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
 
 <title>Memòria</title>
 <style>
@@ -186,7 +167,6 @@ body.day .pill:active{
 .spacer{flex:1 1 auto;min-width:10px}
 
 /* ── xips (marcador i informació) ───────────────────── */
-/* L'atribut hidden ha de guanyar als display:flex / grid declarats aquí sota */
 [hidden]{display:none !important}
 .hud{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:2px 0 0}
 .stats{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap;justify-content:center}
@@ -210,7 +190,7 @@ body.day .pill:active{
 /* ── menú de jocs ───────────────────────────────────── */
 .menu{
   flex:1;min-height:0;overflow-y:auto;
-  display:flex;flex-direction:column;gap:12px;justify-content:center;
+  display:flex;flex-direction:column;gap:12px;justify-content:flex-start;
   padding:4px 2px;
 }
 .menu-intro{text-align:center;font-size:15px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);margin-bottom:2px}
@@ -242,7 +222,7 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   .game-card small{font-size:12px}
 }
 
-/* ── tria de mida / nivell (dins de finestra) ───────── */
+/* ── tria de mida / nivell ──────────────────────────── */
 .size-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;width:100%}
 .size-option{
   display:flex;flex-direction:column;align-items:center;gap:8px;
@@ -283,7 +263,7 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   transition:border-color .35s,background .35s;
 }
 
-/* ── joc 1: cartes ──────────────────────────────────── */
+/* ── estils comuns de cel·les / cartes ──────────────── */
 .card{
   width:var(--cw,70px);height:var(--ch,90px);
   perspective:900px;background:none;border:none;padding:0;cursor:pointer;
@@ -319,22 +299,37 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 }
 .card.aparellada{cursor:default}
 .card.fallada .face.cara{animation:errada .45s ease}
-@keyframes encert{0%{transform:rotateY(180deg) scale(1)}45%{transform:rotateY(180deg) scale(1.14)}100%{transform:rotateY(180deg) scale(1)}}
-@keyframes errada{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-6px)}75%{transform:rotateY(180deg) translateX(6px)}}
-@media (prefers-reduced-motion:reduce){
-  .card-inner{transition:none}
-  .card.aparellada .face.cara,.card.fallada .face.cara{animation:none}
-}
 
-/* ── joc 2: escena i llista d'opcions ───────────────── */
 .tile{
   width:var(--cw,64px);height:var(--ch,64px);border-radius:14px;
   display:grid;place-items:center;background:var(--card-face);
   box-shadow:inset 0 0 0 2px var(--card-ring), 0 5px 12px rgba(0,0,0,.25);
 }
-.tile.buit{background:transparent;box-shadow:none}
 .tile .material-symbols-rounded{font-size:calc(var(--cw,64px) * .56)}
+.tile.buit{background:transparent;box-shadow:none}
 
+/* Estils extres per als nous jocs */
+.tile.clickable{cursor:pointer;transition:transform .1s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,filter .2s,border .2s;}
+.tile.clickable:active{transform:scale(0.92);}
+.tile.seq-activa{
+  transform:scale(1.12);
+  filter:brightness(1.2);
+  box-shadow:0 0 20px var(--accent-deep);
+  z-index:2;
+  border:2px solid var(--accent);
+}
+body.day .tile.seq-activa{filter:brightness(1.1);}
+.tile.buit.clickable{
+  background:var(--chip-bg);
+  box-shadow:var(--chip-shadow);
+  border:2px dashed var(--board-border);
+  opacity:0.7;
+}
+.tile.buit.clickable:hover{opacity:1;}
+.tile.correcta{border:3px solid #16a34a;box-shadow:inset 0 0 10px rgba(22,163,74,.3),0 0 15px rgba(74,222,128,.6);}
+.tile.erronia{border:3px solid #b91c1c;box-shadow:inset 0 0 10px rgba(185,28,28,.3),0 0 15px rgba(251,113,133,.6);}
+
+/* Opcions seleccionables (joc Què hi havia) */
 .opcions{
   flex:1;min-height:0;overflow-y:auto;padding:6px 2px 2px;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px;align-content:start;
@@ -365,10 +360,9 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .opt-tile.correcta .marca{background:#16a34a}
 .opt-tile.erronia .marca{background:#b91c1c}
 .opcions.bloquejada .opt-tile{cursor:default}
-
 .acciona{display:flex;justify-content:center;padding:6px 0 2px}
 
-/* ── missatge flotant ───────────────────────────────── */
+/* ── missatge flotant i celebracions ────────────────── */
 .log{
   position:absolute;left:50%;bottom:16px;z-index:5;transform:translate(-50%,6px);
   max-width:calc(100% - 28px);padding:2px 8px;
@@ -380,7 +374,6 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .log.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){.log{transition:opacity .2s}}
 
-/* ── celebració ─────────────────────────────────────── */
 .espurna{
   position:fixed;z-index:1200;width:10px;height:10px;border-radius:3px;pointer-events:none;
   animation:volar .9s ease-out forwards;
@@ -388,6 +381,12 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 @keyframes volar{
   0%{transform:translate(0,0) scale(1) rotate(0);opacity:1}
   100%{transform:translate(var(--dx),var(--dy)) scale(.2) rotate(var(--rot));opacity:0}
+}
+@keyframes encert{0%{transform:rotateY(180deg) scale(1)}45%{transform:rotateY(180deg) scale(1.14)}100%{transform:rotateY(180deg) scale(1)}}
+@keyframes errada{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-6px)}75%{transform:rotateY(180deg) translateX(6px)}}
+@media (prefers-reduced-motion:reduce){
+  .card-inner{transition:none}
+  .card.aparellada .face.cara,.card.fallada .face.cara{animation:none}
 }
 
 /* ── finestres emergents ────────────────────────────── */
@@ -584,6 +583,30 @@ body.landscape-mode .menu{justify-content:flex-start}
               <small>Mira una escena plena d'objectes, memoritza'ls i després tria'ls d'una llista.</small>
             </span>
           </button>
+
+          <button class="game-card" data-joc="sequencia" style="--tint:#eab308;--tint-deep:#ca8a04">
+            <span class="ico"><span class="material-symbols-rounded">touch_app</span></span>
+            <span class="txt">
+              <b>Seqüència</b>
+              <small>Repeteix l'ordre en què s'encenen les icones. Cada cop n'hi ha una de nova.</small>
+            </span>
+          </button>
+
+          <button class="game-card" data-joc="canvi" style="--tint:#ec4899;--tint-deep:#be185d">
+            <span class="ico"><span class="material-symbols-rounded">find_replace</span></span>
+            <span class="txt">
+              <b>Què ha canviat?</b>
+              <small>Memoritza l'escena. S'amagarà i tornarà amb un canvi de detall. Assenyala'l!</small>
+            </span>
+          </button>
+
+          <button class="game-card" data-joc="onera" style="--tint:#10b981;--tint-deep:#047857">
+            <span class="ico"><span class="material-symbols-rounded">location_on</span></span>
+            <span class="txt">
+              <b>On era?</b>
+              <small>Fixa't bé on és cada objecte a la graella. On estava situat aquest en concret?</small>
+            </span>
+          </button>
         </div>
       </section>
 
@@ -625,17 +648,73 @@ body.landscape-mode .menu{justify-content:flex-start}
             Triats <b><span id="triats">0</span>/<span id="aTriar">0</span></b>
           </span>
         </div>
-
         <div class="board-wrap" id="escenaWrap">
           <div class="board" id="sceneBoard"></div>
           <div class="log" id="logEscena" role="status" aria-live="polite"></div>
         </div>
-
         <div class="opcions" id="optionsBoard" hidden></div>
         <div class="acciona" id="checkWrap" hidden>
           <button class="btn-big" id="checkBtn" disabled>
             <span class="material-symbols-rounded">check_circle</span> Comprovar
           </button>
+        </div>
+      </section>
+
+      <!-- ══ Pantalla: seqüència ══ -->
+      <section class="screen" id="sequenciaScreen">
+        <div class="hud">
+          <span class="chip">
+            <span class="material-symbols-rounded" style="color:#eab308">bolt</span>
+            Ronda <b id="seqRound">1</b>
+          </span>
+          <span class="chip" id="faseChipSeq">
+            <span class="material-symbols-rounded" id="faseIconSeq" style="color:#0ea5e9">visibility</span>
+            <span id="faseTextSeq">Observa</span>
+          </span>
+        </div>
+        <div class="board-wrap">
+          <div class="board" id="seqBoard"></div>
+          <div class="log" id="logSequencia" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ══ Pantalla: què ha canviat? ══ -->
+      <section class="screen" id="canviScreen">
+        <div class="hud">
+          <span class="chip" id="timeChipCanvi">
+            <span class="material-symbols-rounded" style="color:#e11d48">timer</span>
+            <b id="timeLeftCanvi">0:00</b>
+          </span>
+          <span class="chip" id="faseChipCanvi">
+            <span class="material-symbols-rounded" style="color:#0ea5e9" id="faseIconCanvi">visibility</span>
+            <span id="faseTextCanvi">Memoritza</span>
+          </span>
+        </div>
+        <div class="board-wrap">
+          <div class="board" id="canviBoard"></div>
+          <div class="log" id="logCanvi" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ══ Pantalla: on era? ══ -->
+      <section class="screen" id="oneraScreen">
+        <div class="hud">
+          <span class="chip" id="timeChipOnera">
+            <span class="material-symbols-rounded" style="color:#e11d48">timer</span>
+            <b id="timeLeftOnera">0:00</b>
+          </span>
+          <span class="chip" id="faseChipOnera">
+            <span class="material-symbols-rounded" style="color:#0ea5e9" id="faseIconOnera">visibility</span>
+            <span id="faseTextOnera">Memoritza</span>
+          </span>
+          <span class="chip" id="objectiuChipOnera" hidden>
+            <span class="material-symbols-rounded" id="objectiuIconaOnera" style="color:#fff">help</span>
+            <span id="objectiuTextOnera">On era?</span>
+          </span>
+        </div>
+        <div class="board-wrap">
+          <div class="board" id="oneraBoard"></div>
+          <div class="log" id="logOnera" role="status" aria-live="polite"></div>
         </div>
       </section>
 
@@ -649,7 +728,7 @@ body.landscape-mode .menu{justify-content:flex-start}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v1.04</span>
+      <span class="version" id="version">v1.05</span>
     </div>
   </footer>
 </div>
@@ -696,7 +775,7 @@ body.landscape-mode .menu{justify-content:flex-start}
       </span>
       <span class="chip">
         <span class="material-symbols-rounded" style="color:#22c55e">extension</span>
-        Millor temps <b id="bestTime">—</b>
+        Millor temps parelles <b id="bestTime">—</b>
       </span>
       <span class="chip">
         <span class="material-symbols-rounded" style="color:#0ea5e9">public</span>
@@ -748,6 +827,9 @@ const levelBtn       = $('levelBtn');
 const homeScreen     = $('homeScreen');
 const parellesScreen = $('parellesScreen');
 const escenaScreen   = $('escenaScreen');
+const sequenciaScreen= $('sequenciaScreen');
+const canviScreen    = $('canviScreen');
+const oneraScreen    = $('oneraScreen');
 
 const cardsBoard     = $('cardsBoard');
 const sceneBoard     = $('sceneBoard');
@@ -755,6 +837,9 @@ const optionsBoard   = $('optionsBoard');
 const escenaWrap     = $('escenaWrap');
 const checkWrap      = $('checkWrap');
 const checkBtn       = $('checkBtn');
+const seqBoard       = $('seqBoard');
+const canviBoard     = $('canviBoard');
+const oneraBoard     = $('oneraBoard');
 
 const levelOverlay   = $('levelOverlay');
 const levelGrid      = $('levelGrid');
@@ -765,8 +850,6 @@ const resultOverlay  = $('resultOverlay');
 /* ═══════════════════════════════════════════════════════
    DADES DEL JOC
    ═══════════════════════════════════════════════════════ */
-/* Icones disponibles. Si n'afegeixes cap, recorda posar-la també
-   a la llista "icon_names" de l'enllaç de la font. */
 const POOL = [
   { i:'pets',              c:'#f59e0b' }, { i:'local_florist',     c:'#ec4899' },
   { i:'rocket_launch',     c:'#8b5cf6' }, { i:'directions_car',    c:'#ef4444' },
@@ -788,7 +871,6 @@ const POOL = [
   { i:'sports_basketball', c:'#ea580c' }, { i:'cruelty_free',      c:'#be123c' }
 ];
 
-/* Nivells del joc de parelles: parelles i segons de partida */
 const NIVELLS_PARELLES = [
   { parelles:4,  segons:70,  text:'8 cartes' },
   { parelles:8,  segons:130, text:'16 cartes' },
@@ -796,7 +878,6 @@ const NIVELLS_PARELLES = [
   { parelles:16, segons:250, text:'32 cartes' }
 ];
 
-/* Nivells de l'escena: objectes a memoritzar, segons per mirar i per respondre */
 const NIVELLS_ESCENA = [
   { objectes:4,  mirar:6,  respondre:45, text:'4 objectes' },
   { objectes:6,  mirar:8,  respondre:55, text:'6 objectes' },
@@ -804,31 +885,62 @@ const NIVELLS_ESCENA = [
   { objectes:10, mirar:12, respondre:90, text:'10 objectes' }
 ];
 
+const NIVELLS_SEQUENCIA = [
+  { caselles:4,  text:'Graella 2x2' },
+  { caselles:6,  text:'Graella 2x3' },
+  { caselles:9,  text:'Graella 3x3' },
+  { caselles:12, text:'Graella 3x4' }
+];
+
+const NIVELLS_CANVI = [
+  { objectes:4,  mirar:6,  respondre:20, text:'4 objectes' },
+  { objectes:6,  mirar:8,  respondre:20, text:'6 objectes' },
+  { objectes:8,  mirar:10, respondre:20, text:'8 objectes' },
+  { objectes:12, mirar:12, respondre:20, text:'12 objectes' }
+];
+
+const NIVELLS_ONERA = [
+  { objectes:4,  mirar:6,  respondre:15, text:'4 objectes' },
+  { objectes:6,  mirar:8,  respondre:15, text:'6 objectes' },
+  { objectes:8,  mirar:10, respondre:15, text:'8 objectes' },
+  { objectes:10, mirar:12, respondre:15, text:'10 objectes' }
+];
+
 const COLOR_TEMA = { dia:'#ff9f45', nit:'#14101c' };
-const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?' };
+const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?', sequencia:'Seqüència', canvi:'Què ha canviat?', onera:'On era?' };
 
 const AJUDA = {
-  home: '<ul><li>Tria un joc de la llista.</li><li>Tots els jocs tenen un compte enrere: quan arriba a zero, s\'acaba la partida.</li><li>El botó de la careta canvia entre mode clar i fosc.</li></ul>',
-  parelles: '<ul><li>Totes les cartes comencen cap per avall.</li><li>Toca una carta per girar-la i després una altra.</li><li>Si les dues tenen el mateix dibuix, es queden destapades.</li><li>Si no, es tornen a girar i pots provar-ho de nou.</li><li>Guanyes quan trobes totes les parelles abans que s\'acabi el temps.</li></ul>',
-  escena: '<ul><li>Primer apareix una escena amb uns quants objectes.</li><li>Mira-te-la bé: només la tens uns segons.</li><li>Després surt una llista amb els objectes de l\'escena barrejats amb d\'altres.</li><li>Toca els que hi havia i prem "Comprovar".</li></ul>'
+  home: '<ul><li>Tria un joc de la llista.</li><li>La majoria tenen compte enrere: quan arriba a zero, s\'acaba.</li><li>El botó de la careta canvia entre mode clar i fosc.</li></ul>',
+  parelles: '<ul><li>Totes les cartes comencen cap per avall.</li><li>Toca dues cartes per girar-les.</li><li>Si coincideixen, queden destapades.</li><li>Troba totes les parelles abans no s\'acabi el temps!</li></ul>',
+  escena: '<ul><li>Apareix una escena amb uns quants objectes.</li><li>Mira-te-la bé: només la tens uns segons.</li><li>Després tria els objectes d\'una llista barrejada i prem "Comprovar".</li></ul>',
+  sequencia: '<ul><li>Observa quina icona s\'encén i toca-la.</li><li>A cada ronda encertada s\'afegeix un pas nou a la mateixa seqüència.</li><li>Fins a quina ronda pots arribar sense equivocar-te?</li></ul>',
+  canvi: '<ul><li>Memoritza la graella plena d\'objectes.</li><li>S\'amagarà un moment i tornarà amb un únic canvi (una icona nova, un color diferent, o haurà desaparegut).</li><li>Toca la casella on hi ha hagut el canvi!</li></ul>',
+  onera: '<ul><li>Fixa\'t bé on està situat cada objecte a la graella.</li><li>S\'amagaran tots els objectes.</li><li>Et preguntarem on n\'hi havia un en concret. Toca la casella buida on era!</li></ul>'
 };
 
 /* ═══════════════════════════════════════════════════════
    ESTAT
    ═══════════════════════════════════════════════════════ */
-let joc = 'home';                 // 'home' | 'parelles' | 'escena'
+let joc = 'home';
 let efectesActius = true;
 
-let nivellParelles = 1;           // índex dins de NIVELLS_PARELLES
-let nivellEscena   = 1;           // índex dins de NIVELLS_ESCENA
-let nivellEditant  = 'parelles';  // quin joc configura la finestra de nivell
+let nivellParelles  = parseInt(localStorage.getItem('nivellParelles')||1,10);
+let nivellEscena    = parseInt(localStorage.getItem('nivellEscena')||1,10);
+let nivellSequencia = parseInt(localStorage.getItem('nivellSequencia')||1,10);
+let nivellCanvi     = parseInt(localStorage.getItem('nivellCanvi')||1,10);
+let nivellOnera     = parseInt(localStorage.getItem('nivellOnera')||1,10);
+let nivellEditant   = 'parelles';
 
 // Parelles
 let cartes = [], girades = [], bloqueig = false, trobades = 0, intents = 0;
-
 // Escena
-let faseEscena = 'mirar';         // 'mirar' | 'triar' | 'revisat'
-let objectesEscena = [], seleccio = [];
+let faseEscena = 'mirar', objectesEscena = [], seleccio = [];
+// Seqüència
+let seqActiva = [], seqPasJugador = 0, seqCaselles = [], seqReproduint = false, seqInterval = null;
+// Canvi
+let canviDades = [], canviResposta = -1;
+// On era
+let oneraDades = [], oneraObjectiu = null, oneraPosicio = -1;
 
 // Temporitzador
 let tempsRestant = 0, tickTimer = null, tempsTotal = 0, aturatPerModal = false;
@@ -836,7 +948,6 @@ let temporitzadorFase = null;
 
 // Estadístiques
 let victories = Number(localStorage.getItem('wins') || 0);
-
 let currentOrientation = 'portrait';
 let appContext = 'web-browser';
 
@@ -861,7 +972,14 @@ function mmss(s){
 
 let logTimer = null;
 function log(msg, durada = 2600){
-  const caixa = joc === 'escena' ? $('logEscena') : $('logParelles');
+  let caixa = null;
+  if (joc === 'parelles') caixa = $('logParelles');
+  else if (joc === 'escena') caixa = $('logEscena');
+  else if (joc === 'sequencia') caixa = $('logSequencia');
+  else if (joc === 'canvi') caixa = $('logCanvi');
+  else if (joc === 'onera') caixa = $('logOnera');
+  
+  if (!caixa) return;
   caixa.textContent = msg;
   caixa.classList.add('show');
   clearTimeout(logTimer);
@@ -889,7 +1007,6 @@ soundBtn.addEventListener('click', () => {
   log(efectesActius ? 'Efectes activats' : 'Efectes desactivats');
 });
 
-/* Celebració: unes espurnes que surten disparades des d'un punt */
 function celebrar(element, quantitat = 14){
   if (!efectesActius) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -965,9 +1082,14 @@ function pintarRellotge(){
   const txt = mmss(Math.max(0, tempsRestant));
   $('timeLeft').textContent  = txt;
   $('timeLeft2').textContent = txt;
+  $('timeLeftCanvi').textContent = txt;
+  $('timeLeftOnera').textContent = txt;
+  
   const perill = tempsRestant <= 10;
   $('timeChip').classList.toggle('alerta', perill);
   $('timeChip2').classList.toggle('alerta', perill);
+  $('timeChipCanvi').classList.toggle('alerta', perill);
+  $('timeChipOnera').classList.toggle('alerta', perill);
 }
 
 function arrencarRellotge(){
@@ -997,6 +1119,7 @@ function aturarTot(){
   pararRellotge();
   clearTimeout(temporitzadorFase);
   temporitzadorFase = null;
+  clearInterval(seqInterval);
   alAcabarElTemps = null;
   aturatPerModal = false;
 }
@@ -1009,6 +1132,9 @@ function mostrarPantalla(nom){
   homeScreen.classList.toggle('active', nom === 'home');
   parellesScreen.classList.toggle('active', nom === 'parelles');
   escenaScreen.classList.toggle('active', nom === 'escena');
+  sequenciaScreen.classList.toggle('active', nom === 'sequencia');
+  canviScreen.classList.toggle('active', nom === 'canvi');
+  oneraScreen.classList.toggle('active', nom === 'onera');
 
   backBtn.hidden = restartBtn.hidden = levelBtn.hidden = (nom === 'home');
   $('brandText').textContent = TITOLS[nom];
@@ -1023,6 +1149,9 @@ backBtn.addEventListener('click', () => {
 restartBtn.addEventListener('click', () => {
   if (joc === 'parelles') iniciarParelles();
   else if (joc === 'escena') iniciarEscena();
+  else if (joc === 'sequencia') iniciarSequencia();
+  else if (joc === 'canvi') iniciarCanvi();
+  else if (joc === 'onera') iniciarOnera();
 });
 
 document.querySelectorAll('.game-card').forEach(card => {
@@ -1034,11 +1163,26 @@ document.querySelectorAll('.game-card').forEach(card => {
    ═══════════════════════════════════════════════════════ */
 function obrirNivell(quinJoc){
   nivellEditant = quinJoc;
-  const esParelles = quinJoc === 'parelles';
-  const llista = esParelles ? NIVELLS_PARELLES : NIVELLS_ESCENA;
-  const triat  = esParelles ? nivellParelles : nivellEscena;
+  let llista, triat, titol, nomQuantitat, formatSub;
 
-  $('levelTitle').textContent = esParelles ? 'Quantes parelles?' : 'Quants objectes?';
+  if (quinJoc === 'parelles') {
+    llista = NIVELLS_PARELLES; triat = nivellParelles; titol = 'Quantes parelles?';
+    nomQuantitat = 'parelles'; formatSub = n => n.text;
+  } else if (quinJoc === 'escena') {
+    llista = NIVELLS_ESCENA; triat = nivellEscena; titol = 'Quants objectes?';
+    nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`;
+  } else if (quinJoc === 'sequencia') {
+    llista = NIVELLS_SEQUENCIA; triat = nivellSequencia; titol = 'Quantes caselles?';
+    nomQuantitat = 'caselles'; formatSub = n => n.text;
+  } else if (quinJoc === 'canvi') {
+    llista = NIVELLS_CANVI; triat = nivellCanvi; titol = 'Quants objectes?';
+    nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`;
+  } else if (quinJoc === 'onera') {
+    llista = NIVELLS_ONERA; triat = nivellOnera; titol = 'Quants objectes?';
+    nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`;
+  }
+
+  $('levelTitle').textContent = titol;
   levelGrid.innerHTML = '';
 
   llista.forEach((n, idx) => {
@@ -1049,26 +1193,32 @@ function obrirNivell(quinJoc){
     boto.setAttribute('aria-checked', idx === triat ? 'true' : 'false');
     boto.dataset.idx = idx;
 
-    const quantitat = esParelles ? n.parelles : n.objectes;
+    const quantitat = n[nomQuantitat];
     const mini = document.createElement('div');
     mini.className = 'mini';
-    const cols = quantitat <= 4 ? 2 : (quantitat <= 8 ? 4 : (quantitat <= 12 ? 4 : 4));
+    const cols = quantitat <= 4 ? 2 : 4;
     mini.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     mini.setAttribute('aria-hidden', 'true');
-    const cel = esParelles ? Math.min(quantitat * 2, 16) : Math.min(quantitat, 16);
+    const cel = quinJoc === 'parelles' ? Math.min(quantitat * 2, 16) : Math.min(quantitat, 16);
     for (let i = 0; i < cel; i++) mini.appendChild(document.createElement('i'));
 
-    const titol = document.createElement('span');
-    titol.textContent = esParelles ? `${n.parelles} parelles` : `${n.objectes} objectes`;
+    const titolSp = document.createElement('span');
+    titolSp.textContent = `${quantitat} ${nomQuantitat}`;
     const sub = document.createElement('small');
-    sub.textContent = esParelles ? n.text : `${n.mirar} s per mirar`;
+    sub.textContent = formatSub(n);
 
-    boto.append(mini, titol, sub);
+    boto.append(mini, titolSp, sub);
     boto.addEventListener('click', () => {
       levelGrid.querySelectorAll('.size-option').forEach(b => b.setAttribute('aria-checked', 'false'));
       boto.setAttribute('aria-checked', 'true');
-      if (esParelles) nivellParelles = idx; else nivellEscena = idx;
-      localStorage.setItem(esParelles ? 'nivellParelles' : 'nivellEscena', idx);
+      if (quinJoc === 'parelles') nivellParelles = idx;
+      else if (quinJoc === 'escena') nivellEscena = idx;
+      else if (quinJoc === 'sequencia') nivellSequencia = idx;
+      else if (quinJoc === 'canvi') nivellCanvi = idx;
+      else if (quinJoc === 'onera') nivellOnera = idx;
+      
+      const storageKey = 'nivell' + quinJoc.charAt(0).toUpperCase() + quinJoc.slice(1);
+      localStorage.setItem(storageKey, idx);
     });
     levelGrid.appendChild(boto);
   });
@@ -1079,15 +1229,16 @@ function obrirNivell(quinJoc){
 $('levelStartBtn').addEventListener('click', () => {
   tancarModal(levelOverlay);
   if (nivellEditant === 'parelles') iniciarParelles();
-  else iniciarEscena();
+  else if (nivellEditant === 'escena') iniciarEscena();
+  else if (nivellEditant === 'sequencia') iniciarSequencia();
+  else if (nivellEditant === 'canvi') iniciarCanvi();
+  else if (nivellEditant === 'onera') iniciarOnera();
 });
 
 levelBtn.addEventListener('click', () => obrirNivell(joc));
 
 /* ═══════════════════════════════════════════════════════
    MIDA DELS TAULERS
-   Busca la disposició de files i columnes que aprofita
-   millor l'espai lliure, i en fixa la mida de la cel·la.
    ═══════════════════════════════════════════════════════ */
 function encaixar(board, total, proporcio, maxCols){
   if (!total) return;
@@ -1112,7 +1263,6 @@ function encaixar(board, total, proporcio, maxCols){
     const w = (availW - marcX - gap * (cols - 1)) / cols;
     const h = (availH - marcY - gap * (files - 1)) / files;
     if (w <= 8 || h <= 8) continue;
-    // La cel·la manté la proporció demanada (amplada/alçada)
     let cw = Math.min(w, h * proporcio);
     let ch = cw / proporcio;
     const area = cw * ch * total;
@@ -1128,8 +1278,13 @@ function encaixar(board, total, proporcio, maxCols){
 function ajustarTauler(){
   if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 0.78);
   if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length)
-    encaixar(sceneBoard, sceneBoard.children.length, 1,
-             Math.ceil(Math.sqrt(sceneBoard.children.length * 1.6)));
+    encaixar(sceneBoard, sceneBoard.children.length, 1, Math.ceil(Math.sqrt(sceneBoard.children.length * 1.6)));
+  if (joc === 'sequencia' && seqBoard.children.length)
+    encaixar(seqBoard, seqBoard.children.length, 1, Math.ceil(Math.sqrt(seqBoard.children.length)));
+  if (joc === 'canvi' && canviBoard.children.length)
+    encaixar(canviBoard, canviBoard.children.length, 1, Math.ceil(Math.sqrt(canviBoard.children.length * 1.6)));
+  if (joc === 'onera' && oneraBoard.children.length)
+    encaixar(oneraBoard, oneraBoard.children.length, 1, Math.ceil(Math.sqrt(oneraBoard.children.length * 1.6)));
 }
 
 let ajustPendent = false;
@@ -1142,6 +1297,9 @@ if ('ResizeObserver' in window){
   const ro = new ResizeObserver(programarAjust);
   ro.observe(document.querySelector('#parellesScreen .board-wrap'));
   ro.observe(escenaWrap);
+  ro.observe(document.querySelector('#sequenciaScreen .board-wrap'));
+  ro.observe(document.querySelector('#canviScreen .board-wrap'));
+  ro.observe(document.querySelector('#oneraScreen .board-wrap'));
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1152,7 +1310,6 @@ const DORS_SVG = `<svg viewBox="0 0 512 512" aria-hidden="true"><g transform="tr
 function iniciarParelles(){
   aturarTot();
   mostrarPantalla('parelles');
-
   const nivell = NIVELLS_PARELLES[nivellParelles];
   const triades = barrejar(POOL).slice(0, nivell.parelles);
   cartes = barrejar([...triades, ...triades]);
@@ -1232,7 +1389,6 @@ function girarCarta(idx){
 function iniciarEscena(){
   aturarTot();
   mostrarPantalla('escena');
-
   const nivell = NIVELLS_ESCENA[nivellEscena];
   faseEscena = 'mirar';
   seleccio = [];
@@ -1246,7 +1402,6 @@ function iniciarEscena(){
   $('faseIcon').textContent = 'visibility';
   $('faseText').textContent = 'Memoritza';
 
-  // L'escena: una graella amb algunes cel·les buides, perquè no sembli una llista
   const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
   const posicions = barrejar(Array.from({ length: total }, (_, i) => i)).slice(0, nivell.objectes);
 
@@ -1301,14 +1456,14 @@ function passarATriar(){
     boto.innerHTML =
       '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>' +
       '<span class="marca"><span class="material-symbols-rounded">check_circle</span></span>';
-    boto.addEventListener('click', () => triarObjecte(boto, o.i));
+    boto.addEventListener('click', () => triarObjecteEscena(boto, o.i));
     optionsBoard.appendChild(boto);
   });
 
   iniciarCompte(nivell.respondre, () => comprovarEscena(true));
 }
 
-function triarObjecte(boto, icona){
+function triarObjecteEscena(boto, icona){
   if (faseEscena !== 'triar' || modalObert) return;
   const objectiu = NIVELLS_ESCENA[nivellEscena].objectes;
   const i = seleccio.indexOf(icona);
@@ -1351,10 +1506,257 @@ function comprovarEscena(perTemps){
   });
 
   const guanyat = encerts === correctes.length;
-  finalPartida(guanyat,
-    perTemps ? 'S\'ha acabat el temps' : null,
-    null,
-    `${encerts} de ${correctes.length} objectes encertats`);
+  finalPartida(guanyat, perTemps ? 'S\'ha acabat el temps' : null, null, `${encerts} de ${correctes.length} encertats`);
+}
+
+/* ═══════════════════════════════════════════════════════
+   JOC 3 — SEQÜÈNCIA
+   ═══════════════════════════════════════════════════════ */
+function iniciarSequencia(){
+  aturarTot();
+  mostrarPantalla('sequencia');
+  const nivell = NIVELLS_SEQUENCIA[nivellSequencia];
+  seqActiva = [];
+  seqPasJugador = 0;
+  seqReproduint = false;
+  $('seqRound').textContent = '1';
+  $('faseIconSeq').textContent = 'visibility';
+  $('faseTextSeq').textContent = 'Observa';
+
+  seqBoard.innerHTML = '';
+  seqCaselles = barrejar(POOL).slice(0, nivell.caselles);
+
+  seqCaselles.forEach((o, i) => {
+    const cel = document.createElement('button');
+    cel.type = 'button';
+    cel.className = 'tile clickable';
+    cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
+    cel.addEventListener('click', () => clicSequencia(i));
+    seqBoard.appendChild(cel);
+  });
+  ajustarTauler();
+
+  setTimeout(novaRondaSequencia, 800);
+}
+
+function novaRondaSequencia() {
+  if (joc !== 'sequencia') return;
+  seqActiva.push(Math.floor(Math.random() * seqCaselles.length));
+  seqPasJugador = 0;
+  $('seqRound').textContent = seqActiva.length;
+  reproduirSequencia();
+}
+
+function reproduirSequencia() {
+  seqReproduint = true;
+  let i = 0;
+  $('faseIconSeq').textContent = 'visibility';
+  $('faseTextSeq').textContent = 'Observa';
+  
+  seqInterval = setInterval(() => {
+    if (joc !== 'sequencia' || modalObert) return;
+    if (i > 0) seqBoard.children[seqActiva[i-1]].classList.remove('seq-activa');
+    if (i < seqActiva.length) {
+      seqBoard.children[seqActiva[i]].classList.add('seq-activa');
+      i++;
+    } else {
+      clearInterval(seqInterval);
+      seqReproduint = false;
+      $('faseIconSeq').textContent = 'touch_app';
+      $('faseTextSeq').textContent = 'Repeteix';
+      log('Et toca!', 1000);
+    }
+  }, 650);
+}
+
+function clicSequencia(idx) {
+  if (seqReproduint || modalObert) return;
+  const correcte = seqActiva[seqPasJugador];
+  const cel = seqBoard.children[idx];
+
+  if (idx === correcte) {
+    seqPasJugador++;
+    cel.classList.add('seq-activa');
+    setTimeout(() => cel.classList.remove('seq-activa'), 200);
+
+    if (seqPasJugador === seqActiva.length) {
+      seqReproduint = true;
+      celebrar(cel, 5);
+      setTimeout(novaRondaSequencia, 1000);
+    }
+  } else {
+    cel.classList.add('erronia');
+    finalPartida(false, 'Has errat la seqüència', null, `Has arribat a la ronda ${seqActiva.length}`);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   JOC 4 — QUÈ HA CANVIAT?
+   ═══════════════════════════════════════════════════════ */
+function iniciarCanvi(){
+  aturarTot();
+  mostrarPantalla('canvi');
+  const nivell = NIVELLS_CANVI[nivellCanvi];
+  const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
+  canviDades = Array(total).fill(null);
+
+  const objectes = barrejar(POOL).slice(0, nivell.objectes);
+  const posicions = barrejar(Array.from({length: total}, (_, i) => i)).slice(0, nivell.objectes);
+
+  posicions.forEach((pos, i) => {
+    canviDades[pos] = { ...objectes[i] };
+  });
+
+  dibuixarTaulerCanvi(canviDades, false);
+  $('faseIconCanvi').textContent = 'visibility';
+  $('faseTextCanvi').textContent = 'Memoritza';
+
+  log('Memoritza l\'escena…', 0);
+  iniciarCompte(nivell.mirar, aplicarCanvi);
+  temporitzadorFase = setTimeout(aplicarCanvi, nivell.mirar * 1000 + 200);
+}
+
+function dibuixarTaulerCanvi(dades, interactiu) {
+  canviBoard.innerHTML = '';
+  dades.forEach((o, i) => {
+    const cel = document.createElement('div');
+    if (!o) {
+      cel.className = 'tile buit' + (interactiu ? ' clickable' : '');
+    } else {
+      cel.className = 'tile' + (interactiu ? ' clickable' : '');
+      cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
+    }
+    if (interactiu) cel.addEventListener('click', () => resoldreCanvi(i));
+    canviBoard.appendChild(cel);
+  });
+  ajustarTauler();
+}
+
+function aplicarCanvi() {
+  aturarTot();
+  canviBoard.innerHTML = '';
+  log('Què ha canviat?', 0);
+
+  const plens = canviDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
+  let tipusCanvi = Math.floor(Math.random() * 3); // 0: Color, 1: Icona, 2: Desaparèixer
+  const objectiuIdx = plens[Math.floor(Math.random() * plens.length)];
+  canviResposta = objectiuIdx; 
+
+  let nouDades = JSON.parse(JSON.stringify(canviDades));
+  const utilitzades = canviDades.filter(o => o).map(o => o.i);
+  const iconesLliures = POOL.filter(o => !utilitzades.includes(o.i));
+  const colorsLliures = POOL.filter(o => o.c !== canviDades[objectiuIdx].c).map(o => o.c);
+
+  if (tipusCanvi === 0) {
+    nouDades[objectiuIdx].c = colorsLliures[Math.floor(Math.random() * colorsLliures.length)];
+  } else if (tipusCanvi === 1) {
+    nouDades[objectiuIdx].i = iconesLliures[Math.floor(Math.random() * iconesLliures.length)].i;
+  } else if (tipusCanvi === 2) {
+    nouDades[objectiuIdx] = null;
+  }
+
+  setTimeout(() => {
+    dibuixarTaulerCanvi(nouDades, true);
+    $('faseIconCanvi').textContent = 'find_replace';
+    $('faseTextCanvi').textContent = 'Troba el canvi';
+    iniciarCompte(NIVELLS_CANVI[nivellCanvi].respondre, () => finalPartida(false, 'Temps esgotat'));
+  }, 1000);
+}
+
+function resoldreCanvi(idx) {
+  aturarTot();
+  const cel = canviBoard.children[idx];
+  if (idx === canviResposta) {
+    cel.classList.add('correcta');
+    celebrar(cel, 10);
+    setTimeout(() => finalPartida(true, null, null, 'Has detectat el canvi!'), 800);
+  } else {
+    cel.classList.add('erronia');
+    canviBoard.children[canviResposta].classList.add('correcta');
+    setTimeout(() => finalPartida(false, 'Aquest no era el canvi'), 1200);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   JOC 5 — ON ERA?
+   ═══════════════════════════════════════════════════════ */
+function iniciarOnera(){
+  aturarTot();
+  mostrarPantalla('onera');
+  const nivell = NIVELLS_ONERA[nivellOnera];
+  const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
+  oneraDades = Array(total).fill(null);
+
+  const objectes = barrejar(POOL).slice(0, nivell.objectes);
+  const posicions = barrejar(Array.from({length: total}, (_, i) => i)).slice(0, nivell.objectes);
+
+  posicions.forEach((pos, i) => {
+    oneraDades[pos] = { ...objectes[i] };
+  });
+
+  dibuixarTaulerOnera(oneraDades, false);
+  $('faseIconOnera').textContent = 'visibility';
+  $('faseTextOnera').textContent = 'Memoritza';
+  $('objectiuChipOnera').hidden = true;
+
+  log('Fixa\'t on és cada cosa…', 0);
+  iniciarCompte(nivell.mirar, preguntarOnera);
+  temporitzadorFase = setTimeout(preguntarOnera, nivell.mirar * 1000 + 200);
+}
+
+function dibuixarTaulerOnera(dades, interactiu) {
+  oneraBoard.innerHTML = '';
+  dades.forEach((o, i) => {
+    const cel = document.createElement('div');
+    if (!o) {
+      cel.className = 'tile buit' + (interactiu ? ' clickable' : '');
+    } else {
+      cel.className = 'tile' + (interactiu ? ' clickable' : '');
+      cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
+    }
+    if (interactiu) cel.addEventListener('click', () => resoldreOnera(i));
+    oneraBoard.appendChild(cel);
+  });
+  ajustarTauler();
+}
+
+function preguntarOnera() {
+  aturarTot();
+  oneraBoard.innerHTML = '';
+  dibuixarTaulerOnera(Array(oneraDades.length).fill(null), true);
+
+  const plens = oneraDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
+  oneraPosicio = plens[Math.floor(Math.random() * plens.length)];
+  oneraObjectiu = oneraDades[oneraPosicio];
+
+  $('faseIconOnera').textContent = 'location_on';
+  $('faseTextOnera').textContent = 'Recorda';
+  $('objectiuChipOnera').hidden = false;
+  $('objectiuIconaOnera').textContent = oneraObjectiu.i;
+  $('objectiuIconaOnera').style.color = oneraObjectiu.c;
+
+  log(`On era aquest símbol?`, 0);
+  iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
+}
+
+function resoldreOnera(idx) {
+  aturarTot();
+  const cel = oneraBoard.children[idx];
+  cel.classList.remove('buit');
+  cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + oneraObjectiu.c + '">' + oneraObjectiu.i + '</span>';
+
+  if (idx === oneraPosicio) {
+    cel.classList.add('correcta');
+    celebrar(cel, 10);
+    setTimeout(() => finalPartida(true, null, null, 'Has recordat la posició!'), 800);
+  } else {
+    cel.classList.add('erronia');
+    const bona = oneraBoard.children[oneraPosicio];
+    bona.classList.remove('buit');
+    bona.classList.add('correcta');
+    bona.innerHTML = '<span class="material-symbols-rounded" style="color:' + oneraObjectiu.c + '">' + oneraObjectiu.i + '</span>';
+    setTimeout(() => finalPartida(false, 'L\'objecte no era aquí'), 1200);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1378,9 +1780,7 @@ function finalPartida(guanyat, motiu, segonsUsats, detall){
 
   let text;
   if (guanyat){
-    text = joc === 'parelles'
-      ? 'Has trobat totes les parelles.'
-      : 'Has recordat tots els objectes de l\'escena.';
+    text = (joc === 'parelles') ? 'Has trobat totes les parelles.' : 'Has superat el repte amb èxit.';
   } else {
     text = motiu ? motiu + '. Torna-ho a provar!' : 'Torna-ho a provar!';
   }
@@ -1400,10 +1800,12 @@ function finalPartida(guanyat, motiu, segonsUsats, detall){
     afegir('check_circle', '#22c55e', 'Parelles', `${trobades}/${NIVELLS_PARELLES[nivellParelles].parelles}`);
     afegir('psychology', '#f59e0b', 'Intents', intents);
     if (guanyat && segonsUsats != null) afegir('timer', '#0ea5e9', 'Temps', mmss(segonsUsats));
-  } else {
+  } else if (joc === 'sequencia') {
+    afegir('bolt', '#eab308', 'Ronda', seqActiva.length);
+  } else if (joc === 'escena' || joc === 'canvi' || joc === 'onera') {
     if (detall) afegir('check_circle', '#22c55e', detall);
   }
-  afegir('emoji_events', '#f59e0b', 'Guanyades', victories);
+  afegir('emoji_events', '#f59e0b', 'Guanyades totals', victories);
 
   if (guanyat){
     setTimeout(() => celebrar(document.querySelector('.stage'), 26), 120);
@@ -1414,7 +1816,10 @@ function finalPartida(guanyat, motiu, segonsUsats, detall){
 $('resultAgainBtn').addEventListener('click', () => {
   tancarModal(resultOverlay);
   if (joc === 'parelles') iniciarParelles();
-  else iniciarEscena();
+  else if (joc === 'escena') iniciarEscena();
+  else if (joc === 'sequencia') iniciarSequencia();
+  else if (joc === 'canvi') iniciarCanvi();
+  else if (joc === 'onera') iniciarOnera();
 });
 
 $('resultMenuBtn').addEventListener('click', () => {
@@ -1445,7 +1850,6 @@ window.addEventListener('orientationchange', () => setTimeout(() => {
   aplicarOrientacio(); programarAjust();
 }, 120));
 
-// Si l'app passa a segon pla, el rellotge s'atura per no perdre temps
 document.addEventListener('visibilitychange', () => {
   if (document.hidden){ if (tickTimer){ aturatPerModal = true; pararRellotge(); } }
   else if (aturatPerModal && !modalObert && tempsRestant > 0){ aturatPerModal = false; arrencarRellotge(); }
@@ -1458,16 +1862,10 @@ aplicarTema(localStorage.getItem('darkMode') === 'true');
 efectesActius = localStorage.getItem('efectes') !== 'false';
 soundBtn.classList.toggle('off', !efectesActius);
 
-const np = parseInt(localStorage.getItem('nivellParelles'), 10);
-if (np >= 0 && np < NIVELLS_PARELLES.length) nivellParelles = np;
-const ne = parseInt(localStorage.getItem('nivellEscena'), 10);
-if (ne >= 0 && ne < NIVELLS_ESCENA.length) nivellEscena = ne;
-
 detectAppContext();
 aplicarOrientacio();
 mostrarPantalla('home');
 
-// Service worker: permet instal·lar l'app i obrir-la sense connexió
 if ('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(err => console.warn('Service worker:', err));
