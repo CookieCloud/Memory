@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.02
+    Version: 2.03
 -->
 <html lang="ca">
 <head>
@@ -706,7 +706,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.02</span>
+      <span class="version" id="version">v2.03</span>
     </div>
   </footer>
 </div>
@@ -939,10 +939,10 @@ let appContext = 'web-browser';
 /* ═══════════════════════════════════════════════════════
    MOTOR GRÀFIC I RASTREIG DE FOTOS
    ═══════════════════════════════════════════════════════ */
-// Rastreja la carpeta "Fotos" verificant quines existeixen del 1 al 100.
+// Rastreja la carpeta "Fotos" verificant quines existeixen del 1 al 77.
 async function escanejarFotosDirectori() {
   const promeses = [];
-  for(let i=1; i<=100; i++) {
+  for(let i=1; i<=77; i++) {
     promeses.push(new Promise(res => {
       let img = new Image();
       img.onload = () => res(i);
