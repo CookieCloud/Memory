@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 1.05
-
-    QUÈ HI HA
-    - Menú inicial amb la tria de joc
-    - Joc 1 "Parelles": cartes cap per avall
-    - Joc 2 "Què hi havia?": s'ensenya una escena per recordar
-    - Joc 3 "Seqüència": patró d'il·luminació il·limitat
-    - Joc 4 "Què ha canviat?": memòria visuoespacial de detall
-    - Joc 5 "On era?": evocació espacial pura
+    Version: 1.06
 -->
 <html lang="ca">
 <head>
@@ -283,10 +275,10 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
 }
 .face.dors{
-  background:linear-gradient(160deg,#8b5cf6,#6d28d9);
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.35), 0 4px 0 #4c1d95, 0 7px 12px rgba(0,0,0,.28);
+  background: repeating-linear-gradient(45deg, #6d28d9, #6d28d9 10px, #5b21b6 10px, #5b21b6 20px);
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,0.15), 0 4px 0 #4c1d95, 0 7px 12px rgba(0,0,0,.28);
+  border: 2px solid rgba(255,255,255,0.9);
 }
-.face.dors svg{width:58%;height:58%;opacity:.95}
 .face.cara{
   transform:rotateY(180deg);
   background:var(--card-face);
@@ -294,7 +286,8 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 }
 .face.cara .material-symbols-rounded{font-size:calc(var(--cw,70px) * .52)}
 .card.aparellada .face.cara{
-  box-shadow:inset 0 0 0 3px var(--accent-deep), 0 0 22px rgba(240,160,32,.7), 0 6px 14px rgba(0,0,0,.28);
+  box-shadow:inset 0 0 0 3px var(--board-border), 0 2px 4px rgba(0,0,0,.2);
+  filter: grayscale(100%) opacity(0.6);
   animation:encert .55s cubic-bezier(.34,1.56,.64,1);
 }
 .card.aparellada{cursor:default}
@@ -361,6 +354,14 @@ body.day .tile.seq-activa{filter:brightness(1.1);}
 .opt-tile.erronia .marca{background:#b91c1c}
 .opcions.bloquejada .opt-tile{cursor:default}
 .acciona{display:flex;justify-content:center;padding:6px 0 2px}
+
+/* Objectiu gegant de 'On era?' */
+.target-gegant-wrap{
+  display:flex;flex-direction:column;align-items:center;padding:12px;
+  background:var(--chip-bg);border-radius:24px;border:3px solid var(--accent-deep);
+  box-shadow:0 0 25px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+  margin-bottom:12px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+}
 
 /* ── missatge flotant i celebracions ────────────────── */
 .log{
@@ -517,7 +518,7 @@ body.landscape-mode .menu{justify-content:flex-start}
   <div class="stage">
 
     <h1 class="brand">
-      <svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(-59.043076923076924 -59.043076923076924) scale(0.61703) translate(0 960)"><path d="M352-120H200q-33 0-56.5-23.5T120-200v-152q48 0 84-30.5t36-77.5q0-47-36-77.5T120-568v-152q0-33 23.5-56.5T200-800h160q0-42 29-71t71-29q42 0 71 29t29 71h160q33 0 56.5 23.5T800-720v160q42 0 71 29t29 71q0 42-29 71t-71 29v160q0 33-23.5 56.5T720-120H568q0-50-31.5-85T460-240q-45 0-76.5 35T352-120Z" fill="var(--icona-peca)" /></g><g transform="translate(176.5 297.2) scale(0.3376)" ><path d="M253 -20Q193 -20 142.0 -43.0Q91 -66 60.5 -118.5Q30 -171 30 -257Q30 -337 62.0 -391.5Q94 -446 152.5 -473.5Q211 -501 289 -501Q346 -501 394.5 -486.0Q443 -471 469 -454Q489 -441 500.5 -423.0Q512 -405 512 -378V-63H349V-356Q339 -361 327.0 -364.5Q315 -368 296 -368Q253 -368 226.0 -341.5Q199 -315 199 -256Q199 -193 223.5 -170.0Q248 -147 285 -147Q315 -147 335.0 -157.5Q355 -168 371 -181L376 -48Q353 -36 323.5 -28.0Q294 -20 253 -20ZM352 -11V-101H512V-7Q512 63 478.0 108.5Q444 154 386.5 176.0Q329 198 258 198Q205 198 163.5 189.5Q122 181 98 165Q62 141 62 97Q62 74 71.5 55.0Q81 36 93 27Q122 43 158.5 54.0Q195 65 235 65Q288 65 320.0 47.0Q352 29 352 -11Z" fill="var(--icona-lletra)"/></g></svg>
+      <img src="memory192x192.png" alt="Logo Memòria" class="brand-icon">
       <span class="brand-text" id="brandText">Memòria</span>
     </h1>
 
@@ -707,11 +708,15 @@ body.landscape-mode .menu{justify-content:flex-start}
             <span class="material-symbols-rounded" style="color:#0ea5e9" id="faseIconOnera">visibility</span>
             <span id="faseTextOnera">Memoritza</span>
           </span>
-          <span class="chip" id="objectiuChipOnera" hidden>
-            <span class="material-symbols-rounded" id="objectiuIconaOnera" style="color:#fff">help</span>
-            <span id="objectiuTextOnera">On era?</span>
-          </span>
         </div>
+        
+        <div id="oneraTargetContainer" hidden style="display:flex;justify-content:center;width:100%;z-index:10">
+          <div class="target-gegant-wrap">
+             <span style="font-family:'Baloo 2';font-size:22px;margin-bottom:6px;">On era aquesta icona?</span>
+             <span class="material-symbols-rounded" id="objectiuIconaOneraGegant" style="font-size:64px;"></span>
+          </div>
+        </div>
+
         <div class="board-wrap">
           <div class="board" id="oneraBoard"></div>
           <div class="log" id="logOnera" role="status" aria-live="polite"></div>
@@ -728,7 +733,7 @@ body.landscape-mode .menu{justify-content:flex-start}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v1.05</span>
+      <span class="version" id="version">v1.06</span>
     </div>
   </footer>
 </div>
@@ -742,7 +747,6 @@ body.landscape-mode .menu{justify-content:flex-start}
     <span class="material-symbols-rounded modal-icon">grid_view</span>
     <h2 id="levelTitle">Quantes parelles?</h2>
     <div class="size-grid" id="levelGrid" role="radiogroup" aria-labelledby="levelTitle"></div>
-    <button class="btn-big" id="levelStartBtn">Comença</button>
   </div>
 </div>
 
@@ -765,8 +769,8 @@ body.landscape-mode .menu{justify-content:flex-start}
     <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
       <span class="material-symbols-rounded">close</span>
     </button>
-    <span class="material-symbols-rounded modal-icon">psychology</span>
-    <h2 id="infoTitle">Memòria</h2>
+    <img src="memory192x192.png" alt="Logo" style="width:70px;height:70px;margin:0 auto 10px;display:block;">
+    <h2 id="infoTitle" style="margin-top:0">Memòria</h2>
     <p class="credit">Jocs senzills per exercitar la memòria. Es juguen amb el dit o amb el ratolí i no cal connexió un cop instal·lats.</p>
     <div class="stats" id="statsBar">
       <span class="chip">
@@ -938,7 +942,7 @@ let faseEscena = 'mirar', objectesEscena = [], seleccio = [];
 // Seqüència
 let seqActiva = [], seqPasJugador = 0, seqCaselles = [], seqReproduint = false, seqInterval = null;
 // Canvi
-let canviDades = [], canviResposta = -1;
+let canviDades = [], canviResposta = -1, canviExplicacio = '';
 // On era
 let oneraDades = [], oneraObjectiu = null, oneraPosicio = -1;
 
@@ -1208,9 +1212,12 @@ function obrirNivell(quinJoc){
     sub.textContent = formatSub(n);
 
     boto.append(mini, titolSp, sub);
+    
+    // Auto-comença el joc en fer clic al nivell i tanca el modal
     boto.addEventListener('click', () => {
       levelGrid.querySelectorAll('.size-option').forEach(b => b.setAttribute('aria-checked', 'false'));
       boto.setAttribute('aria-checked', 'true');
+      
       if (quinJoc === 'parelles') nivellParelles = idx;
       else if (quinJoc === 'escena') nivellEscena = idx;
       else if (quinJoc === 'sequencia') nivellSequencia = idx;
@@ -1219,21 +1226,20 @@ function obrirNivell(quinJoc){
       
       const storageKey = 'nivell' + quinJoc.charAt(0).toUpperCase() + quinJoc.slice(1);
       localStorage.setItem(storageKey, idx);
+      
+      tancarModal(levelOverlay);
+      
+      if (quinJoc === 'parelles') iniciarParelles();
+      else if (quinJoc === 'escena') iniciarEscena();
+      else if (quinJoc === 'sequencia') iniciarSequencia();
+      else if (quinJoc === 'canvi') iniciarCanvi();
+      else if (quinJoc === 'onera') iniciarOnera();
     });
     levelGrid.appendChild(boto);
   });
 
   obrirModal(levelOverlay);
 }
-
-$('levelStartBtn').addEventListener('click', () => {
-  tancarModal(levelOverlay);
-  if (nivellEditant === 'parelles') iniciarParelles();
-  else if (nivellEditant === 'escena') iniciarEscena();
-  else if (nivellEditant === 'sequencia') iniciarSequencia();
-  else if (nivellEditant === 'canvi') iniciarCanvi();
-  else if (nivellEditant === 'onera') iniciarOnera();
-});
 
 levelBtn.addEventListener('click', () => obrirNivell(joc));
 
@@ -1305,7 +1311,7 @@ if ('ResizeObserver' in window){
 /* ═══════════════════════════════════════════════════════
    JOC 1 — PARELLES
    ═══════════════════════════════════════════════════════ */
-const DORS_SVG = `<svg viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(-59.04 -59.04) scale(0.61703) translate(0 960)"><path d="M352-120H200q-33 0-56.5-23.5T120-200v-152q48 0 84-30.5t36-77.5q0-47-36-77.5T120-568v-152q0-33 23.5-56.5T200-800h160q0-42 29-71t71-29q42 0 71 29t29 71h160q33 0 56.5 23.5T800-720v160q42 0 71 29t29 71q0 42-29 71t-71 29v160q0 33-23.5 56.5T720-120H568q0-50-31.5-85T460-240q-45 0-76.5 35T352-120Z" fill="#ffffff" opacity=".92"/></g><g transform="translate(176.5 297.2) scale(0.3376)"><path d="M253 -20Q193 -20 142.0 -43.0Q91 -66 60.5 -118.5Q30 -171 30 -257Q30 -337 62.0 -391.5Q94 -446 152.5 -473.5Q211 -501 289 -501Q346 -501 394.5 -486.0Q443 -471 469 -454Q489 -441 500.5 -423.0Q512 -405 512 -378V-63H349V-356Q339 -361 327.0 -364.5Q315 -368 296 -368Q253 -368 226.0 -341.5Q199 -315 199 -256Q199 -193 223.5 -170.0Q248 -147 285 -147Q315 -147 335.0 -157.5Q355 -168 371 -181L376 -48Q353 -36 323.5 -28.0Q294 -20 253 -20ZM352 -11V-101H512V-7Q512 63 478.0 108.5Q444 154 386.5 176.0Q329 198 258 198Q205 198 163.5 189.5Q122 181 98 165Q62 141 62 97Q62 74 71.5 55.0Q81 36 93 27Q122 43 158.5 54.0Q195 65 235 65Q288 65 320.0 47.0Q352 29 352 -11Z" fill="#6d28d9"/></g></svg>`;
+const DORS_SVG = `<img src="memory192x192.png" alt="" style="width:55%;height:55%;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">`;
 
 function iniciarParelles(){
   aturarTot();
@@ -1364,9 +1370,11 @@ function girarCarta(idx){
     celebrar(elB);
     trobades++;
     $('found').textContent = trobades;
+    
     if (trobades === NIVELLS_PARELLES[nivellParelles].parelles){
       const usat = tempsTotal - tempsRestant;
-      finalPartida(true, null, usat);
+      aturarTot(); // Parem el rellotge immediatament per evitar que perdi en aquest segon
+      setTimeout(() => finalPartida(true, null, usat), 1200); // 1.2 segons per veure l'última parella en gris
     } else {
       log('Parella trobada!');
     }
@@ -1494,19 +1502,35 @@ function comprovarEscena(perTemps){
   checkBtn.disabled = true;
 
   const correctes = objectesEscena.map(o => o.i);
-  let encerts = 0;
+  let encerts = 0, errorsMarcats = 0, errorsOblidats = 0;
 
   optionsBoard.querySelectorAll('.opt-tile').forEach(boto => {
     const icona = boto.dataset.icona;
     const triat = seleccio.includes(icona);
     const toca  = correctes.includes(icona);
     if (triat && toca){ boto.classList.add('correcta'); encerts++; celebrar(boto, 6); }
-    else if (triat && !toca) boto.classList.add('erronia');
-    else if (!triat && toca) boto.classList.add('perduda');
+    else if (triat && !toca){ boto.classList.add('erronia'); errorsMarcats++; }
+    else if (!triat && toca){ boto.classList.add('perduda'); errorsOblidats++; }
   });
 
-  const guanyat = encerts === correctes.length;
-  finalPartida(guanyat, perTemps ? 'S\'ha acabat el temps' : null, null, `${encerts} de ${correctes.length} encertats`);
+  const guanyat = encerts === correctes.length && errorsMarcats === 0;
+  let motiu = '';
+  
+  if (!guanyat) {
+    if (perTemps) {
+      motiu = "S'ha acabat el temps";
+    } else {
+      let msg = [];
+      if (errorsMarcats > 0) msg.push(`${errorsMarcats} de mal seleccionades`);
+      if (errorsOblidats > 0) msg.push(`${errorsOblidats} oblidades`);
+      motiu = msg.join(' i ');
+    }
+  }
+
+  // Deixem 2.5 segons de marge perquè l'usuari vegi els errors al tauler
+  setTimeout(() => {
+    finalPartida(guanyat, motiu, null, `${encerts} de ${correctes.length} encertats`);
+  }, 2500);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1541,7 +1565,14 @@ function iniciarSequencia(){
 
 function novaRondaSequencia() {
   if (joc !== 'sequencia') return;
-  seqActiva.push(Math.floor(Math.random() * seqCaselles.length));
+  
+  let novaCasella;
+  // En la mesura del possible evitem repetir la mateixa casella de forma consecutiva
+  do {
+    novaCasella = Math.floor(Math.random() * seqCaselles.length);
+  } while (seqActiva.length > 0 && novaCasella === seqActiva[seqActiva.length - 1] && seqCaselles.length > 1);
+  
+  seqActiva.push(novaCasella);
   seqPasJugador = 0;
   $('seqRound').textContent = seqActiva.length;
   reproduirSequencia();
@@ -1555,10 +1586,16 @@ function reproduirSequencia() {
   
   seqInterval = setInterval(() => {
     if (joc !== 'sequencia' || modalObert) return;
-    if (i > 0) seqBoard.children[seqActiva[i-1]].classList.remove('seq-activa');
+    
+    // Netejem qualsevol classe activa per fer la pulsació neta
+    Array.from(seqBoard.children).forEach(c => c.classList.remove('seq-activa'));
+    
     if (i < seqActiva.length) {
-      seqBoard.children[seqActiva[i]].classList.add('seq-activa');
-      i++;
+      // Un petit retard per garantir que el navegador pinta el canvi si per algun motiu fos repetida
+      setTimeout(() => {
+        seqBoard.children[seqActiva[i]].classList.add('seq-activa');
+        i++;
+      }, 50);
     } else {
       clearInterval(seqInterval);
       seqReproduint = false;
@@ -1596,6 +1633,7 @@ function clicSequencia(idx) {
 function iniciarCanvi(){
   aturarTot();
   mostrarPantalla('canvi');
+  canviBoard.style.pointerEvents = 'auto'; // Reset per si estava bloquejat
   const nivell = NIVELLS_CANVI[nivellCanvi];
   const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
   canviDades = Array(total).fill(null);
@@ -1649,31 +1687,42 @@ function aplicarCanvi() {
 
   if (tipusCanvi === 0) {
     nouDades[objectiuIdx].c = colorsLliures[Math.floor(Math.random() * colorsLliures.length)];
+    canviExplicacio = "La icona ha canviat de color";
   } else if (tipusCanvi === 1) {
     nouDades[objectiuIdx].i = iconesLliures[Math.floor(Math.random() * iconesLliures.length)].i;
+    canviExplicacio = "Hi ha una icona nova diferent";
   } else if (tipusCanvi === 2) {
     nouDades[objectiuIdx] = null;
+    canviExplicacio = "La icona que hi havia ha desaparegut";
   }
 
   setTimeout(() => {
     dibuixarTaulerCanvi(nouDades, true);
     $('faseIconCanvi').textContent = 'find_replace';
     $('faseTextCanvi').textContent = 'Troba el canvi';
-    iniciarCompte(NIVELLS_CANVI[nivellCanvi].respondre, () => finalPartida(false, 'Temps esgotat'));
+    iniciarCompte(NIVELLS_CANVI[nivellCanvi].respondre, () => {
+      canviBoard.style.pointerEvents = 'none';
+      log(canviExplicacio, 2500);
+      setTimeout(() => finalPartida(false, 'Temps esgotat'), 2500);
+    });
   }, 1000);
 }
 
 function resoldreCanvi(idx) {
   aturarTot();
+  canviBoard.style.pointerEvents = 'none'; // Bloquegem el tauler mentre es mostra la resolució
   const cel = canviBoard.children[idx];
+  
   if (idx === canviResposta) {
     cel.classList.add('correcta');
     celebrar(cel, 10);
-    setTimeout(() => finalPartida(true, null, null, 'Has detectat el canvi!'), 800);
+    log(canviExplicacio, 2500);
+    setTimeout(() => finalPartida(true, null, null, 'Has detectat el canvi!'), 2500);
   } else {
     cel.classList.add('erronia');
     canviBoard.children[canviResposta].classList.add('correcta');
-    setTimeout(() => finalPartida(false, 'Aquest no era el canvi'), 1200);
+    log(canviExplicacio, 2500);
+    setTimeout(() => finalPartida(false, 'Aquest no era el canvi'), 2500);
   }
 }
 
@@ -1683,6 +1732,7 @@ function resoldreCanvi(idx) {
 function iniciarOnera(){
   aturarTot();
   mostrarPantalla('onera');
+  oneraBoard.style.pointerEvents = 'auto'; // Reset
   const nivell = NIVELLS_ONERA[nivellOnera];
   const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
   oneraDades = Array(total).fill(null);
@@ -1697,7 +1747,7 @@ function iniciarOnera(){
   dibuixarTaulerOnera(oneraDades, false);
   $('faseIconOnera').textContent = 'visibility';
   $('faseTextOnera').textContent = 'Memoritza';
-  $('objectiuChipOnera').hidden = true;
+  $('oneraTargetContainer').hidden = true;
 
   log('Fixa\'t on és cada cosa…', 0);
   iniciarCompte(nivell.mirar, preguntarOnera);
@@ -1731,16 +1781,19 @@ function preguntarOnera() {
 
   $('faseIconOnera').textContent = 'location_on';
   $('faseTextOnera').textContent = 'Recorda';
-  $('objectiuChipOnera').hidden = false;
-  $('objectiuIconaOnera').textContent = oneraObjectiu.i;
-  $('objectiuIconaOnera').style.color = oneraObjectiu.c;
+  
+  // Mostrem l'objectiu visual de forma molt clara al mig de la pantalla
+  $('oneraTargetContainer').hidden = false;
+  $('objectiuIconaOneraGegant').textContent = oneraObjectiu.i;
+  $('objectiuIconaOneraGegant').style.color = oneraObjectiu.c;
 
-  log(`On era aquest símbol?`, 0);
+  log(``, 0); // Buidem el log petit perquè l'atenció vagi al bloc gegant
   iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
 }
 
 function resoldreOnera(idx) {
   aturarTot();
+  oneraBoard.style.pointerEvents = 'none'; // Bloquegem per veure el resultat
   const cel = oneraBoard.children[idx];
   cel.classList.remove('buit');
   cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + oneraObjectiu.c + '">' + oneraObjectiu.i + '</span>';
@@ -1748,14 +1801,14 @@ function resoldreOnera(idx) {
   if (idx === oneraPosicio) {
     cel.classList.add('correcta');
     celebrar(cel, 10);
-    setTimeout(() => finalPartida(true, null, null, 'Has recordat la posició!'), 800);
+    setTimeout(() => finalPartida(true, null, null, 'Has recordat la posició!'), 1500);
   } else {
     cel.classList.add('erronia');
     const bona = oneraBoard.children[oneraPosicio];
     bona.classList.remove('buit');
     bona.classList.add('correcta');
     bona.innerHTML = '<span class="material-symbols-rounded" style="color:' + oneraObjectiu.c + '">' + oneraObjectiu.i + '</span>';
-    setTimeout(() => finalPartida(false, 'L\'objecte no era aquí'), 1200);
+    setTimeout(() => finalPartida(false, 'L\'objecte no era aquí'), 2000);
   }
 }
 
