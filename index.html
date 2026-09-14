@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 1.10
+    Version: 2.01
 -->
 <html lang="ca">
 <head>
@@ -19,8 +19,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
-<!-- Icones: eixos fixos i només les usades (interfície + joc), en ordre alfabètic -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&icon_names=ac_unit,anchor,arrow_back,auto_awesome,bar_chart,bolt,brush,cake,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,home,icecream,info,key,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,timer,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
+<!-- Icones: afegits 'image' i 'brush' per al selector de gràfics -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&icon_names=ac_unit,anchor,arrow_back,auto_awesome,bar_chart,bolt,brush,cake,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,home,icecream,image,info,key,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,timer,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
 
 <title>Memòria</title>
 <style>
@@ -76,7 +76,7 @@ body{
 }
 
 /* ═══════════════════════════════════════════════════════
-   MODE DIA — colors vius i sòlids
+   MODE DIA
    ═══════════════════════════════════════════════════════ */
 body.day{
   --stage:linear-gradient(165deg,#ffd86b 0%,#ff9f45 38%,#ff6b9d 100%);
@@ -132,7 +132,7 @@ body.day .brand-icon{filter:drop-shadow(0 2px 4px rgba(150,50,0,.4))}
 
 /* ── barra de control ───────────────────────────────── */
 .bar{
-  --pill:clamp(28px, calc((100vw - 90px) / 8.2), 44px);
+  --pill:clamp(28px, calc((100vw - 90px) / 9.2), 44px);
   display:flex;align-items:center;gap:4px;flex-wrap:nowrap;
   background:var(--bar-bg);border:1px solid var(--bar-border);
   border-radius:99px;padding:6px 7px 8px;box-shadow:var(--bar-shadow);
@@ -162,7 +162,7 @@ body.day .pill:active{
 .pill:focus-visible,.btn-big:focus-visible,.modal-close:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .spacer{flex:1 1 auto;min-width:10px}
 
-/* ── xips (marcador i informació) ───────────────────── */
+/* ── xips ───────────────────────────────────────────── */
 [hidden]{display:none !important}
 .hud{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:2px 0 0}
 .stats{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap;justify-content:center}
@@ -177,7 +177,6 @@ body.day .pill:active{
 .chip.alerta .material-symbols-rounded{color:#fff !important}
 .chip.alerta b{animation:latir .9s ease-in-out infinite}
 @keyframes latir{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-@media (prefers-reduced-motion:reduce){.chip.alerta b{animation:none}}
 
 /* ── pantalles ──────────────────────────────────────── */
 .screen{display:none;flex:1;min-height:0;flex-direction:column;gap:8px}
@@ -240,17 +239,12 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .size-option[aria-checked="true"] small{color:var(--accent-ink);opacity:.8}
 .size-option[aria-checked="true"] .mini{background:rgba(255,255,255,.45)}
 .size-option[aria-checked="true"] .mini i{background:var(--accent-ink);opacity:.6}
-@media (max-height:560px){
-  .size-grid{grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
-  .size-option{padding:8px 6px;font-size:15px;border-radius:14px}
-  .size-option .mini{width:38px;height:30px}
-}
 
 /* ── tauler comú ────────────────────────────────────── */
 .board-wrap{
   flex:1;min-height:0;min-width:0;position:relative;
   display:flex;align-items:center;justify-content:center;
-  padding:7px 0 45px 0; /* Marge extra a sota per al log flotant */
+  padding:7px 0 45px 0;
 }
 .board{
   display:grid;gap:var(--gap,8px);margin:0 auto;
@@ -260,7 +254,13 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   transition:border-color .35s,background .35s;
 }
 
-/* ── estils comuns de cel·les / cartes ──────────────── */
+/* ── estils comuns de cel·les / cartes i FOTOS ──────── */
+.foto-asset {
+  width:85%; height:85%;
+  object-fit:contain; border-radius:10px;
+  pointer-events:none; filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));
+}
+
 .card{
   width:var(--cw,70px);height:var(--ch,90px);
   perspective:900px;background:none;border:none;padding:0;cursor:pointer;
@@ -307,28 +307,22 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .tile .material-symbols-rounded{font-size:calc(var(--cw,64px) * .56)}
 .tile.buit{background:transparent;box-shadow:none}
 
-/* Estils extres per als nous jocs */
 .tile.clickable{cursor:pointer;transition:transform .1s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,filter .2s,border .2s;}
 .tile.clickable:active{transform:scale(0.92);}
 .tile.seq-activa{
-  transform:scale(1.12);
-  filter:brightness(1.2);
-  box-shadow:0 0 20px var(--accent-deep);
-  z-index:2;
-  border:2px solid var(--accent);
+  transform:scale(1.12); filter:brightness(1.2);
+  box-shadow:0 0 20px var(--accent-deep); z-index:2; border:2px solid var(--accent);
 }
 body.day .tile.seq-activa{filter:brightness(1.1);}
 .tile.buit.clickable{
-  background:var(--chip-bg);
-  box-shadow:var(--chip-shadow);
-  border:2px dashed var(--board-border);
-  opacity:0.7;
+  background:var(--chip-bg); box-shadow:var(--chip-shadow);
+  border:2px dashed var(--board-border); opacity:0.7;
 }
 .tile.buit.clickable:hover{opacity:1;}
 .tile.correcta{border:3px solid #16a34a;box-shadow:inset 0 0 10px rgba(22,163,74,.3),0 0 15px rgba(74,222,128,.6);}
 .tile.erronia{border:3px solid #b91c1c;box-shadow:inset 0 0 10px rgba(185,28,28,.3),0 0 15px rgba(251,113,133,.6);}
 
-/* Opcions seleccionables (joc Què hi havia) */
+/* Opcions seleccionables */
 .opcions{
   flex:1;min-height:0;overflow-y:auto;padding:12px 12px 2px;
   display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:14px;
@@ -342,6 +336,7 @@ body.day .tile.seq-activa{filter:brightness(1.1);}
   transition:transform .13s cubic-bezier(.34,1.56,.64,1),background .2s,border-color .2s;
 }
 .opt-tile .material-symbols-rounded{font-size:42px}
+.opt-tile .foto-asset{width:70%;height:70%}
 .opt-tile:active{transform:scale(.94)}
 .opt-tile:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .opt-tile[aria-pressed="true"]{
@@ -363,7 +358,7 @@ body.day .tile.seq-activa{filter:brightness(1.1);}
 .opcions.bloquejada .opt-tile{cursor:default}
 .acciona{display:flex;justify-content:center;padding:6px 0 2px}
 
-/* Objectiu gegant de 'On era?' */
+/* Objectiu gegant */
 .target-gegant-wrap{
   display:flex;flex-direction:column;align-items:center;padding:12px;
   background:var(--chip-bg);border-radius:24px;border:3px solid var(--accent-deep);
@@ -371,41 +366,27 @@ body.day .tile.seq-activa{filter:brightness(1.1);}
   margin-bottom:12px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
 }
 
-/* ── missatge flotant i celebracions ────────────────── */
 .log{
   position:absolute;left:50%;bottom:6px;z-index:10;
-  transform:translate(-50%,15px);
-  max-width:calc(100% - 16px);padding:8px 20px;
-  font-size:16px;font-weight:600;color:var(--log-text);letter-spacing:.3px;text-align:center;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  background:var(--log-bg);
-  border-radius:99px;
-  box-shadow:0 4px 12px rgba(0,0,0,.25);
+  transform:translate(-50%,15px); max-width:calc(100% - 16px);padding:8px 20px;
+  font-size:16px;font-weight:600;color:var(--log-text);text-align:center;
+  background:var(--log-bg); border-radius:99px; box-shadow:0 4px 12px rgba(0,0,0,.25);
   pointer-events:none;opacity:0;transition:opacity .45s ease, transform .45s ease;
 }
 .log.show{opacity:1;transform:translate(-50%,0)}
-@media (prefers-reduced-motion:reduce){.log{transition:opacity .2s}}
 
 .espurna{
   position:fixed;z-index:1200;width:10px;height:10px;border-radius:3px;pointer-events:none;
   animation:volar .9s ease-out forwards;
 }
-@keyframes volar{
-  0%{transform:translate(0,0) scale(1) rotate(0);opacity:1}
-  100%{transform:translate(var(--dx),var(--dy)) scale(.2) rotate(var(--rot));opacity:0}
-}
+@keyframes volar{0%{transform:translate(0,0) scale(1) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.2) rotate(var(--rot));opacity:0}}
 @keyframes encert{0%{transform:rotateY(180deg) scale(1)}45%{transform:rotateY(180deg) scale(1.14)}100%{transform:rotateY(180deg) scale(1)}}
 @keyframes errada{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-6px)}75%{transform:rotateY(180deg) translateX(6px)}}
-@media (prefers-reduced-motion:reduce){
-  .card-inner{transition:none}
-  .card.aparellada .face.cara,.card.fallada .face.cara{animation:none}
-}
 
-/* ── finestres emergents ────────────────────────────── */
+/* ── modals ─────────────────────────────────────────── */
 .modal-overlay{
   position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;
-  padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right))
-          max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+  padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-left));
   background:rgba(10,6,20,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
 }
 .modal-overlay.active{display:flex}
@@ -435,7 +416,6 @@ body.day .tile.seq-activa{filter:brightness(1.1);}
 .modal .credit{font-size:16px;line-height:1.4;margin-bottom:10px;max-width:36ch}
 .modal .how{font-size:14px;line-height:1.45;color:var(--ink-soft);margin-bottom:12px;max-width:36ch;text-align:left}
 .modal .how li{margin-left:18px;margin-bottom:4px}
-.modal .modal-version{font-size:11px;letter-spacing:1px;color:var(--ink-soft);margin-bottom:14px}
 .modal-actions{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
 .btn-big{
   display:inline-flex;align-items:center;gap:8px;
@@ -446,7 +426,6 @@ body.day .tile.seq-activa{filter:brightness(1.1);}
   transition:transform .13s cubic-bezier(.34,1.56,.64,1),box-shadow .13s;
 }
 .btn-big:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 1px 0 rgba(0,0,0,.3),0 3px 8px rgba(0,0,0,.4)}
-.btn-big:disabled{opacity:.45;cursor:default;transform:none}
 .btn-soft{
   display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:99px;cursor:pointer;
   font-family:'Fredoka';font-weight:600;font-size:15px;color:var(--ink);
@@ -454,61 +433,39 @@ body.day .tile.seq-activa{filter:brightness(1.1);}
   transition:transform .13s cubic-bezier(.34,1.56,.64,1),background .2s;
 }
 .btn-soft:active{transform:scale(.95)}
-.btn-soft:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-.trofeu{
-  font-size:56px;color:var(--accent);
-  filter:drop-shadow(0 4px 0 var(--accent-deep)) drop-shadow(0 8px 14px rgba(0,0,0,.45));
-  font-variation-settings:'FILL' 1,'wght' 700,'opsz' 48;
-}
-
-/* Historial */
-.hist-item{
-  background:var(--chip-bg);border:2px solid var(--chip-border);
-  border-radius:16px;padding:12px 14px;text-align:left;width:100%;
-}
+.trofeu{font-size:56px;color:var(--accent);filter:drop-shadow(0 4px 0 var(--accent-deep));font-variation-settings:'FILL' 1,'wght' 700;}
+.hist-item{background:var(--chip-bg);border:2px solid var(--chip-border);border-radius:16px;padding:12px 14px;text-align:left;width:100%;}
 .hist-item h3{font-size:16px;margin-bottom:4px;display:flex;align-items:center;gap:6px;color:var(--ink);}
 .hist-item p{font-size:14px;color:var(--ink-soft);margin-bottom:2px;font-family:'Baloo 2';}
-
 @keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
 @media (max-height:560px){
   .modal{padding:14px 16px 12px}
   .modal h2{font-size:20px;margin-bottom:6px}
   .modal-icon,.trofeu{font-size:34px}
   .modal .btn-big,.modal .btn-soft{padding:9px 18px;font-size:14px}
-  .stats{margin-bottom:8px}
 }
 
-/* ── peu ────────────────────────────────────────────── */
 footer.footer{flex:0 0 auto;margin-top:6px;padding:2px 8px 0;text-align:center}
 footer.footer p{color:var(--ink-soft);font-size:11px;margin-bottom:3px}
 footer.footer .version{color:var(--ink-soft);font-size:11px;letter-spacing:1px}
-.footer-links{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
-.footer-links a{color:var(--ink);font-size:11px;text-decoration:none;opacity:.75;border-bottom:1px solid transparent;transition:all .2s}
+.footer-links{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.footer-links a{color:var(--ink);font-size:11px;text-decoration:none;opacity:.75;border-bottom:1px solid transparent;}
 .footer-links a:hover{opacity:1;border-bottom-color:currentColor}
 .divider{color:var(--ink-soft)}
 
 /* ═══════════════════════════════════════════════════════
-   VERTICAL / HORITZONTAL / PANTALLA PETITA
+   VERTICAL / HORITZONTAL
    ═══════════════════════════════════════════════════════ */
 body.portrait-mode{padding:max(8px,env(safe-area-inset-top)) 8px max(6px,env(safe-area-inset-bottom))}
-body.portrait-mode.web-browser{padding:8px 8px 6px}
-body.portrait-mode.ios-app{padding:max(12px,calc(env(safe-area-inset-top) + 4px)) 8px max(6px,env(safe-area-inset-bottom))}
-body.portrait-mode.android-app{padding:max(12px,calc(env(safe-area-inset-top) + 4px)) 8px 6px}
-
 body.landscape-mode{padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-body.landscape-mode.web-browser{padding:6px 10px 6px}
-body.landscape-mode.ios-app{padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
-body.landscape-mode.android-app{padding:max(10px,env(safe-area-inset-top)) 14px 12px}
 body.landscape-mode .stage{padding:12px;border-radius:22px}
 body.landscape-mode .play{flex-direction:row;gap:12px;align-items:stretch}
 body.landscape-mode .bar{
-  --pill:clamp(26px, calc((100dvh - 110px) / 7), 44px);
+  --pill:clamp(26px, calc((100dvh - 110px) / 8), 44px);
   flex-direction:column;width:auto;flex:0 0 auto;padding:6px 5px 8px;gap:4px;
   border-radius:99px;overflow-x:hidden;overflow-y:auto;
 }
 body.landscape-mode .spacer{min-width:0;min-height:10px}
-body.landscape-mode .menu{justify-content:flex-start}
-
 @media (max-height:560px), (max-width:820px){
   body.landscape-mode .brand{display:none}
   body.landscape-mode .stage{padding:6px;border-radius:18px}
@@ -517,17 +474,12 @@ body.landscape-mode .menu{justify-content:flex-start}
   body.landscape-mode .board{padding:5px;border-width:2px;box-shadow:0 0 0 4px var(--board-halo), 0 10px 24px rgba(0,0,0,.3)}
   body.landscape-mode footer.footer{display:none}
 }
-@media (orientation:landscape) and (max-height:560px){.brand{display:none}}
 @media (max-width:430px){
   body.portrait-mode .stage{padding:8px;border-radius:22px}
   body.portrait-mode .brand{font-size:clamp(22px,6.5vw,30px);margin-bottom:6px}
-  body.portrait-mode .play{gap:6px}
   body.portrait-mode .board-wrap{padding:5px 0 38px 0}
-  body.portrait-mode .board{padding:5px;border-width:2px;border-radius:16px;
-    box-shadow:0 0 0 4px var(--board-halo), 0 10px 24px rgba(0,0,0,.3)}
+  body.portrait-mode .board{padding:5px;border-width:2px;border-radius:16px;}
   footer.footer{margin-top:4px}
-  footer.footer p{font-size:10px;margin-bottom:2px}
-  .footer-links a, footer.footer .version{font-size:10px}
 }
 </style>
 </head>
@@ -548,23 +500,19 @@ body.landscape-mode .menu{justify-content:flex-start}
                 style="--glow:#94a3b8;--tint:#64748b;--tint-deep:#334155">
           <span class="material-symbols-rounded">arrow_back</span>
         </button>
-
         <button class="pill" id="restartBtn" title="Tornar a començar" aria-label="Tornar a començar" hidden
                 style="--glow:#f472b6;--tint:#ec4899;--tint-deep:#9d174d">
           <span class="material-symbols-rounded">replay</span>
         </button>
-
         <button class="pill" id="levelBtn" title="Canviar el nivell" aria-label="Canviar el nivell" hidden
                 aria-haspopup="dialog"
                 style="--glow:#a78bfa;--tint:#8b5cf6;--tint-deep:#5b21b6">
           <span class="material-symbols-rounded">grid_view</span>
         </button>
-
         <button class="pill" id="historyBtn" title="Historial de partides" aria-label="Historial de partides"
                 style="--glow:#64748b;--tint:#475569;--tint-deep:#334155">
           <span class="material-symbols-rounded">bar_chart</span>
         </button>
-
         <button class="pill" id="helpBtn" title="Com es juga" aria-label="Com es juga"
                 style="--glow:#fbbf24;--tint:#f59e0b;--tint-deep:#b45309">
           <span class="material-symbols-rounded">help</span>
@@ -572,16 +520,20 @@ body.landscape-mode .menu{justify-content:flex-start}
 
         <span class="spacer"></span>
 
+        <!-- Nou botó toggle fotos / icones -->
+        <button class="pill" id="assetModeBtn" title="Mode d'imatges" aria-label="Alternar fotos i dibuixos"
+                style="--glow:#10b981;--tint:#059669;--tint-deep:#047857">
+          <span class="material-symbols-rounded">brush</span>
+        </button>
+
         <button class="pill" id="soundBtn" title="Efectes de celebració" aria-label="Efectes de celebració"
                 style="--glow:#a78bfa;--tint:#a855f7;--tint-deep:#7e22ce">
           <span class="material-symbols-rounded">auto_awesome</span>
         </button>
-
         <button class="pill" id="themeToggle" title="Mode clar o fosc" aria-label="Mode clar o fosc"
                 style="--glow:#fde047;--tint:#ef4444;--tint-deep:#b91c1c">
           <span class="material-symbols-rounded">dark_mode</span>
         </button>
-
         <button class="pill" id="infoBtn" title="Informació" aria-label="Informació"
                 style="--glow:#38bdf8;--tint:#0ea5e9;--tint-deep:#0369a1">
           <span class="material-symbols-rounded">info</span>
@@ -600,7 +552,6 @@ body.landscape-mode .menu{justify-content:flex-start}
               <small>Gira les cartes de dues en dues i troba totes les parelles abans que s'acabi el temps.</small>
             </span>
           </button>
-
           <button class="game-card" data-joc="escena" style="--tint:#0ea5e9;--tint-deep:#0369a1">
             <span class="ico"><span class="material-symbols-rounded">visibility</span></span>
             <span class="txt">
@@ -608,7 +559,6 @@ body.landscape-mode .menu{justify-content:flex-start}
               <small>Mira una escena plena d'objectes, memoritza'ls i després tria'ls d'una llista.</small>
             </span>
           </button>
-
           <button class="game-card" data-joc="sequencia" style="--tint:#eab308;--tint-deep:#ca8a04">
             <span class="ico"><span class="material-symbols-rounded">touch_app</span></span>
             <span class="txt">
@@ -616,7 +566,6 @@ body.landscape-mode .menu{justify-content:flex-start}
               <small>Repeteix l'ordre en què s'encenen les icones. Cada cop n'hi ha una de nova.</small>
             </span>
           </button>
-
           <button class="game-card" data-joc="canvi" style="--tint:#ec4899;--tint-deep:#be185d">
             <span class="ico"><span class="material-symbols-rounded">find_replace</span></span>
             <span class="txt">
@@ -624,7 +573,6 @@ body.landscape-mode .menu{justify-content:flex-start}
               <small>Memoritza l'escena. S'amagarà i tornarà amb un canvi de detall. Assenyala'l!</small>
             </span>
           </button>
-
           <button class="game-card" data-joc="onera" style="--tint:#10b981;--tint-deep:#047857">
             <span class="ico"><span class="material-symbols-rounded">location_on</span></span>
             <span class="txt">
@@ -737,8 +685,8 @@ body.landscape-mode .menu{justify-content:flex-start}
         
         <div id="oneraTargetContainer" hidden style="display:flex;justify-content:center;width:100%;z-index:10">
           <div class="target-gegant-wrap">
-             <span style="font-family:'Baloo 2';font-size:22px;margin-bottom:6px;">On era aquesta icona?</span>
-             <span class="material-symbols-rounded" id="objectiuIconaOneraGegant" style="font-size:64px;"></span>
+             <span style="font-family:'Baloo 2';font-size:22px;margin-bottom:6px;">On era això?</span>
+             <div id="objectiuGegantContenidor" style="width:80px;height:80px;display:grid;place-items:center;"></div>
           </div>
         </div>
 
@@ -758,12 +706,41 @@ body.landscape-mode .menu{justify-content:flex-start}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v1.10</span>
+      <span class="version" id="version">v2.01</span>
     </div>
   </footer>
 </div>
 
-<!-- Nivell -->
+<!-- Modal Benvinguda (Primera Vegada) -->
+<div id="welcomeOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" aria-hidden="true">
+  <div class="modal modal-info">
+    <span class="material-symbols-rounded modal-icon" style="font-size:56px">extension</span>
+    <h2 id="welcomeTitle">Com vols jugar?</h2>
+    <p class="credit">A Memòria pots jugar utilitzant la nostra col·lecció de dibuixos (icones), o bé utilitzant les teves pròpies fotos.</p>
+    <div style="display:flex;gap:12px;margin:16px 0;width:100%;justify-content:center;">
+       <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border)">
+             <span class="material-symbols-rounded" style="color:#0ea5e9;font-size:40px;">sports_soccer</span>
+          </div>
+       </div>
+       <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border)">
+             <span class="material-symbols-rounded" style="color:var(--ink-soft);font-size:36px;">image</span>
+          </div>
+       </div>
+    </div>
+    <div class="modal-actions" style="margin-top:10px;">
+      <button class="btn-big" id="btnTriaDibuixos" style="--accent:#38bdf8;--accent-deep:#0284c7">
+        <span class="material-symbols-rounded">brush</span> Dibuixos
+      </button>
+      <button class="btn-big" id="btnTriaFotos" style="--accent:#10b981;--accent-deep:#047857">
+        <span class="material-symbols-rounded">image</span> Les meves fotos
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nivell -->
 <div id="levelOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="levelTitle" aria-hidden="true">
   <div class="modal modal-info">
     <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
@@ -775,7 +752,7 @@ body.landscape-mode .menu{justify-content:flex-start}
   </div>
 </div>
 
-<!-- Ajuda -->
+<!-- Modal Ajuda -->
 <div id="helpOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle" aria-hidden="true">
   <div class="modal modal-info">
     <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
@@ -788,7 +765,7 @@ body.landscape-mode .menu{justify-content:flex-start}
   </div>
 </div>
 
-<!-- Informació -->
+<!-- Modal Informació -->
 <div id="infoOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="infoTitle" aria-hidden="true">
   <div class="modal modal-info">
     <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
@@ -824,9 +801,7 @@ body.landscape-mode .menu{justify-content:flex-start}
     </button>
     <span class="material-symbols-rounded modal-icon">bar_chart</span>
     <h2 id="historyTitle" style="margin-bottom:14px">Historial de joc</h2>
-    <div id="historyContent" style="width:100%; display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
-      <!-- Omplert dinàmicament -->
-    </div>
+    <div id="historyContent" style="width:100%; display:flex; flex-direction:column; gap:10px; margin-bottom:16px;"></div>
     <button class="btn-big" data-close>Tancar</button>
   </div>
 </div>
@@ -864,6 +839,7 @@ const backBtn        = $('backBtn');
 const restartBtn     = $('restartBtn');
 const levelBtn       = $('levelBtn');
 const historyBtn     = $('historyBtn');
+const assetModeBtn   = $('assetModeBtn');
 
 const homeScreen     = $('homeScreen');
 const parellesScreen = $('parellesScreen');
@@ -888,83 +864,58 @@ const helpOverlay    = $('helpOverlay');
 const infoOverlay    = $('infoOverlay');
 const historyOverlay = $('historyOverlay');
 const resultOverlay  = $('resultOverlay');
+const welcomeOverlay = $('welcomeOverlay');
 
 /* ═══════════════════════════════════════════════════════
    DADES DEL JOC
    ═══════════════════════════════════════════════════════ */
-const POOL = [
-  { i:'pets',              c:'#f59e0b' }, { i:'local_florist',     c:'#ec4899' },
-  { i:'rocket_launch',     c:'#8b5cf6' }, { i:'directions_car',    c:'#ef4444' },
-  { i:'sports_soccer',     c:'#0ea5e9' }, { i:'music_note',        c:'#a855f7' },
-  { i:'cake',              c:'#f472b6' }, { i:'coffee',            c:'#92400e' },
-  { i:'icecream',          c:'#06b6d4' }, { i:'lunch_dining',      c:'#d97706' },
-  { i:'flight',            c:'#0369a1' }, { i:'sailing',           c:'#0891b2' },
-  { i:'pedal_bike',        c:'#16a34a' }, { i:'anchor',            c:'#1d4ed8' },
-  { i:'umbrella',          c:'#e11d48' }, { i:'ac_unit',           c:'#38bdf8' },
-  { i:'water_drop',        c:'#0284c7' }, { i:'bolt',              c:'#eab308' },
-  { i:'cloud',             c:'#64748b' }, { i:'forest',            c:'#15803d' },
-  { i:'park',              c:'#22c55e' }, { i:'star',              c:'#f59e0b' },
-  { i:'diamond',           c:'#06b6d4' }, { i:'key',               c:'#a16207' },
-  { i:'lock',              c:'#7c3aed' }, { i:'lightbulb',         c:'#facc15' },
-  { i:'camera',            c:'#334155' }, { i:'headphones',        c:'#db2777' },
-  { i:'watch',             c:'#0f766e' }, { i:'brush',             c:'#c2410c' },
-  { i:'palette',           c:'#9333ea' }, { i:'science',           c:'#059669' },
-  { i:'public',            c:'#2563eb' }, { i:'home',              c:'#b45309' },
-  { i:'sports_basketball', c:'#ea580c' }, { i:'cruelty_free',      c:'#be123c' }
+const POOL_ICONES = [
+  { uid:'pets', i:'pets', c:'#f59e0b', tipus:'icona' }, { uid:'local_florist', i:'local_florist', c:'#ec4899', tipus:'icona' },
+  { uid:'rocket_launch', i:'rocket_launch', c:'#8b5cf6', tipus:'icona' }, { uid:'directions_car', i:'directions_car', c:'#ef4444', tipus:'icona' },
+  { uid:'sports_soccer', i:'sports_soccer', c:'#0ea5e9', tipus:'icona' }, { uid:'music_note', i:'music_note', c:'#a855f7', tipus:'icona' },
+  { uid:'cake', i:'cake', c:'#f472b6', tipus:'icona' }, { uid:'coffee', i:'coffee', c:'#92400e', tipus:'icona' },
+  { uid:'icecream', i:'icecream', c:'#06b6d4', tipus:'icona' }, { uid:'lunch_dining', i:'lunch_dining', c:'#d97706', tipus:'icona' },
+  { uid:'flight', i:'flight', c:'#0369a1', tipus:'icona' }, { uid:'sailing', i:'sailing', c:'#0891b2', tipus:'icona' },
+  { uid:'pedal_bike', i:'pedal_bike', c:'#16a34a', tipus:'icona' }, { uid:'anchor', i:'anchor', c:'#1d4ed8', tipus:'icona' },
+  { uid:'umbrella', i:'umbrella', c:'#e11d48', tipus:'icona' }, { uid:'ac_unit', i:'ac_unit', c:'#38bdf8', tipus:'icona' },
+  { uid:'water_drop', i:'water_drop', c:'#0284c7', tipus:'icona' }, { uid:'bolt', i:'bolt', c:'#eab308', tipus:'icona' },
+  { uid:'cloud', i:'cloud', c:'#64748b', tipus:'icona' }, { uid:'forest', i:'forest', c:'#15803d', tipus:'icona' },
+  { uid:'park', i:'park', c:'#22c55e', tipus:'icona' }, { uid:'star', i:'star', c:'#f59e0b', tipus:'icona' },
+  { uid:'diamond', i:'diamond', c:'#06b6d4', tipus:'icona' }, { uid:'key', i:'key', c:'#a16207', tipus:'icona' },
+  { uid:'lock', i:'lock', c:'#7c3aed', tipus:'icona' }, { uid:'lightbulb', i:'lightbulb', c:'#facc15', tipus:'icona' },
+  { uid:'camera', i:'camera', c:'#334155', tipus:'icona' }, { uid:'headphones', i:'headphones', c:'#db2777', tipus:'icona' },
+  { uid:'watch', i:'watch', c:'#0f766e', tipus:'icona' }, { uid:'brush', i:'brush', c:'#c2410c', tipus:'icona' },
+  { uid:'palette', i:'palette', c:'#9333ea', tipus:'icona' }, { uid:'science', i:'science', c:'#059669', tipus:'icona' },
+  { uid:'public', i:'public', c:'#2563eb', tipus:'icona' }, { uid:'home', i:'home', c:'#b45309', tipus:'icona' },
+  { uid:'sports_basketball', i:'sports_basketball', c:'#ea580c', tipus:'icona' }, { uid:'cruelty_free', i:'cruelty_free', c:'#be123c', tipus:'icona' }
 ];
 
-const NIVELLS_PARELLES = [
-  { parelles:4,  segons:70,  text:'8 cartes' },
-  { parelles:8,  segons:130, text:'16 cartes' },
-  { parelles:12, segons:190, text:'24 cartes' },
-  { parelles:16, segons:250, text:'32 cartes' }
-];
+let POOL_FOTOS = []; // S'omplirà de forma asíncrona validant la carpeta
 
-const NIVELLS_ESCENA = [
-  { objectes:4,  mirar:6,  respondre:45, text:'4 objectes' },
-  { objectes:6,  mirar:8,  respondre:55, text:'6 objectes' },
-  { objectes:8,  mirar:10, respondre:70, text:'8 objectes' },
-  { objectes:10, mirar:12, respondre:90, text:'10 objectes' }
-];
-
-const NIVELLS_SEQUENCIA = [
-  { caselles:4,  text:'Graella 2x2' },
-  { caselles:6,  text:'Graella 2x3' },
-  { caselles:9,  text:'Graella 3x3' },
-  { caselles:12, text:'Graella 3x4' }
-];
-
-const NIVELLS_CANVI = [
-  { objectes:4,  mirar:6,  respondre:20, text:'4 objectes' },
-  { objectes:6,  mirar:8,  respondre:20, text:'6 objectes' },
-  { objectes:8,  mirar:10, respondre:20, text:'8 objectes' },
-  { objectes:12, mirar:12, respondre:20, text:'12 objectes' }
-];
-
-const NIVELLS_ONERA = [
-  { objectes:4,  mirar:6,  respondre:15, text:'4 objectes' },
-  { objectes:6,  mirar:8,  respondre:15, text:'6 objectes' },
-  { objectes:8,  mirar:10, respondre:15, text:'8 objectes' },
-  { objectes:10, mirar:12, respondre:15, text:'10 objectes' }
-];
+const NIVELLS_PARELLES = [ { parelles:4, segons:70, text:'8 cartes' }, { parelles:8, segons:130, text:'16 cartes' }, { parelles:12, segons:190, text:'24 cartes' }, { parelles:16, segons:250, text:'32 cartes' } ];
+const NIVELLS_ESCENA = [ { objectes:4, mirar:6, respondre:45, text:'4 objectes' }, { objectes:6, mirar:8, respondre:55, text:'6 objectes' }, { objectes:8, mirar:10, respondre:70, text:'8 objectes' }, { objectes:10, mirar:12, respondre:90, text:'10 objectes' } ];
+const NIVELLS_SEQUENCIA = [ { caselles:4, text:'Graella 2x2' }, { caselles:6, text:'Graella 2x3' }, { caselles:9, text:'Graella 3x3' }, { caselles:12, text:'Graella 3x4' } ];
+const NIVELLS_CANVI = [ { objectes:4, mirar:6, respondre:20, text:'4 objectes' }, { objectes:6, mirar:8, respondre:20, text:'6 objectes' }, { objectes:8, mirar:10, respondre:20, text:'8 objectes' }, { objectes:12, mirar:12, respondre:20, text:'12 objectes' } ];
+const NIVELLS_ONERA = [ { objectes:4, mirar:6, respondre:15, text:'4 objectes' }, { objectes:6, mirar:8, respondre:15, text:'6 objectes' }, { objectes:8, mirar:10, respondre:15, text:'8 objectes' }, { objectes:10, mirar:12, respondre:15, text:'10 objectes' } ];
 
 const COLOR_TEMA = { dia:'#ff9f45', nit:'#14101c' };
 const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?', sequencia:'Seqüència', canvi:'Què ha canviat?', onera:'On era?' };
 
 const AJUDA = {
-  home: '<ul><li>Tria un joc de la llista.</li><li>La majoria tenen compte enrere: quan arriba a zero, s\'acaba.</li><li>El botó de la careta canvia entre mode clar i fosc.</li></ul>',
-  parelles: '<ul><li>Totes les cartes comencen cap per avall.</li><li>Toca dues cartes per girar-les.</li><li>Si coincideixen, queden destapades.</li><li>Troba totes les parelles abans no s\'acabi el temps!</li></ul>',
-  escena: '<ul><li>Apareix una escena amb uns quants objectes.</li><li>Mira-te-la bé: només la tens uns segons.</li><li>Després tria els objectes d\'una llista barrejada i prem "Comprovar".</li></ul>',
-  sequencia: '<ul><li>Observa quina icona s\'encén i toca-la.</li><li>A cada ronda encertada s\'afegeix un pas nou a la mateixa seqüència.</li><li>Fins a quina ronda pots arribar sense equivocar-te?</li></ul>',
-  canvi: '<ul><li>Memoritza la graella plena d\'objectes.</li><li>S\'amagarà un moment i tornarà amb un únic canvi (una icona nova, un color diferent, o haurà desaparegut).</li><li>Toca la casella on hi ha hagut el canvi!</li></ul>',
-  onera: '<ul><li>Fixa\'t bé on està situat cada objecte a la graella.</li><li>S\'amagaran tots els objectes.</li><li>Et preguntarem on n\'hi havia un en concret. Toca la casella buida on era!</li></ul>'
+  home: '<ul><li>Tria un joc de la llista.</li><li>Utilitza el botó del pinzell/imatge per alternar entre jugar amb icones o amb les teves pròpies fotos.</li><li>La majoria de jocs tenen compte enrere: quan arriba a zero, s\'acaba.</li></ul>',
+  parelles: '<ul><li>Totes les cartes comencen cap per avall.</li><li>Toca dues cartes per girar-les i trobar les parelles.</li></ul>',
+  escena: '<ul><li>Apareix una escena amb uns quants objectes/fotos.</li><li>Després tria els que has vist d\'una llista barrejada i prem "Comprovar".</li></ul>',
+  sequencia: '<ul><li>Observa quin element s\'encén i toca\'l.</li><li>A cada ronda s\'afegeix un pas nou a la mateixa seqüència.</li></ul>',
+  canvi: '<ul><li>Memoritza la graella.</li><li>Tornarà amb un únic canvi (un element diferent o haurà desaparegut). Assenyala on ha estat el canvi!</li></ul>',
+  onera: '<ul><li>Fixa\'t bé on està situat cadascú.</li><li>S\'amagaran i et preguntarem per un en concret. Toca la casella buida on era!</li></ul>'
 };
 
 /* ═══════════════════════════════════════════════════════
-   ESTAT
+   ESTAT I PREFERÈNCIES
    ═══════════════════════════════════════════════════════ */
 let joc = 'home';
-let efectesActius = true;
+let efectesActius = localStorage.getItem('efectes') !== 'false';
+let modeGrafic = localStorage.getItem('modeGrafic'); // 'icona' o 'foto'
 
 let nivellParelles  = parseInt(localStorage.getItem('nivellParelles')||1,10);
 let nivellEscena    = parseInt(localStorage.getItem('nivellEscena')||1,10);
@@ -973,25 +924,81 @@ let nivellCanvi     = parseInt(localStorage.getItem('nivellCanvi')||1,10);
 let nivellOnera     = parseInt(localStorage.getItem('nivellOnera')||1,10);
 let nivellEditant   = 'parelles';
 
-// Parelles
 let cartes = [], girades = [], bloqueig = false, trobades = 0, intents = 0;
-// Escena
 let faseEscena = 'mirar', objectesEscena = [], seleccio = [];
-// Seqüència
 let seqActiva = [], seqPasJugador = 0, seqCaselles = [], seqReproduint = false, seqInterval = null;
-// Canvi
 let canviDades = [], canviResposta = -1, canviExplicacio = '';
-// On era
 let oneraDades = [], oneraObjectiu = null, oneraPosicio = -1;
 
-// Temporitzador
 let tempsRestant = 0, tickTimer = null, tempsTotal = 0, aturatPerModal = false;
 let temporitzadorFase = null;
-
-// Estadístiques globals
 let victories = Number(localStorage.getItem('wins') || 0);
 let currentOrientation = 'portrait';
 let appContext = 'web-browser';
+
+/* ═══════════════════════════════════════════════════════
+   MOTOR GRÀFIC I RASTREIG DE FOTOS
+   ═══════════════════════════════════════════════════════ */
+// Rastreja la carpeta "Fotos" verificant quines existeixen del 1 al 60.
+async function escanejarFotosDirectori() {
+  const promeses = [];
+  for(let i=1; i<=60; i++) {
+    promeses.push(new Promise(res => {
+      let img = new Image();
+      img.onload = () => res(i);
+      img.onerror = () => res(null);
+      img.src = `Fotos/${i}.png`;
+    }));
+  }
+  const resultats = await Promise.all(promeses);
+  POOL_FOTOS = resultats.filter(r => r !== null).map(id => ({
+    uid: 'foto_'+id, id: id, tipus: 'foto'
+  }));
+}
+
+function getActivePool(necessaries) {
+  if (modeGrafic === 'foto') {
+    if (POOL_FOTOS.length >= necessaries) {
+      return POOL_FOTOS;
+    } else {
+      // Si la carpeta està buida o té poques fotos pel nivell actual, força l'ús d'icones temporalment.
+      log('No hi ha prou fotos pel nivell. Fent servir icones...', 3500);
+      return POOL_ICONES;
+    }
+  }
+  return POOL_ICONES;
+}
+
+function renderContent(item) {
+  if (!item) return '';
+  if (item.tipus === 'foto') {
+    return `<img src="Fotos/${item.id}.png" alt="Foto" class="foto-asset" draggable="false">`;
+  } else {
+    return `<span class="material-symbols-rounded" style="color:${item.c};">${item.i}</span>`;
+  }
+}
+
+function aplicarModeGraficSelector() {
+  setIcon(assetModeBtn, modeGrafic === 'foto' ? 'image' : 'brush');
+  assetModeBtn.style.setProperty('--tint', modeGrafic === 'foto' ? '#059669' : '#0ea5e9'); // verd vs blau
+}
+
+assetModeBtn.addEventListener('click', () => {
+  modeGrafic = modeGrafic === 'foto' ? 'icona' : 'foto';
+  localStorage.setItem('modeGrafic', modeGrafic);
+  aplicarModeGraficSelector();
+  
+  if (modeGrafic === 'foto' && POOL_FOTOS.length === 0) {
+    log("Revisant la carpeta Fotos...", 1500);
+    escanejarFotosDirectori();
+  } else {
+    log(`Mode canviat a ${modeGrafic === 'foto' ? 'Fotos' : 'Dibuixos'}`, 2000);
+  }
+  
+  // Reinicia a l'inici per assegurar que els canvis s'apliquin correctament sense errors
+  aturarTot();
+  mostrarPantalla('home');
+});
 
 /* ═══════════════════════════════════════════════════════
    UTILITATS
@@ -1021,16 +1028,23 @@ function log(msg, durada = 2600){
   else if (joc === 'canvi') caixa = $('logCanvi');
   else if (joc === 'onera') caixa = $('logOnera');
   
-  if (!caixa) return;
+  if (!caixa && modalObert) return; // Si som al menú i no hi ha on, ignorem excepte global
+  if (!caixa) {
+     caixa = document.createElement('div');
+     caixa.className = 'log show';
+     caixa.textContent = msg;
+     caixa.style.zIndex = "3000";
+     document.body.appendChild(caixa);
+     setTimeout(() => { caixa.classList.remove('show'); setTimeout(()=>caixa.remove(),500); }, durada);
+     return;
+  }
+  
   caixa.textContent = msg;
   caixa.classList.add('show');
   clearTimeout(logTimer);
   if (durada > 0) logTimer = setTimeout(() => caixa.classList.remove('show'), durada);
 }
 
-/* ═══════════════════════════════════════════════════════
-   TEMA I EFECTES
-   ═══════════════════════════════════════════════════════ */
 function aplicarTema(isDark){
   document.body.classList.toggle('day', !isDark);
   setIcon(themeToggle, isDark ? 'light_mode' : 'dark_mode');
@@ -1050,8 +1064,7 @@ soundBtn.addEventListener('click', () => {
 });
 
 function celebrar(element, quantitat = 14){
-  if (!efectesActius) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!efectesActius || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const r = element.getBoundingClientRect();
   const x = r.left + r.width / 2, y = r.top + r.height / 2;
   const colors = ['#ffd166','#f0a020','#ec4899','#22c55e','#38bdf8','#a855f7'];
@@ -1060,8 +1073,7 @@ function celebrar(element, quantitat = 14){
     p.className = 'espurna';
     const ang = Math.random() * Math.PI * 2;
     const dist = 60 + Math.random() * 90;
-    p.style.left = x + 'px';
-    p.style.top  = y + 'px';
+    p.style.left = x + 'px'; p.style.top  = y + 'px';
     p.style.background = colors[i % colors.length];
     p.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
     p.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
@@ -1072,7 +1084,7 @@ function celebrar(element, quantitat = 14){
 }
 
 /* ═══════════════════════════════════════════════════════
-   FINESTRES EMERGENTS I HISTORIAL
+   FINESTRES EMERGENTS
    ═══════════════════════════════════════════════════════ */
 let modalObert = null, focusAnterior = null;
 
@@ -1083,8 +1095,6 @@ function obrirModal(overlay){
   overlay.setAttribute('aria-hidden', 'false');
   modalObert = overlay;
   if (tickTimer){ aturatPerModal = true; pararRellotge(); }
-  const boto = overlay.querySelector('.btn-big');
-  if (boto) boto.focus({ preventScroll:true });
 }
 
 function tancarModal(overlay){
@@ -1099,112 +1109,48 @@ document.querySelectorAll('.modal-overlay [data-close]').forEach(b => {
   b.addEventListener('click', () => tancarModal(b.closest('.modal-overlay')));
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && modalObert && modalObert !== resultOverlay) tancarModal(modalObert);
+  if (e.key === 'Escape' && modalObert && modalObert !== resultOverlay && modalObert !== welcomeOverlay) tancarModal(modalObert);
 });
 
-helpBtn.addEventListener('click', () => {
-  $('helpText').innerHTML = AJUDA[joc] || AJUDA.home;
-  obrirModal(helpOverlay);
-});
+helpBtn.addEventListener('click', () => { $('helpText').innerHTML = AJUDA[joc] || AJUDA.home; obrirModal(helpOverlay); });
+infoBtn.addEventListener('click', () => { $('wins').textContent = victories; $('infoVersion').textContent = 'Versió ' + $('version').textContent; obrirModal(infoOverlay); });
 
-infoBtn.addEventListener('click', () => {
-  $('wins').textContent = victories;
-  $('infoVersion').textContent = 'Versió ' + $('version').textContent;
-  obrirModal(infoOverlay);
-});
+/* BENVINGUDA */
+$('btnTriaDibuixos').addEventListener('click', () => tancarBenvinguda('icona'));
+$('btnTriaFotos').addEventListener('click', () => tancarBenvinguda('foto'));
 
-historyBtn.addEventListener('click', () => {
-  const cont = $('historyContent');
-  cont.innerHTML = '';
-  
-  const games = [
-    {id:'parelles', name:'Parelles', icon:'extension', color:'#8b5cf6', metric:'Millor temps', format: mmss},
-    {id:'escena', name:'Què hi havia?', icon:'visibility', color:'#0ea5e9', metric:'', format: null},
-    {id:'sequencia', name:'Seqüència', icon:'touch_app', color:'#eab308', metric:'Ronda màxima', format: x => x},
-    {id:'canvi', name:'Què ha canviat?', icon:'find_replace', color:'#ec4899', metric:'', format: null},
-    {id:'onera', name:'On era?', icon:'location_on', color:'#10b981', metric:'', format: null}
-  ];
-  
-  let anyData = false;
-  games.forEach(g => {
-    let s = JSON.parse(localStorage.getItem('stats_'+g.id) || '{"jugades":0,"guanyades":0,"best":null}');
-    if(s.jugades > 0){
-       anyData = true;
-       let extra = '';
-       if(g.metric && s.best !== null){
-          extra = `<p><b>${g.metric}:</b> ${g.format(s.best)}</p>`;
-       }
-       cont.innerHTML += `
-         <div class="hist-item">
-           <h3><span class="material-symbols-rounded" style="color:${g.color}; font-size:20px;">${g.icon}</span> ${g.name}</h3>
-           <p><b>Jugades:</b> ${s.jugades} &nbsp;|&nbsp; <b>Guanyades:</b> ${s.guanyades}</p>
-           ${extra}
-         </div>
-       `;
-    }
-  });
-  
-  if(!anyData){
-     cont.innerHTML = '<p class="credit">Encara no has jugat cap partida. Entra a un joc per començar a guardar els teus èxits!</p>';
-  }
-  
-  obrirModal(historyOverlay);
-});
+function tancarBenvinguda(mode) {
+  modeGrafic = mode;
+  localStorage.setItem('modeGrafic', mode);
+  aplicarModeGraficSelector();
+  tancarModal(welcomeOverlay);
+  if (mode === 'foto') escanejarFotosDirectori();
+}
 
 /* ═══════════════════════════════════════════════════════
-   COMPTE ENRERE
+   COMPTE ENRERE I NAVEGACIÓ
    ═══════════════════════════════════════════════════════ */
 let alAcabarElTemps = null;
 
 function pintarRellotge(){
   const txt = mmss(Math.max(0, tempsRestant));
-  $('timeLeft').textContent  = txt;
-  $('timeLeft2').textContent = txt;
-  $('timeLeftCanvi').textContent = txt;
-  $('timeLeftOnera').textContent = txt;
-  
+  $('timeLeft').textContent = $('timeLeft2').textContent = $('timeLeftCanvi').textContent = $('timeLeftOnera').textContent = txt;
   const perill = tempsRestant <= 10;
-  $('timeChip').classList.toggle('alerta', perill);
-  $('timeChip2').classList.toggle('alerta', perill);
-  $('timeChipCanvi').classList.toggle('alerta', perill);
-  $('timeChipOnera').classList.toggle('alerta', perill);
+  $('timeChip').classList.toggle('alerta', perill); $('timeChip2').classList.toggle('alerta', perill);
+  $('timeChipCanvi').classList.toggle('alerta', perill); $('timeChipOnera').classList.toggle('alerta', perill);
 }
 
 function arrencarRellotge(){
   pararRellotge();
   tickTimer = setInterval(() => {
-    tempsRestant--;
-    pintarRellotge();
-    if (tempsRestant <= 0){
-      pararRellotge();
-      if (alAcabarElTemps) alAcabarElTemps();
-    }
+    tempsRestant--; pintarRellotge();
+    if (tempsRestant <= 0){ pararRellotge(); if (alAcabarElTemps) alAcabarElTemps(); }
   }, 1000);
 }
-
 function pararRellotge(){ clearInterval(tickTimer); tickTimer = null; }
+function iniciarCompte(segons, alFinal){ tempsTotal = segons; tempsRestant = segons; alAcabarElTemps = alFinal; aturatPerModal = false; pintarRellotge(); arrencarRellotge(); }
+function aturarTot(){ pararRellotge(); clearTimeout(temporitzadorFase); temporitzadorFase = null; clearInterval(seqInterval); alAcabarElTemps = null; aturatPerModal = false; }
 
-function iniciarCompte(segons, alFinal){
-  tempsTotal = segons;
-  tempsRestant = segons;
-  alAcabarElTemps = alFinal;
-  aturatPerModal = false;
-  pintarRellotge();
-  arrencarRellotge();
-}
-
-function aturarTot(){
-  pararRellotge();
-  clearTimeout(temporitzadorFase);
-  temporitzadorFase = null;
-  clearInterval(seqInterval);
-  alAcabarElTemps = null;
-  aturatPerModal = false;
-}
-
-/* ═══════════════════════════════════════════════════════
-   NAVEGACIÓ ENTRE PANTALLES
-   ═══════════════════════════════════════════════════════ */
 function mostrarPantalla(nom){
   joc = nom;
   homeScreen.classList.toggle('active', nom === 'home');
@@ -1213,211 +1159,47 @@ function mostrarPantalla(nom){
   sequenciaScreen.classList.toggle('active', nom === 'sequencia');
   canviScreen.classList.toggle('active', nom === 'canvi');
   oneraScreen.classList.toggle('active', nom === 'onera');
-
   backBtn.hidden = restartBtn.hidden = levelBtn.hidden = (nom === 'home');
   $('brandText').textContent = TITOLS[nom];
   programarAjust();
 }
 
-backBtn.addEventListener('click', () => {
-  aturarTot();
-  mostrarPantalla('home');
-});
-
+backBtn.addEventListener('click', () => { aturarTot(); mostrarPantalla('home'); });
 restartBtn.addEventListener('click', () => {
-  if (joc === 'parelles') iniciarParelles();
-  else if (joc === 'escena') iniciarEscena();
-  else if (joc === 'sequencia') iniciarSequencia();
-  else if (joc === 'canvi') iniciarCanvi();
-  else if (joc === 'onera') iniciarOnera();
+  if (joc === 'parelles') iniciarParelles(); else if (joc === 'escena') iniciarEscena();
+  else if (joc === 'sequencia') iniciarSequencia(); else if (joc === 'canvi') iniciarCanvi(); else if (joc === 'onera') iniciarOnera();
 });
-
 document.querySelectorAll('.game-card').forEach(card => {
   card.addEventListener('click', () => obrirNivell(card.dataset.joc));
 });
 
 /* ═══════════════════════════════════════════════════════
-   TRIA DE NIVELL
-   ═══════════════════════════════════════════════════════ */
-function obrirNivell(quinJoc){
-  nivellEditant = quinJoc;
-  let llista, triat, titol, nomQuantitat, formatSub;
-
-  if (quinJoc === 'parelles') {
-    llista = NIVELLS_PARELLES; triat = nivellParelles; titol = 'Quantes parelles?';
-    nomQuantitat = 'parelles'; formatSub = n => n.text;
-  } else if (quinJoc === 'escena') {
-    llista = NIVELLS_ESCENA; triat = nivellEscena; titol = 'Quants objectes?';
-    nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`;
-  } else if (quinJoc === 'sequencia') {
-    llista = NIVELLS_SEQUENCIA; triat = nivellSequencia; titol = 'Quantes caselles?';
-    nomQuantitat = 'caselles'; formatSub = n => n.text;
-  } else if (quinJoc === 'canvi') {
-    llista = NIVELLS_CANVI; triat = nivellCanvi; titol = 'Quants objectes?';
-    nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`;
-  } else if (quinJoc === 'onera') {
-    llista = NIVELLS_ONERA; triat = nivellOnera; titol = 'Quants objectes?';
-    nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`;
-  }
-
-  $('levelTitle').textContent = titol;
-  levelGrid.innerHTML = '';
-
-  llista.forEach((n, idx) => {
-    const boto = document.createElement('button');
-    boto.type = 'button';
-    boto.className = 'size-option';
-    boto.setAttribute('role', 'radio');
-    boto.setAttribute('aria-checked', idx === triat ? 'true' : 'false');
-    boto.dataset.idx = idx;
-
-    const quantitat = n[nomQuantitat];
-    const mini = document.createElement('div');
-    mini.className = 'mini';
-    const cols = quantitat <= 4 ? 2 : 4;
-    mini.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    mini.setAttribute('aria-hidden', 'true');
-    const cel = quinJoc === 'parelles' ? Math.min(quantitat * 2, 16) : Math.min(quantitat, 16);
-    for (let i = 0; i < cel; i++) mini.appendChild(document.createElement('i'));
-
-    const titolSp = document.createElement('span');
-    titolSp.textContent = `${quantitat} ${nomQuantitat}`;
-    const sub = document.createElement('small');
-    sub.textContent = formatSub(n);
-
-    boto.append(mini, titolSp, sub);
-    
-    // Auto-comença el joc en fer clic al nivell i tanca el modal sense demanar confirmació addicional
-    boto.addEventListener('click', () => {
-      levelGrid.querySelectorAll('.size-option').forEach(b => b.setAttribute('aria-checked', 'false'));
-      boto.setAttribute('aria-checked', 'true');
-      
-      if (quinJoc === 'parelles') nivellParelles = idx;
-      else if (quinJoc === 'escena') nivellEscena = idx;
-      else if (quinJoc === 'sequencia') nivellSequencia = idx;
-      else if (quinJoc === 'canvi') nivellCanvi = idx;
-      else if (quinJoc === 'onera') nivellOnera = idx;
-      
-      const storageKey = 'nivell' + quinJoc.charAt(0).toUpperCase() + quinJoc.slice(1);
-      localStorage.setItem(storageKey, idx);
-      
-      tancarModal(levelOverlay);
-      
-      if (quinJoc === 'parelles') iniciarParelles();
-      else if (quinJoc === 'escena') iniciarEscena();
-      else if (quinJoc === 'sequencia') iniciarSequencia();
-      else if (quinJoc === 'canvi') iniciarCanvi();
-      else if (quinJoc === 'onera') iniciarOnera();
-    });
-    levelGrid.appendChild(boto);
-  });
-
-  obrirModal(levelOverlay);
-}
-
-levelBtn.addEventListener('click', () => obrirNivell(joc));
-
-/* ═══════════════════════════════════════════════════════
-   MIDA DELS TAULERS
-   ═══════════════════════════════════════════════════════ */
-function encaixar(board, total, proporcio, maxCols){
-  if (!total) return;
-  const wrap = board.parentElement;
-  const wcs = getComputedStyle(wrap);
-  let availW = wrap.clientWidth  - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight);
-  let availH = wrap.clientHeight - parseFloat(wcs.paddingTop)  - parseFloat(wcs.paddingBottom);
-  if (availW < 40) availW = window.innerWidth * 0.9;
-  if (availH < 40) availH = window.innerHeight * 0.5;
-
-  const bcs = getComputedStyle(board);
-  const marcX = parseFloat(bcs.paddingLeft) + parseFloat(bcs.paddingRight) +
-                parseFloat(bcs.borderLeftWidth) + parseFloat(bcs.borderRightWidth);
-  const marcY = parseFloat(bcs.paddingTop) + parseFloat(bcs.paddingBottom) +
-                parseFloat(bcs.borderTopWidth) + parseFloat(bcs.borderBottomWidth);
-  const gap = total > 20 ? 6 : 8;
-
-  let millor = { area:0, cols:1, w:10, h:10 };
-  const sostre = Math.min(maxCols || total, total);
-  for (let cols = 1; cols <= sostre; cols++){
-    const files = Math.ceil(total / cols);
-    const w = (availW - marcX - gap * (cols - 1)) / cols;
-    const h = (availH - marcY - gap * (files - 1)) / files;
-    if (w <= 8 || h <= 8) continue;
-    let cw = Math.min(w, h * proporcio);
-    let ch = cw / proporcio;
-    const area = cw * ch * total;
-    if (area > millor.area) millor = { area, cols, w:cw, h:ch };
-  }
-
-  board.style.setProperty('--gap', gap + 'px');
-  board.style.setProperty('--cw', Math.floor(millor.w) + 'px');
-  board.style.setProperty('--ch', Math.floor(millor.h) + 'px');
-  board.style.gridTemplateColumns = `repeat(${millor.cols}, ${Math.floor(millor.w)}px)`;
-}
-
-function ajustarTauler(){
-  if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 0.78);
-  if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length)
-    encaixar(sceneBoard, sceneBoard.children.length, 1, Math.ceil(Math.sqrt(sceneBoard.children.length * 1.6)));
-  if (joc === 'sequencia' && seqBoard.children.length)
-    encaixar(seqBoard, seqBoard.children.length, 1, Math.ceil(Math.sqrt(seqBoard.children.length)));
-  if (joc === 'canvi' && canviBoard.children.length)
-    encaixar(canviBoard, canviBoard.children.length, 1, Math.ceil(Math.sqrt(canviBoard.children.length * 1.6)));
-  if (joc === 'onera' && oneraBoard.children.length)
-    encaixar(oneraBoard, oneraBoard.children.length, 1, Math.ceil(Math.sqrt(oneraBoard.children.length * 1.6)));
-}
-
-let ajustPendent = false;
-function programarAjust(){
-  if (ajustPendent) return;
-  ajustPendent = true;
-  requestAnimationFrame(() => { ajustPendent = false; ajustarTauler(); });
-}
-if ('ResizeObserver' in window){
-  const ro = new ResizeObserver(programarAjust);
-  ro.observe(document.querySelector('#parellesScreen .board-wrap'));
-  ro.observe(escenaWrap);
-  ro.observe(document.querySelector('#sequenciaScreen .board-wrap'));
-  ro.observe(document.querySelector('#canviScreen .board-wrap'));
-  ro.observe(document.querySelector('#oneraScreen .board-wrap'));
-}
-
-/* ═══════════════════════════════════════════════════════
    JOC 1 — PARELLES
    ═══════════════════════════════════════════════════════ */
-const DORS_SVG = `<img src="memory192x192.png" alt="" style="width:100%;height:100%;">`;
-
 function iniciarParelles(){
-  aturarTot();
-  mostrarPantalla('parelles');
+  aturarTot(); mostrarPantalla('parelles');
   const nivell = NIVELLS_PARELLES[nivellParelles];
-  const triades = barrejar(POOL).slice(0, nivell.parelles);
+  
+  const poolBase = getActivePool(nivell.parelles);
+  const triades = barrejar(poolBase).slice(0, nivell.parelles);
   cartes = barrejar([...triades, ...triades]);
 
   girades = []; bloqueig = false; trobades = 0; intents = 0;
-  $('found').textContent = '0';
-  $('totalPairs').textContent = nivell.parelles;
-  $('moves').textContent = '0';
+  $('found').textContent = '0'; $('totalPairs').textContent = nivell.parelles; $('moves').textContent = '0';
 
   cardsBoard.innerHTML = '';
-  const frag = document.createDocumentFragment();
   cartes.forEach((carta, idx) => {
     const boto = document.createElement('button');
-    boto.type = 'button';
-    boto.className = 'card';
-    boto.dataset.idx = idx;
-    boto.setAttribute('aria-label', 'Carta amagada');
+    boto.type = 'button'; boto.className = 'card'; boto.dataset.idx = idx; boto.setAttribute('aria-label', 'Carta amagada');
     boto.innerHTML =
       '<span class="card-inner">' +
-        '<span class="face dors">' + DORS_SVG + '</span>' +
-        '<span class="face cara"><span class="material-symbols-rounded" style="color:' + carta.c + '">' + carta.i + '</span></span>' +
+        '<span class="face dors"><img src="memory192x192.png" alt="" style="width:100%;height:100%;"></span>' +
+        '<span class="face cara">' + renderContent(carta) + '</span>' +
       '</span>';
     boto.addEventListener('click', () => girarCarta(idx));
-    frag.appendChild(boto);
+    cardsBoard.appendChild(boto);
   });
-  cardsBoard.appendChild(frag);
   ajustarTauler();
-
   iniciarCompte(nivell.segons, () => finalPartida(false, 'S\'ha acabat el temps'));
   log('Troba totes les parelles!');
 }
@@ -1427,39 +1209,28 @@ function girarCarta(idx){
   const el = cardsBoard.children[idx];
   if (!el || el.classList.contains('girada') || el.classList.contains('aparellada')) return;
 
-  el.classList.add('girada');
-  el.setAttribute('aria-label', 'Carta destapada');
+  el.classList.add('girada'); el.setAttribute('aria-label', 'Carta destapada');
   girades.push(idx);
   if (girades.length < 2) return;
 
-  intents++;
-  $('moves').textContent = intents;
+  intents++; $('moves').textContent = intents;
   const [a, b] = girades;
   const elA = cardsBoard.children[a], elB = cardsBoard.children[b];
 
-  if (cartes[a].i === cartes[b].i){
-    girades = [];
-    elA.classList.add('aparellada'); elB.classList.add('aparellada');
+  if (cartes[a].uid === cartes[b].uid){
+    girades = []; elA.classList.add('aparellada'); elB.classList.add('aparellada');
     elA.disabled = elB.disabled = true;
-    celebrar(elB);
-    trobades++;
-    $('found').textContent = trobades;
+    celebrar(elB); trobades++; $('found').textContent = trobades;
     
     if (trobades === NIVELLS_PARELLES[nivellParelles].parelles){
       const usat = tempsTotal - tempsRestant;
-      aturarTot(); // Parem el rellotge immediatament per evitar que perdi en aquest segon
-      setTimeout(() => finalPartida(true, null, usat), 1200); // 1.2 segons per veure l'última parella en gris
-    } else {
-      log('Parella trobada!');
-    }
+      aturarTot(); setTimeout(() => finalPartida(true, null, usat), 1200);
+    } else { log('Parella trobada!'); }
   } else {
-    bloqueig = true;
-    elA.classList.add('fallada'); elB.classList.add('fallada');
+    bloqueig = true; elA.classList.add('fallada'); elB.classList.add('fallada');
     setTimeout(() => {
-      elA.classList.remove('girada','fallada');
-      elB.classList.remove('girada','fallada');
-      elA.setAttribute('aria-label','Carta amagada');
-      elB.setAttribute('aria-label','Carta amagada');
+      elA.classList.remove('girada','fallada'); elB.classList.remove('girada','fallada');
+      elA.setAttribute('aria-label','Carta amagada'); elB.setAttribute('aria-label','Carta amagada');
       girades = []; bloqueig = false;
     }, 850);
   }
@@ -1469,20 +1240,15 @@ function girarCarta(idx){
    JOC 2 — QUÈ HI HAVIA?
    ═══════════════════════════════════════════════════════ */
 function iniciarEscena(){
-  aturarTot();
-  mostrarPantalla('escena');
+  aturarTot(); mostrarPantalla('escena');
   const nivell = NIVELLS_ESCENA[nivellEscena];
-  faseEscena = 'mirar';
-  seleccio = [];
-  objectesEscena = barrejar(POOL).slice(0, nivell.objectes);
+  faseEscena = 'mirar'; seleccio = [];
+  
+  const poolBase = getActivePool(nivell.objectes * 2); 
+  objectesEscena = barrejar(poolBase).slice(0, nivell.objectes);
 
-  escenaWrap.hidden = false;
-  optionsBoard.hidden = true;
-  checkWrap.hidden = true;
-  optionsBoard.classList.remove('bloquejada');
-  $('triadesChip').hidden = true;
-  $('faseIcon').textContent = 'visibility';
-  $('faseText').textContent = 'Memoritza';
+  escenaWrap.hidden = false; optionsBoard.hidden = true; checkWrap.hidden = true; optionsBoard.classList.remove('bloquejada');
+  $('triadesChip').hidden = true; $('faseIcon').textContent = 'visibility'; $('faseText').textContent = 'Memoritza';
 
   const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
   const posicions = barrejar(Array.from({ length: total }, (_, i) => i)).slice(0, nivell.objectes);
@@ -1491,97 +1257,67 @@ function iniciarEscena(){
   for (let i = 0; i < total; i++){
     const cel = document.createElement('div');
     const on = posicions.indexOf(i);
-    if (on === -1){
-      cel.className = 'tile buit';
-    } else {
-      const o = objectesEscena[on];
-      cel.className = 'tile';
-      cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
-    }
+    if (on === -1){ cel.className = 'tile buit'; }
+    else { cel.className = 'tile'; cel.innerHTML = renderContent(objectesEscena[on]); }
     sceneBoard.appendChild(cel);
   }
   ajustarTauler();
-
-  log('Memoritza els objectes…', 0);
+  log('Memoritza els elements…', 0);
   iniciarCompte(nivell.mirar, passarATriar);
   temporitzadorFase = setTimeout(passarATriar, nivell.mirar * 1000 + 200);
 }
 
 function passarATriar(){
   if (faseEscena !== 'mirar') return;
-  aturarTot();
-  faseEscena = 'triar';
-
+  aturarTot(); faseEscena = 'triar';
   const nivell = NIVELLS_ESCENA[nivellEscena];
-  const distractors = barrejar(POOL.filter(p => !objectesEscena.some(o => o.i === p.i)))
-                        .slice(0, nivell.objectes);
+  
+  const poolBase = getActivePool(nivell.objectes * 2);
+  const distractors = barrejar(poolBase.filter(p => !objectesEscena.some(o => o.uid === p.uid))).slice(0, nivell.objectes);
   const opcions = barrejar([...objectesEscena, ...distractors]);
 
-  escenaWrap.hidden = true;
-  optionsBoard.hidden = false;
-  checkWrap.hidden = false;
-  checkBtn.disabled = true;
-  $('triadesChip').hidden = false;
-  $('triats').textContent = '0';
-  $('aTriar').textContent = nivell.objectes;
-  $('faseIcon').textContent = 'psychology';
-  $('faseText').textContent = 'Tria';
+  escenaWrap.hidden = true; optionsBoard.hidden = false; checkWrap.hidden = false; checkBtn.disabled = true;
+  $('triadesChip').hidden = false; $('triats').textContent = '0'; $('aTriar').textContent = nivell.objectes;
+  $('faseIcon').textContent = 'psychology'; $('faseText').textContent = 'Tria';
 
   optionsBoard.innerHTML = '';
   opcions.forEach(o => {
     const boto = document.createElement('button');
-    boto.type = 'button';
-    boto.className = 'opt-tile';
-    boto.dataset.icona = o.i;
-    boto.setAttribute('aria-pressed', 'false');
-    boto.setAttribute('aria-label', 'Objecte');
-    boto.innerHTML =
-      '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>' +
-      '<span class="marca"><span class="material-symbols-rounded">check_circle</span></span>';
-    boto.addEventListener('click', () => triarObjecteEscena(boto, o.i));
+    boto.type = 'button'; boto.className = 'opt-tile'; boto.dataset.uid = o.uid;
+    boto.setAttribute('aria-pressed', 'false'); boto.setAttribute('aria-label', 'Element');
+    boto.innerHTML = renderContent(o) + '<span class="marca"><span class="material-symbols-rounded">check_circle</span></span>';
+    boto.addEventListener('click', () => triarObjecteEscena(boto, o.uid));
     optionsBoard.appendChild(boto);
   });
-
   iniciarCompte(nivell.respondre, () => comprovarEscena(true));
 }
 
-function triarObjecteEscena(boto, icona){
+function triarObjecteEscena(boto, uid){
   if (faseEscena !== 'triar' || modalObert) return;
   const objectiu = NIVELLS_ESCENA[nivellEscena].objectes;
-  const i = seleccio.indexOf(icona);
+  const i = seleccio.indexOf(uid);
 
   if (i === -1){
-    if (seleccio.length >= objectiu){
-      log(`Només en pots triar ${objectiu}`);
-      return;
-    }
-    seleccio.push(icona);
-    boto.setAttribute('aria-pressed', 'true');
+    if (seleccio.length >= objectiu){ log(`Només en pots triar ${objectiu}`); return; }
+    seleccio.push(uid); boto.setAttribute('aria-pressed', 'true');
   } else {
-    seleccio.splice(i, 1);
-    boto.setAttribute('aria-pressed', 'false');
+    seleccio.splice(i, 1); boto.setAttribute('aria-pressed', 'false');
   }
-
-  $('triats').textContent = seleccio.length;
-  checkBtn.disabled = seleccio.length !== objectiu;
+  $('triats').textContent = seleccio.length; checkBtn.disabled = seleccio.length !== objectiu;
 }
 
 checkBtn.addEventListener('click', () => comprovarEscena(false));
 
 function comprovarEscena(perTemps){
   if (faseEscena !== 'triar') return;
-  aturarTot();
-  faseEscena = 'revisat';
-  optionsBoard.classList.add('bloquejada');
-  checkBtn.disabled = true;
+  aturarTot(); faseEscena = 'revisat'; optionsBoard.classList.add('bloquejada'); checkBtn.disabled = true;
 
-  const correctes = objectesEscena.map(o => o.i);
+  const correctes = objectesEscena.map(o => o.uid);
   let encerts = 0, errorsMarcats = 0, errorsOblidats = 0;
 
   optionsBoard.querySelectorAll('.opt-tile').forEach(boto => {
-    const icona = boto.dataset.icona;
-    const triat = seleccio.includes(icona);
-    const toca  = correctes.includes(icona);
+    const triat = seleccio.includes(boto.dataset.uid);
+    const toca  = correctes.includes(boto.dataset.uid);
     if (triat && toca){ boto.classList.add('correcta'); encerts++; celebrar(boto, 6); }
     else if (triat && !toca){ boto.classList.add('erronia'); errorsMarcats++; }
     else if (!triat && toca){ boto.classList.add('perduda'); errorsOblidats++; }
@@ -1589,93 +1325,61 @@ function comprovarEscena(perTemps){
 
   const guanyat = encerts === correctes.length && errorsMarcats === 0;
   let motiu = '';
-  
   if (!guanyat) {
-    if (perTemps) {
-      motiu = "S'ha acabat el temps";
-    } else {
+    if (perTemps) motiu = "S'ha acabat el temps";
+    else {
       let msg = [];
       if (errorsMarcats > 0) msg.push(`${errorsMarcats} de mal seleccionades`);
       if (errorsOblidats > 0) msg.push(`${errorsOblidats} oblidades`);
       motiu = msg.join(' i ');
     }
   }
-
-  // Deixem 2.5 segons de marge perquè l'usuari vegi els errors al tauler
-  setTimeout(() => {
-    finalPartida(guanyat, motiu, null, `${encerts} de ${correctes.length} encertats`);
-  }, 2500);
+  setTimeout(() => finalPartida(guanyat, motiu, null, `${encerts} de ${correctes.length} encertats`), 2500);
 }
 
 /* ═══════════════════════════════════════════════════════
    JOC 3 — SEQÜÈNCIA
    ═══════════════════════════════════════════════════════ */
 function iniciarSequencia(){
-  aturarTot();
-  mostrarPantalla('sequencia');
+  aturarTot(); mostrarPantalla('sequencia');
   const nivell = NIVELLS_SEQUENCIA[nivellSequencia];
-  seqActiva = [];
-  seqPasJugador = 0;
-  seqReproduint = false;
-  $('seqRound').textContent = '1';
-  $('faseIconSeq').textContent = 'visibility';
-  $('faseTextSeq').textContent = 'Observa';
+  seqActiva = []; seqPasJugador = 0; seqReproduint = false;
+  $('seqRound').textContent = '1'; $('faseIconSeq').textContent = 'visibility'; $('faseTextSeq').textContent = 'Observa';
+
+  const poolBase = getActivePool(nivell.caselles);
+  seqCaselles = barrejar(poolBase).slice(0, nivell.caselles);
 
   seqBoard.innerHTML = '';
-  seqCaselles = barrejar(POOL).slice(0, nivell.caselles);
-
   seqCaselles.forEach((o, i) => {
     const cel = document.createElement('button');
-    cel.type = 'button';
-    cel.className = 'tile clickable';
-    cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
+    cel.type = 'button'; cel.className = 'tile clickable';
+    cel.innerHTML = renderContent(o);
     cel.addEventListener('click', () => clicSequencia(i));
     seqBoard.appendChild(cel);
   });
-  ajustarTauler();
-
-  setTimeout(novaRondaSequencia, 800);
+  ajustarTauler(); setTimeout(novaRondaSequencia, 800);
 }
 
 function novaRondaSequencia() {
   if (joc !== 'sequencia') return;
-  
   let novaCasella;
-  // En la mesura del possible evitem repetir la mateixa casella de forma consecutiva
-  do {
-    novaCasella = Math.floor(Math.random() * seqCaselles.length);
-  } while (seqActiva.length > 0 && novaCasella === seqActiva[seqActiva.length - 1] && seqCaselles.length > 1);
-  
-  seqActiva.push(novaCasella);
-  seqPasJugador = 0;
-  $('seqRound').textContent = seqActiva.length;
+  do { novaCasella = Math.floor(Math.random() * seqCaselles.length); } 
+  while (seqActiva.length > 0 && novaCasella === seqActiva[seqActiva.length - 1] && seqCaselles.length > 1);
+  seqActiva.push(novaCasella); seqPasJugador = 0; $('seqRound').textContent = seqActiva.length;
   reproduirSequencia();
 }
 
 function reproduirSequencia() {
-  seqReproduint = true;
-  let i = 0;
-  $('faseIconSeq').textContent = 'visibility';
-  $('faseTextSeq').textContent = 'Observa';
-  
+  seqReproduint = true; let i = 0;
+  $('faseIconSeq').textContent = 'visibility'; $('faseTextSeq').textContent = 'Observa';
   seqInterval = setInterval(() => {
     if (joc !== 'sequencia' || modalObert) return;
-    
-    // Netejem qualsevol classe activa per fer la pulsació neta
     Array.from(seqBoard.children).forEach(c => c.classList.remove('seq-activa'));
-    
     if (i < seqActiva.length) {
-      // Un petit retard per garantir que el navegador pinta el canvi si per algun motiu fos repetida
-      setTimeout(() => {
-        seqBoard.children[seqActiva[i]].classList.add('seq-activa');
-        i++;
-      }, 50);
+      setTimeout(() => { seqBoard.children[seqActiva[i]].classList.add('seq-activa'); i++; }, 50);
     } else {
-      clearInterval(seqInterval);
-      seqReproduint = false;
-      $('faseIconSeq').textContent = 'touch_app';
-      $('faseTextSeq').textContent = 'Repeteix';
-      log('Et toca!', 1000);
+      clearInterval(seqInterval); seqReproduint = false;
+      $('faseIconSeq').textContent = 'touch_app'; $('faseTextSeq').textContent = 'Repeteix'; log('Et toca!', 1000);
     }
   }, 650);
 }
@@ -1684,16 +1388,10 @@ function clicSequencia(idx) {
   if (seqReproduint || modalObert) return;
   const correcte = seqActiva[seqPasJugador];
   const cel = seqBoard.children[idx];
-
   if (idx === correcte) {
-    seqPasJugador++;
-    cel.classList.add('seq-activa');
-    setTimeout(() => cel.classList.remove('seq-activa'), 200);
-
+    seqPasJugador++; cel.classList.add('seq-activa'); setTimeout(() => cel.classList.remove('seq-activa'), 200);
     if (seqPasJugador === seqActiva.length) {
-      seqReproduint = true;
-      celebrar(cel, 5);
-      setTimeout(novaRondaSequencia, 1000);
+      seqReproduint = true; celebrar(cel, 5); setTimeout(novaRondaSequencia, 1000);
     }
   } else {
     cel.classList.add('erronia');
@@ -1705,39 +1403,29 @@ function clicSequencia(idx) {
    JOC 4 — QUÈ HA CANVIAT?
    ═══════════════════════════════════════════════════════ */
 function iniciarCanvi(){
-  aturarTot();
-  mostrarPantalla('canvi');
-  canviBoard.style.pointerEvents = 'auto'; // Reset per si estava bloquejat
+  aturarTot(); mostrarPantalla('canvi'); canviBoard.style.pointerEvents = 'auto';
   const nivell = NIVELLS_CANVI[nivellCanvi];
   const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
   canviDades = Array(total).fill(null);
 
-  const objectes = barrejar(POOL).slice(0, nivell.objectes);
+  const poolBase = getActivePool(nivell.objectes + 3);
+  const objectes = barrejar(poolBase).slice(0, nivell.objectes);
   const posicions = barrejar(Array.from({length: total}, (_, i) => i)).slice(0, nivell.objectes);
 
-  posicions.forEach((pos, i) => {
-    canviDades[pos] = { ...objectes[i] };
-  });
+  posicions.forEach((pos, i) => { canviDades[pos] = { ...objectes[i] }; });
 
   dibuixarTaulerCanvi(canviDades, false);
-  $('faseIconCanvi').textContent = 'visibility';
-  $('faseTextCanvi').textContent = 'Memoritza';
-
+  $('faseIconCanvi').textContent = 'visibility'; $('faseTextCanvi').textContent = 'Memoritza';
   log('Memoritza l\'escena…', 0);
-  iniciarCompte(nivell.mirar, aplicarCanvi);
-  temporitzadorFase = setTimeout(aplicarCanvi, nivell.mirar * 1000 + 200);
+  iniciarCompte(nivell.mirar, aplicarCanvi); temporitzadorFase = setTimeout(aplicarCanvi, nivell.mirar * 1000 + 200);
 }
 
 function dibuixarTaulerCanvi(dades, interactiu) {
   canviBoard.innerHTML = '';
   dades.forEach((o, i) => {
     const cel = document.createElement('div');
-    if (!o) {
-      cel.className = 'tile buit' + (interactiu ? ' clickable' : '');
-    } else {
-      cel.className = 'tile' + (interactiu ? ' clickable' : '');
-      cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
-    }
+    cel.className = 'tile' + (!o ? ' buit' : '') + (interactiu ? ' clickable' : '');
+    if (o) cel.innerHTML = renderContent(o);
     if (interactiu) cel.addEventListener('click', () => resoldreCanvi(i));
     canviBoard.appendChild(cel);
   });
@@ -1745,58 +1433,52 @@ function dibuixarTaulerCanvi(dades, interactiu) {
 }
 
 function aplicarCanvi() {
-  aturarTot();
-  canviBoard.innerHTML = '';
-  log('Què ha canviat?', 0);
+  aturarTot(); canviBoard.innerHTML = ''; log('Què ha canviat?', 0);
 
   const plens = canviDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
-  let tipusCanvi = Math.floor(Math.random() * 3); // 0: Color, 1: Icona, 2: Desaparèixer
   const objectiuIdx = plens[Math.floor(Math.random() * plens.length)];
   canviResposta = objectiuIdx; 
 
   let nouDades = JSON.parse(JSON.stringify(canviDades));
-  const utilitzades = canviDades.filter(o => o).map(o => o.i);
-  const iconesLliures = POOL.filter(o => !utilitzades.includes(o.i));
-  const colorsLliures = POOL.filter(o => o.c !== canviDades[objectiuIdx].c).map(o => o.c);
+  
+  const poolBase = getActivePool(0); // Obtenir la pool activa
+  let usaFotos = canviDades.some(o => o && o.tipus === 'foto');
+  
+  // Si són fotos, no podem canviar el color (només canviar la imatge o desaparèixer)
+  let tipusCanvi = usaFotos ? (Math.random() < 0.5 ? 1 : 2) : Math.floor(Math.random() * 3);
 
-  if (tipusCanvi === 0) {
+  const utilitzades = canviDades.filter(o => o).map(o => o.uid);
+  const lliures = poolBase.filter(o => !utilitzades.includes(o.uid));
+  const colorsLliures = poolBase.filter(o => o.tipus === 'icona' && o.c !== canviDades[objectiuIdx].c).map(o => o.c);
+
+  if (tipusCanvi === 0 && colorsLliures.length > 0) { // Color
     nouDades[objectiuIdx].c = colorsLliures[Math.floor(Math.random() * colorsLliures.length)];
-    canviExplicacio = "La icona ha canviat de color";
-  } else if (tipusCanvi === 1) {
-    nouDades[objectiuIdx].i = iconesLliures[Math.floor(Math.random() * iconesLliures.length)].i;
-    canviExplicacio = "Hi ha una icona nova diferent";
-  } else if (tipusCanvi === 2) {
+    canviExplicacio = "L'element ha canviat de color";
+  } else if (tipusCanvi === 1 && lliures.length > 0) { // Nou objecte
+    nouDades[objectiuIdx] = { ...lliures[Math.floor(Math.random() * lliures.length)] };
+    canviExplicacio = "Hi ha un element nou diferent";
+  } else { // Desaparèixer
     nouDades[objectiuIdx] = null;
-    canviExplicacio = "La icona que hi havia ha desaparegut";
+    canviExplicacio = "L'element que hi havia ha desaparegut";
   }
 
   setTimeout(() => {
     dibuixarTaulerCanvi(nouDades, true);
-    $('faseIconCanvi').textContent = 'find_replace';
-    $('faseTextCanvi').textContent = 'Troba el canvi';
+    $('faseIconCanvi').textContent = 'find_replace'; $('faseTextCanvi').textContent = 'Troba el canvi';
     iniciarCompte(NIVELLS_CANVI[nivellCanvi].respondre, () => {
-      canviBoard.style.pointerEvents = 'none';
-      log(canviExplicacio, 2500);
-      setTimeout(() => finalPartida(false, 'Temps esgotat'), 2500);
+      canviBoard.style.pointerEvents = 'none'; log(canviExplicacio, 2500); setTimeout(() => finalPartida(false, 'Temps esgotat'), 2500);
     });
   }, 1000);
 }
 
 function resoldreCanvi(idx) {
-  aturarTot();
-  canviBoard.style.pointerEvents = 'none'; // Bloquegem el tauler mentre es mostra la resolució
-  const cel = canviBoard.children[idx];
-  
+  aturarTot(); canviBoard.style.pointerEvents = 'none'; const cel = canviBoard.children[idx];
   if (idx === canviResposta) {
-    cel.classList.add('correcta');
-    celebrar(cel, 10);
-    log(canviExplicacio, 2500);
+    cel.classList.add('correcta'); celebrar(cel, 10); log(canviExplicacio, 2500);
     setTimeout(() => finalPartida(true, null, null, 'Has detectat el canvi!'), 2500);
   } else {
-    cel.classList.add('erronia');
-    canviBoard.children[canviResposta].classList.add('correcta');
-    log(canviExplicacio, 2500);
-    setTimeout(() => finalPartida(false, 'Aquest no era el canvi'), 2500);
+    cel.classList.add('erronia'); canviBoard.children[canviResposta].classList.add('correcta');
+    log(canviExplicacio, 2500); setTimeout(() => finalPartida(false, 'Aquest no era el canvi'), 2500);
   }
 }
 
@@ -1804,40 +1486,29 @@ function resoldreCanvi(idx) {
    JOC 5 — ON ERA?
    ═══════════════════════════════════════════════════════ */
 function iniciarOnera(){
-  aturarTot();
-  mostrarPantalla('onera');
-  oneraBoard.style.pointerEvents = 'auto'; // Reset
+  aturarTot(); mostrarPantalla('onera'); oneraBoard.style.pointerEvents = 'auto';
   const nivell = NIVELLS_ONERA[nivellOnera];
   const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
   oneraDades = Array(total).fill(null);
 
-  const objectes = barrejar(POOL).slice(0, nivell.objectes);
+  const poolBase = getActivePool(nivell.objectes);
+  const objectes = barrejar(poolBase).slice(0, nivell.objectes);
   const posicions = barrejar(Array.from({length: total}, (_, i) => i)).slice(0, nivell.objectes);
 
-  posicions.forEach((pos, i) => {
-    oneraDades[pos] = { ...objectes[i] };
-  });
+  posicions.forEach((pos, i) => { oneraDades[pos] = { ...objectes[i] }; });
 
   dibuixarTaulerOnera(oneraDades, false);
-  $('faseIconOnera').textContent = 'visibility';
-  $('faseTextOnera').textContent = 'Memoritza';
-  $('oneraTargetContainer').hidden = true;
-
-  log('Fixa\'t on és cada cosa…', 0);
-  iniciarCompte(nivell.mirar, preguntarOnera);
-  temporitzadorFase = setTimeout(preguntarOnera, nivell.mirar * 1000 + 200);
+  $('faseIconOnera').textContent = 'visibility'; $('faseTextOnera').textContent = 'Memoritza'; $('oneraTargetContainer').hidden = true;
+  log('Fixa\'t on és cada element…', 0);
+  iniciarCompte(nivell.mirar, preguntarOnera); temporitzadorFase = setTimeout(preguntarOnera, nivell.mirar * 1000 + 200);
 }
 
 function dibuixarTaulerOnera(dades, interactiu) {
   oneraBoard.innerHTML = '';
   dades.forEach((o, i) => {
     const cel = document.createElement('div');
-    if (!o) {
-      cel.className = 'tile buit' + (interactiu ? ' clickable' : '');
-    } else {
-      cel.className = 'tile' + (interactiu ? ' clickable' : '');
-      cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
-    }
+    cel.className = 'tile' + (!o ? ' buit' : '') + (interactiu ? ' clickable' : '');
+    if (o) cel.innerHTML = renderContent(o);
     if (interactiu) cel.addEventListener('click', () => resoldreOnera(i));
     oneraBoard.appendChild(cel);
   });
@@ -1845,176 +1516,203 @@ function dibuixarTaulerOnera(dades, interactiu) {
 }
 
 function preguntarOnera() {
-  aturarTot();
-  oneraBoard.innerHTML = '';
-  dibuixarTaulerOnera(Array(oneraDades.length).fill(null), true);
-
+  aturarTot(); oneraBoard.innerHTML = ''; dibuixarTaulerOnera(Array(oneraDades.length).fill(null), true);
   const plens = oneraDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
-  oneraPosicio = plens[Math.floor(Math.random() * plens.length)];
-  oneraObjectiu = oneraDades[oneraPosicio];
-
-  $('faseIconOnera').textContent = 'location_on';
-  $('faseTextOnera').textContent = 'Recorda';
+  oneraPosicio = plens[Math.floor(Math.random() * plens.length)]; oneraObjectiu = oneraDades[oneraPosicio];
   
-  // Mostrem l'objectiu visual de forma molt clara al mig de la pantalla
+  $('faseIconOnera').textContent = 'location_on'; $('faseTextOnera').textContent = 'Recorda';
   $('oneraTargetContainer').hidden = false;
-  $('objectiuIconaOneraGegant').textContent = oneraObjectiu.i;
-  $('objectiuIconaOneraGegant').style.color = oneraObjectiu.c;
+  $('objectiuGegantContenidor').innerHTML = renderContent(oneraObjectiu);
 
-  log(``, 0); // Buidem el log petit perquè l'atenció vagi al bloc gegant
-  iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
+  log(``, 0); iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
 }
 
 function resoldreOnera(idx) {
-  aturarTot();
-  oneraBoard.style.pointerEvents = 'none'; // Bloquegem per veure el resultat
-  const cel = oneraBoard.children[idx];
-  cel.classList.remove('buit');
-  cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + oneraObjectiu.c + '">' + oneraObjectiu.i + '</span>';
+  aturarTot(); oneraBoard.style.pointerEvents = 'none'; const cel = oneraBoard.children[idx];
+  cel.classList.remove('buit'); cel.innerHTML = renderContent(oneraObjectiu);
 
   if (idx === oneraPosicio) {
-    cel.classList.add('correcta');
-    celebrar(cel, 10);
+    cel.classList.add('correcta'); celebrar(cel, 10);
     setTimeout(() => finalPartida(true, null, null, 'Has recordat la posició!'), 1500);
   } else {
     cel.classList.add('erronia');
     const bona = oneraBoard.children[oneraPosicio];
-    bona.classList.remove('buit');
-    bona.classList.add('correcta');
-    bona.innerHTML = '<span class="material-symbols-rounded" style="color:' + oneraObjectiu.c + '">' + oneraObjectiu.i + '</span>';
-    setTimeout(() => finalPartida(false, 'L\'objecte no era aquí'), 2000);
+    bona.classList.remove('buit'); bona.classList.add('correcta'); bona.innerHTML = renderContent(oneraObjectiu);
+    setTimeout(() => finalPartida(false, 'L\'element no era aquí'), 2000);
   }
 }
 
 /* ═══════════════════════════════════════════════════════
-   FINAL DE PARTIDA I GUARDAT D'ESTADÍSTIQUES
+   FUNCIONS GLOBALS I REINICI
+   ═══════════════════════════════════════════════════════ */
+function obrirNivell(quinJoc){
+  nivellEditant = quinJoc; let llista, triat, titol, nomQuantitat, formatSub;
+  if (quinJoc === 'parelles') { llista = NIVELLS_PARELLES; triat = nivellParelles; titol = 'Quantes parelles?'; nomQuantitat = 'parelles'; formatSub = n => n.text; }
+  else if (quinJoc === 'escena') { llista = NIVELLS_ESCENA; triat = nivellEscena; titol = 'Quants objectes?'; nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`; }
+  else if (quinJoc === 'sequencia') { llista = NIVELLS_SEQUENCIA; triat = nivellSequencia; titol = 'Quantes caselles?'; nomQuantitat = 'caselles'; formatSub = n => n.text; }
+  else if (quinJoc === 'canvi') { llista = NIVELLS_CANVI; triat = nivellCanvi; titol = 'Quants objectes?'; nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`; }
+  else if (quinJoc === 'onera') { llista = NIVELLS_ONERA; triat = nivellOnera; titol = 'Quants objectes?'; nomQuantitat = 'objectes'; formatSub = n => `${n.mirar} s per mirar`; }
+
+  $('levelTitle').textContent = titol; levelGrid.innerHTML = '';
+  llista.forEach((n, idx) => {
+    const boto = document.createElement('button'); boto.type = 'button'; boto.className = 'size-option';
+    boto.setAttribute('role', 'radio'); boto.setAttribute('aria-checked', idx === triat ? 'true' : 'false');
+    const mini = document.createElement('div'); mini.className = 'mini';
+    const cols = n[nomQuantitat] <= 4 ? 2 : 4; mini.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; mini.setAttribute('aria-hidden', 'true');
+    const cel = quinJoc === 'parelles' ? Math.min(n[nomQuantitat] * 2, 16) : Math.min(n[nomQuantitat], 16);
+    for (let i = 0; i < cel; i++) mini.appendChild(document.createElement('i'));
+    const titolSp = document.createElement('span'); titolSp.textContent = `${n[nomQuantitat]} ${nomQuantitat}`;
+    const sub = document.createElement('small'); sub.textContent = formatSub(n);
+    boto.append(mini, titolSp, sub);
+    
+    boto.addEventListener('click', () => {
+      levelGrid.querySelectorAll('.size-option').forEach(b => b.setAttribute('aria-checked', 'false'));
+      boto.setAttribute('aria-checked', 'true');
+      if (quinJoc === 'parelles') nivellParelles = idx; else if (quinJoc === 'escena') nivellEscena = idx;
+      else if (quinJoc === 'sequencia') nivellSequencia = idx; else if (quinJoc === 'canvi') nivellCanvi = idx;
+      else if (quinJoc === 'onera') nivellOnera = idx;
+      localStorage.setItem('nivell' + quinJoc.charAt(0).toUpperCase() + quinJoc.slice(1), idx);
+      tancarModal(levelOverlay);
+      if (quinJoc === 'parelles') iniciarParelles(); else if (quinJoc === 'escena') iniciarEscena();
+      else if (quinJoc === 'sequencia') iniciarSequencia(); else if (quinJoc === 'canvi') iniciarCanvi(); else if (quinJoc === 'onera') iniciarOnera();
+    });
+    levelGrid.appendChild(boto);
+  });
+  obrirModal(levelOverlay);
+}
+levelBtn.addEventListener('click', () => obrirNivell(joc));
+
+function encaixar(board, total, proporcio, maxCols){
+  if (!total) return;
+  const wrap = board.parentElement; const wcs = getComputedStyle(wrap);
+  let availW = wrap.clientWidth - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight);
+  let availH = wrap.clientHeight - parseFloat(wcs.paddingTop) - parseFloat(wcs.paddingBottom);
+  if (availW < 40) availW = window.innerWidth * 0.9; if (availH < 40) availH = window.innerHeight * 0.5;
+  const bcs = getComputedStyle(board);
+  const marcX = parseFloat(bcs.paddingLeft) + parseFloat(bcs.paddingRight) + parseFloat(bcs.borderLeftWidth) + parseFloat(bcs.borderRightWidth);
+  const marcY = parseFloat(bcs.paddingTop) + parseFloat(bcs.paddingBottom) + parseFloat(bcs.borderTopWidth) + parseFloat(bcs.borderBottomWidth);
+  const gap = total > 20 ? 6 : 8; let millor = { area:0, cols:1, w:10, h:10 };
+  const sostre = Math.min(maxCols || total, total);
+  for (let cols = 1; cols <= sostre; cols++){
+    const files = Math.ceil(total / cols);
+    const w = (availW - marcX - gap * (cols - 1)) / cols;
+    const h = (availH - marcY - gap * (files - 1)) / files;
+    if (w <= 8 || h <= 8) continue;
+    let cw = Math.min(w, h * proporcio), ch = cw / proporcio;
+    const area = cw * ch * total;
+    if (area > millor.area) millor = { area, cols, w:cw, h:ch };
+  }
+  board.style.setProperty('--gap', gap + 'px'); board.style.setProperty('--cw', Math.floor(millor.w) + 'px');
+  board.style.setProperty('--ch', Math.floor(millor.h) + 'px'); board.style.gridTemplateColumns = `repeat(${millor.cols}, ${Math.floor(millor.w)}px)`;
+}
+
+function ajustarTauler(){
+  if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 0.78);
+  if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length) encaixar(sceneBoard, sceneBoard.children.length, 1, Math.ceil(Math.sqrt(sceneBoard.children.length * 1.6)));
+  if (joc === 'sequencia' && seqBoard.children.length) encaixar(seqBoard, seqBoard.children.length, 1, Math.ceil(Math.sqrt(seqBoard.children.length)));
+  if (joc === 'canvi' && canviBoard.children.length) encaixar(canviBoard, canviBoard.children.length, 1, Math.ceil(Math.sqrt(canviBoard.children.length * 1.6)));
+  if (joc === 'onera' && oneraBoard.children.length) encaixar(oneraBoard, oneraBoard.children.length, 1, Math.ceil(Math.sqrt(oneraBoard.children.length * 1.6)));
+}
+
+let ajustPendent = false;
+function programarAjust(){
+  if (ajustPendent) return; ajustPendent = true;
+  requestAnimationFrame(() => { ajustPendent = false; ajustarTauler(); });
+}
+if ('ResizeObserver' in window){
+  const ro = new ResizeObserver(programarAjust);
+  ro.observe(document.querySelector('#parellesScreen .board-wrap')); ro.observe(escenaWrap);
+  ro.observe(document.querySelector('#sequenciaScreen .board-wrap')); ro.observe(document.querySelector('#canviScreen .board-wrap')); ro.observe(document.querySelector('#oneraScreen .board-wrap'));
+}
+
+/* ═══════════════════════════════════════════════════════
+   FINAL I HISTORIAL
    ═══════════════════════════════════════════════════════ */
 function finalPartida(guanyat, motiu, segonsUsats, detall){
   aturarTot();
-
-  // Actualitzar estadístiques genèriques i per joc
   let statsKey = 'stats_' + joc;
   let stats = JSON.parse(localStorage.getItem(statsKey) || '{"jugades":0, "guanyades":0, "best":null}');
   stats.jugades++;
   
   if (guanyat){
-    victories++;
-    localStorage.setItem('wins', victories);
-    stats.guanyades++;
-    
+    victories++; localStorage.setItem('wins', victories); stats.guanyades++;
     if (joc === 'parelles' && segonsUsats != null){
       if (stats.best === null || segonsUsats < stats.best) stats.best = segonsUsats;
-      // Compatibilitat històrica amb 'bestTime' general antic
-      const clauBestGeneral = 'bestTime_' + nivellParelles;
-      const millorGeneral = Number(localStorage.getItem(clauBestGeneral) || 0);
-      if (!millorGeneral || segonsUsats < millorGeneral) localStorage.setItem(clauBestGeneral, segonsUsats);
     }
   }
-  
-  // 'Seqüència' sempre marca el seu rècord independentment si guanya o perd l'última
-  if (joc === 'sequencia') {
-     let ultimaRonda = seqActiva.length;
-     if (stats.best === null || ultimaRonda > stats.best) stats.best = ultimaRonda;
-  }
+  if (joc === 'sequencia') { if (stats.best === null || seqActiva.length > stats.best) stats.best = seqActiva.length; }
   
   localStorage.setItem(statsKey, JSON.stringify(stats));
 
-  // Generar la interfície del final
   $('resultIcon').textContent = guanyat ? 'emoji_events' : 'timer';
   $('resultTitle').textContent = guanyat ? 'Molt bé!' : 'Gairebé!';
+  $('resultText').textContent = guanyat ? ((joc === 'parelles') ? 'Has trobat totes les parelles.' : 'Has superat el repte amb èxit.') : (motiu ? motiu + '. Torna-ho a provar!' : 'Torna-ho a provar!');
 
-  let text;
-  if (guanyat){
-    text = (joc === 'parelles') ? 'Has trobat totes les parelles.' : 'Has superat el repte amb èxit.';
-  } else {
-    text = motiu ? motiu + '. Torna-ho a provar!' : 'Torna-ho a provar!';
-  }
-  $('resultText').textContent = text;
-
-  const statsDiv = $('resultStats');
-  statsDiv.innerHTML = '';
+  const statsDiv = $('resultStats'); statsDiv.innerHTML = '';
   const afegir = (icona, color, etiqueta, valor) => {
-    const chip = document.createElement('span');
-    chip.className = 'chip';
-    chip.innerHTML = '<span class="material-symbols-rounded" style="color:' + color + '">' + icona + '</span> ' +
-                     etiqueta + (valor !== undefined ? ' <b>' + valor + '</b>' : '');
+    const chip = document.createElement('span'); chip.className = 'chip';
+    chip.innerHTML = '<span class="material-symbols-rounded" style="color:' + color + '">' + icona + '</span> ' + etiqueta + (valor !== undefined ? ' <b>' + valor + '</b>' : '');
     statsDiv.appendChild(chip);
   };
 
-  if (joc === 'parelles'){
-    afegir('check_circle', '#22c55e', 'Parelles', `${trobades}/${NIVELLS_PARELLES[nivellParelles].parelles}`);
-    afegir('psychology', '#f59e0b', 'Intents', intents);
-    if (guanyat && segonsUsats != null) afegir('timer', '#0ea5e9', 'Temps', mmss(segonsUsats));
-  } else if (joc === 'sequencia') {
-    afegir('bolt', '#eab308', 'Ronda aconseguida', seqActiva.length);
-  } else if (joc === 'escena' || joc === 'canvi' || joc === 'onera') {
-    if (detall) afegir('check_circle', '#22c55e', detall);
-  }
-  afegir('emoji_events', '#f59e0b', 'Victòries totals (tots els jocs)', victories);
+  if (joc === 'parelles'){ afegir('check_circle', '#22c55e', 'Parelles', `${trobades}/${NIVELLS_PARELLES[nivellParelles].parelles}`); afegir('psychology', '#f59e0b', 'Intents', intents); if (guanyat && segonsUsats != null) afegir('timer', '#0ea5e9', 'Temps', mmss(segonsUsats)); }
+  else if (joc === 'sequencia') { afegir('bolt', '#eab308', 'Ronda aconseguida', seqActiva.length); }
+  else if ((joc === 'escena' || joc === 'canvi' || joc === 'onera') && detall) { afegir('check_circle', '#22c55e', detall); }
+  afegir('emoji_events', '#f59e0b', 'Victòries totals', victories);
 
-  if (guanyat){
-    setTimeout(() => celebrar(document.querySelector('.stage'), 26), 120);
-  }
+  if (guanyat) setTimeout(() => celebrar(document.querySelector('.stage'), 26), 120);
   obrirModal(resultOverlay);
 }
 
-$('resultAgainBtn').addEventListener('click', () => {
-  tancarModal(resultOverlay);
-  if (joc === 'parelles') iniciarParelles();
-  else if (joc === 'escena') iniciarEscena();
-  else if (joc === 'sequencia') iniciarSequencia();
-  else if (joc === 'canvi') iniciarCanvi();
-  else if (joc === 'onera') iniciarOnera();
+historyBtn.addEventListener('click', () => {
+  const cont = $('historyContent'); cont.innerHTML = '';
+  const games = [
+    {id:'parelles', name:'Parelles', icon:'extension', color:'#8b5cf6', metric:'Millor temps', format: mmss},
+    {id:'escena', name:'Què hi havia?', icon:'visibility', color:'#0ea5e9', metric:'', format: null},
+    {id:'sequencia', name:'Seqüència', icon:'touch_app', color:'#eab308', metric:'Ronda màxima', format: x => x},
+    {id:'canvi', name:'Què ha canviat?', icon:'find_replace', color:'#ec4899', metric:'', format: null},
+    {id:'onera', name:'On era?', icon:'location_on', color:'#10b981', metric:'', format: null}
+  ];
+  let anyData = false;
+  games.forEach(g => {
+    let s = JSON.parse(localStorage.getItem('stats_'+g.id) || '{"jugades":0,"guanyades":0,"best":null}');
+    if(s.jugades > 0){
+       anyData = true;
+       cont.innerHTML += `<div class="hist-item"><h3><span class="material-symbols-rounded" style="color:${g.color}; font-size:20px;">${g.icon}</span> ${g.name}</h3><p><b>Jugades:</b> ${s.jugades} &nbsp;|&nbsp; <b>Guanyades:</b> ${s.guanyades}</p>${(g.metric && s.best !== null) ? `<p><b>${g.metric}:</b> ${g.format(s.best)}</p>` : ''}</div>`;
+    }
+  });
+  if(!anyData) cont.innerHTML = '<p class="credit">Encara no has jugat cap partida. Entra a un joc per començar a guardar els teus èxits!</p>';
+  obrirModal(historyOverlay);
 });
 
-$('resultMenuBtn').addEventListener('click', () => {
-  tancarModal(resultOverlay);
-  aturarTot();
-  mostrarPantalla('home');
-});
+$('resultAgainBtn').addEventListener('click', () => { tancarModal(resultOverlay); if (joc === 'parelles') iniciarParelles(); else if (joc === 'escena') iniciarEscena(); else if (joc === 'sequencia') iniciarSequencia(); else if (joc === 'canvi') iniciarCanvi(); else if (joc === 'onera') iniciarOnera(); });
+$('resultMenuBtn').addEventListener('click', () => { tancarModal(resultOverlay); aturarTot(); mostrarPantalla('home'); });
 
 /* ═══════════════════════════════════════════════════════
-   CONTEXT I ORIENTACIÓ
+   INICIALITZACIÓ
    ═══════════════════════════════════════════════════════ */
-function detectAppContext(){
-  if (navigator.standalone === true) appContext = 'ios-app';
-  else if (window.matchMedia('(display-mode: standalone)').matches) appContext = 'android-app';
-  else appContext = 'web-browser';
-  document.body.classList.remove('web-browser','ios-app','android-app');
-  document.body.classList.add(appContext);
-}
+aplicarTema(localStorage.getItem('darkMode') === 'true');
+soundBtn.classList.toggle('off', !efectesActius);
 
-function aplicarOrientacio(){
-  currentOrientation = window.innerWidth < window.innerHeight ? 'portrait' : 'landscape';
-  document.body.classList.remove('portrait-mode','landscape-mode');
-  document.body.classList.add(currentOrientation === 'portrait' ? 'portrait-mode' : 'landscape-mode');
-}
-
-window.addEventListener('resize', () => { aplicarOrientacio(); programarAjust(); });
-window.addEventListener('orientationchange', () => setTimeout(() => {
-  aplicarOrientacio(); programarAjust();
-}, 120));
-
+window.addEventListener('resize', () => { programarAjust(); });
+window.addEventListener('orientationchange', () => setTimeout(() => { programarAjust(); }, 120));
 document.addEventListener('visibilitychange', () => {
   if (document.hidden){ if (tickTimer){ aturatPerModal = true; pararRellotge(); } }
   else if (aturatPerModal && !modalObert && tempsRestant > 0){ aturatPerModal = false; arrencarRellotge(); }
 });
 
-/* ═══════════════════════════════════════════════════════
-   ARRENCADA
-   ═══════════════════════════════════════════════════════ */
-aplicarTema(localStorage.getItem('darkMode') === 'true');
-efectesActius = localStorage.getItem('efectes') !== 'false';
-soundBtn.classList.toggle('off', !efectesActius);
+if (modeGrafic) {
+  aplicarModeGraficSelector();
+  if (modeGrafic === 'foto') escanejarFotosDirectori();
+} else {
+  // Mode per primera vegada
+  obrirModal(welcomeOverlay);
+}
 
-detectAppContext();
-aplicarOrientacio();
 mostrarPantalla('home');
 
 if ('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(err => console.warn('Service worker:', err));
-  });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 }
 </script>
 </body>
