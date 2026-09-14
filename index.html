@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 1.07
+    Version: 1.08
 -->
 <html lang="ca">
 <head>
@@ -280,8 +280,10 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
 }
 .face.dors{
-  background:linear-gradient(160deg,#8b5cf6,#6d28d9);
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.35), 0 4px 0 #4c1d95, 0 7px 12px rgba(0,0,0,.28);
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 4px, transparent 4px, transparent 8px),
+              linear-gradient(135deg, #ffd86b 0%, #ff9f45 50%, #ff6b9d 100%);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.5), 0 4px 0 #d95b24, 0 7px 12px rgba(0,0,0,.28);
+  border: 3px solid #fff;
 }
 .face.cara{
   transform:rotateY(180deg);
@@ -756,7 +758,7 @@ body.landscape-mode .menu{justify-content:flex-start}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v1.07</span>
+      <span class="version" id="version">v1.08</span>
     </div>
   </footer>
 </div>
@@ -1116,11 +1118,11 @@ historyMenuBtn.addEventListener('click', () => {
   cont.innerHTML = '';
   
   const games = [
-    {id:'parelles', name:'Parelles', metric:'Millor temps', format: mmss},
-    {id:'escena', name:'Què hi havia?', metric:'', format: null},
-    {id:'sequencia', name:'Seqüència', metric:'Ronda màxima', format: x => x},
-    {id:'canvi', name:'Què ha canviat?', metric:'', format: null},
-    {id:'onera', name:'On era?', metric:'', format: null}
+    {id:'parelles', name:'Parelles', icon:'extension', color:'#8b5cf6', metric:'Millor temps', format: mmss},
+    {id:'escena', name:'Què hi havia?', icon:'visibility', color:'#0ea5e9', metric:'', format: null},
+    {id:'sequencia', name:'Seqüència', icon:'touch_app', color:'#eab308', metric:'Ronda màxima', format: x => x},
+    {id:'canvi', name:'Què ha canviat?', icon:'find_replace', color:'#ec4899', metric:'', format: null},
+    {id:'onera', name:'On era?', icon:'location_on', color:'#10b981', metric:'', format: null}
   ];
   
   let anyData = false;
@@ -1134,7 +1136,7 @@ historyMenuBtn.addEventListener('click', () => {
        }
        cont.innerHTML += `
          <div class="hist-item">
-           <h3>${g.name}</h3>
+           <h3><span class="material-symbols-rounded" style="color:${g.color}; font-size:20px;">${g.icon}</span> ${g.name}</h3>
            <p><b>Jugades:</b> ${s.jugades} &nbsp;|&nbsp; <b>Guanyades:</b> ${s.guanyades}</p>
            ${extra}
          </div>
@@ -1383,7 +1385,7 @@ if ('ResizeObserver' in window){
 /* ═══════════════════════════════════════════════════════
    JOC 1 — PARELLES
    ═══════════════════════════════════════════════════════ */
-const DORS_SVG = `<img src="memory192x192.png" alt="" style="width:55%;height:55%;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.5));">`;
+const DORS_SVG = `<img src="memory192x192.png" alt="" style="width:100%;height:100%;">`;
 
 function iniciarParelles(){
   aturarTot();
