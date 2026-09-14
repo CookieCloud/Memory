@@ -1,0 +1,17 @@
+{
+  "name": "Memòria — jocs per exercitar la memòria",
+  "short_name": "Memòria",
+  "description": "Jocs senzills per exercitar la memòria: parelles de cartes i objectes a recordar.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff4dc",
+  "theme_color": "#ff9f45",
+  "lang": "ca",
+  "icons": [
+    { "src": "memory192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "memory512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "memory512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

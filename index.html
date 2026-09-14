@@ -1,12 +1,1468 @@
 <!DOCTYPE html>
+<!--
+    MEMÒRIA — PWA de jocs per exercitar la memòria
+    Version: 1.00  ·  Disseny heretat del Trencaclosques v3.12
+
+    QUÈ HI HA
+    - Menú inicial amb la tria de joc (de moment, dos)
+    - Joc 1 "Parelles": cartes cap per avall amb icones de Google; es giren de dues
+      en dues i, si coincideixen, queden destapades
+    - Joc 2 "Què hi havia?": s'ensenya una escena amb objectes durant uns segons i
+      després cal triar-los d'una llista amb distractors
+    - Compte enrere visible a tots dos jocs, celebració a cada encert i
+      felicitació final
+    - Tema dia/nit, orientació vertical/horitzontal, safe-area iOS/Android,
+      finestres emergents d'ajuda i informació: tot heretat del Trencaclosques
+
+    NOTA SOBRE LES ICONES
+    La font es demana amb "icon_names", de manera que només es baixen les icones
+    llistades. Si n'afegeixes cap de nova al joc (POOL) o a la interfície, cal
+    afegir-la també a la llista de l'enllaç, en ordre alfabètic.
+
+    PENDENT (previst per a més endavant)
+    - Triar entre jugar amb símbols o amb fotografies
+    - Més jocs al menú
+-->
 <html lang="ca">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inici</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Memòria">
+<meta name="theme-color" content="#ff9f45">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="memory32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="memory192x192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="memory180x180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<!-- Icones: eixos fixos i només les usades (interfície + joc), en ordre alfabètic -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&icon_names=ac_unit,anchor,arrow_back,auto_awesome,bolt,brush,cake,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,flight,forest,grid_view,headphones,help,home,icecream,info,key,light_mode,lightbulb,local_florist,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,timer,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
+
+<title>Memòria</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+
+.material-symbols-rounded{
+  font-family:'Material Symbols Rounded';
+  font-variation-settings:'FILL' 1,'wght' 600,'GRAD' 0,'opsz' 40;
+  line-height:1;font-size:24px;
+  width:1em;height:1em;overflow:hidden;
+  font-weight:normal;font-style:normal;letter-spacing:normal;
+  text-transform:none;display:inline-block;white-space:nowrap;
+  word-wrap:normal;direction:ltr;
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODE NIT
+   ═══════════════════════════════════════════════════════ */
+body{
+  --stage:linear-gradient(170deg,#241a3d 0%,#120e21 100%);
+  --page:#14101c;
+  --bar-bg:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.04));
+  --bar-border:rgba(255,255,255,.16);
+  --bar-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 8px 22px rgba(0,0,0,.45);
+  --pill-bg:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.06));
+  --pill-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 4px 10px rgba(0,0,0,.4);
+  --ink:#fff;
+  --ink-soft:rgba(255,255,255,.6);
+  --accent:#ffd166;
+  --accent-deep:#f0a020;
+  --accent-ink:#3a1f00;
+  --board-border:rgba(255,209,102,.6);
+  --board-halo:rgba(255,209,102,.12);
+  --board-bg:rgba(255,255,255,.06);
+  --chip-bg:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
+  --chip-border:rgba(255,255,255,.18);
+  --chip-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+  --panel-bg:linear-gradient(170deg,#2c2050,#161029);
+  --card-face:linear-gradient(160deg,rgba(255,255,255,.94),rgba(235,228,255,.9));
+  --card-ring:rgba(255,209,102,.45);
+  --icona-peca:#ffd166;
+  --icona-lletra:#241a3d;
+
+  font-family:'Fredoka',system-ui,-apple-system,sans-serif;
+  background:var(--page);
+  color:var(--ink);
+  height:100vh;height:100dvh;
+  overflow:hidden;
+  -webkit-user-select:none;user-select:none;
+  transition:background .35s;
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODE DIA — colors vius i sòlids
+   ═══════════════════════════════════════════════════════ */
+body.day{
+  --stage:linear-gradient(165deg,#ffd86b 0%,#ff9f45 38%,#ff6b9d 100%);
+  --page:#fff4dc;
+  --bar-bg:#ffffff;
+  --bar-border:#ffffff;
+  --bar-shadow:inset 0 -4px 0 rgba(0,0,0,.07), 0 10px 26px rgba(214,96,30,.3);
+  --pill-bg:#ffffff;
+  --pill-shadow:none;
+  --ink:#3c2a14;
+  --ink-soft:rgba(60,42,20,.65);
+  --accent:#ffc83d;
+  --accent-deep:#ff8a00;
+  --accent-ink:#4a2600;
+  --board-border:#ffffff;
+  --board-halo:rgba(255,255,255,.45);
+  --board-bg:rgba(255,255,255,.35);
+  --chip-bg:#ffffff;
+  --chip-border:transparent;
+  --chip-shadow:0 3px 0 rgba(0,0,0,.1), 0 6px 12px rgba(150,60,10,.18);
+  --panel-bg:linear-gradient(170deg,#fff8ec,#ffe6c2);
+  --card-face:#ffffff;
+  --card-ring:rgba(255,255,255,.85);
+  --icona-peca:#ffffff;
+  --icona-lletra:#ff8a00;
+}
+
+/* ── contenidor ─────────────────────────────────────── */
+.container{max-width:1100px;margin:0 auto;height:100%;display:flex;flex-direction:column;min-height:0}
+.stage{
+  background:var(--stage);border-radius:28px;padding:12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14), 0 22px 50px rgba(0,0,0,.4);
+  transition:background .35s;flex:1;min-height:0;display:flex;flex-direction:column;
+}
+.play{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
+
+/* ── títol ──────────────────────────────────────────── */
+.brand{
+  display:flex;align-items:center;justify-content:center;gap:.28em;
+  font-family:'Baloo 2',sans-serif;font-weight:800;
+  font-size:clamp(26px,7.5vw,46px);letter-spacing:-1px;margin-bottom:8px;line-height:1.05;
+}
+.brand-icon{flex:0 0 auto;width:1.05em;height:1.05em;filter:drop-shadow(0 2px 5px rgba(0,0,0,.35))}
+.brand-text{color:#fff;text-shadow:0 0 10px rgba(167,139,250,.45), 0 2px 6px rgba(0,0,0,.3)}
+body.day .brand-text{
+  background:linear-gradient(180deg,#fff 0%,#fff1b8 45%,#ffb020 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;
+  filter:drop-shadow(0 1px 0 rgba(190,80,20,.55)) drop-shadow(0 3px 5px rgba(120,40,0,.25));
+}
+body.day .brand-icon{filter:drop-shadow(0 2px 4px rgba(150,50,0,.4))}
+
+/* ── barra de control ───────────────────────────────── */
+.bar{
+  --pill:clamp(28px, calc((100vw - 90px) / 7.2), 44px);
+  display:flex;align-items:center;gap:4px;flex-wrap:nowrap;
+  background:var(--bar-bg);border:1px solid var(--bar-border);
+  border-radius:99px;padding:6px 7px 8px;box-shadow:var(--bar-shadow);
+  overflow-x:auto;scrollbar-width:none;transition:background .35s,box-shadow .35s;
+}
+.bar::-webkit-scrollbar{display:none}
+
+.pill{
+  flex:0 0 auto;width:var(--pill);height:var(--pill);border-radius:50%;border:none;cursor:pointer;
+  display:grid;place-items:center;color:var(--ink);position:relative;
+  background:var(--pill-bg);box-shadow:var(--pill-shadow);
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1),background .35s,box-shadow .35s,opacity .2s;
+}
+.pill[hidden]{display:none}
+.pill:active{transform:scale(.9)}
+.pill .material-symbols-rounded{font-size:calc(var(--pill) * .55);filter:drop-shadow(0 0 8px var(--glow))}
+body.day .pill{
+  background:var(--tint);color:#fff;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.55), 0 4px 0 var(--tint-deep), 0 7px 12px rgba(0,0,0,.22);
+}
+body.day .pill .material-symbols-rounded{filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+body.day .pill:active{
+  transform:translateY(3px);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5), 0 1px 0 var(--tint-deep), 0 2px 5px rgba(0,0,0,.25);
+}
+.pill.off{opacity:.4}
+.pill:focus-visible,.btn-big:focus-visible,.modal-close:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.spacer{flex:1 1 auto;min-width:10px}
+
+/* ── xips (marcador i informació) ───────────────────── */
+.chip[hidden]{display:none}
+.hud{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:2px 0 0}
+.stats{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap;justify-content:center}
+.chip{
+  display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:99px;
+  background:var(--chip-bg);border:1px solid var(--chip-border);box-shadow:var(--chip-shadow);
+  font-size:13px;font-weight:600;color:var(--ink);transition:background .35s,color .35s;
+}
+.chip .material-symbols-rounded{font-size:19px}
+.chip b{font-family:'Baloo 2';font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.chip.alerta{background:linear-gradient(160deg,#ff3355,#c20f33);color:#fff;border-color:transparent}
+.chip.alerta .material-symbols-rounded{color:#fff !important}
+.chip.alerta b{animation:latir .9s ease-in-out infinite}
+@keyframes latir{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@media (prefers-reduced-motion:reduce){.chip.alerta b{animation:none}}
+
+/* ── pantalles ──────────────────────────────────────── */
+.screen{display:none;flex:1;min-height:0;flex-direction:column;gap:8px}
+.screen.active{display:flex}
+
+/* ── menú de jocs ───────────────────────────────────── */
+.menu{
+  flex:1;min-height:0;overflow-y:auto;
+  display:flex;flex-direction:column;gap:12px;justify-content:center;
+  padding:4px 2px;
+}
+.menu-intro{text-align:center;font-size:15px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);margin-bottom:2px}
+body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.game-card{
+  display:flex;align-items:center;gap:14px;text-align:left;cursor:pointer;
+  padding:16px 16px;border-radius:24px;
+  background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
+  color:var(--ink);
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1);
+}
+.game-card:active{transform:scale(.97)}
+.game-card:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.game-card .ico{
+  flex:0 0 auto;width:58px;height:58px;border-radius:20px;display:grid;place-items:center;
+  color:#fff;background:var(--tint);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.45), 0 4px 0 var(--tint-deep);
+}
+.game-card .ico .material-symbols-rounded{font-size:32px}
+.game-card .txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.game-card b{font-family:'Baloo 2';font-weight:700;font-size:19px;line-height:1.15}
+.game-card small{font-size:13px;line-height:1.35;color:var(--ink-soft)}
+@media (max-height:560px){
+  .menu{gap:8px}
+  .game-card{padding:10px 12px;gap:10px;border-radius:18px}
+  .game-card .ico{width:42px;height:42px;border-radius:14px}
+  .game-card .ico .material-symbols-rounded{font-size:24px}
+  .game-card b{font-size:16px}
+  .game-card small{font-size:12px}
+}
+
+/* ── tria de mida / nivell (dins de finestra) ───────── */
+.size-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;width:100%}
+.size-option{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:14px 10px 12px;border-radius:20px;cursor:pointer;
+  background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
+  font-family:'Baloo 2';font-weight:700;font-size:17px;color:var(--ink);
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1),border-color .2s,background .2s;
+}
+.size-option:active{transform:scale(.95)}
+.size-option:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.size-option .mini{display:grid;gap:2px;width:56px;height:44px;padding:3px;border-radius:8px;background:rgba(0,0,0,.12)}
+.size-option .mini i{background:var(--ink);opacity:.32;border-radius:2px}
+.size-option small{font-family:'Fredoka';font-weight:500;font-size:12px;color:var(--ink-soft)}
+.size-option[aria-checked="true"]{
+  border-color:var(--accent-deep);
+  background:linear-gradient(160deg,var(--accent),var(--accent-deep));color:var(--accent-ink);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.6), 0 5px 0 rgba(0,0,0,.22), 0 8px 16px rgba(0,0,0,.25);
+}
+.size-option[aria-checked="true"] small{color:var(--accent-ink);opacity:.8}
+.size-option[aria-checked="true"] .mini{background:rgba(255,255,255,.45)}
+.size-option[aria-checked="true"] .mini i{background:var(--accent-ink);opacity:.6}
+@media (max-height:560px){
+  .size-grid{grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+  .size-option{padding:8px 6px;font-size:15px;border-radius:14px}
+  .size-option .mini{width:38px;height:30px}
+}
+
+/* ── tauler comú ────────────────────────────────────── */
+.board-wrap{
+  flex:1;min-height:0;min-width:0;position:relative;
+  display:flex;align-items:center;justify-content:center;padding:7px 0;
+}
+.board{
+  display:grid;gap:var(--gap,8px);margin:0 auto;
+  padding:8px;border-radius:20px;background:var(--board-bg);
+  border:3px solid var(--board-border);
+  box-shadow:0 0 0 6px var(--board-halo), inset 0 0 40px rgba(0,0,0,.25), 0 16px 36px rgba(0,0,0,.35);
+  transition:border-color .35s,background .35s;
+}
+
+/* ── joc 1: cartes ──────────────────────────────────── */
+.card{
+  width:var(--cw,70px);height:var(--ch,90px);
+  perspective:900px;background:none;border:none;padding:0;cursor:pointer;
+}
+.card:disabled{cursor:default}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:16px}
+.card-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.34,1.4,.64,1);
+}
+.card.girada .card-inner{transform:rotateY(180deg)}
+.card:active .card-inner{transform:scale(.95)}
+.card.girada:active .card-inner{transform:rotateY(180deg) scale(.95)}
+.face{
+  position:absolute;inset:0;border-radius:14px;display:grid;place-items:center;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.face.dors{
+  background:linear-gradient(160deg,#8b5cf6,#6d28d9);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.35), 0 4px 0 #4c1d95, 0 7px 12px rgba(0,0,0,.28);
+}
+.face.dors svg{width:58%;height:58%;opacity:.95}
+.face.cara{
+  transform:rotateY(180deg);
+  background:var(--card-face);
+  box-shadow:inset 0 0 0 2px var(--card-ring), 0 6px 14px rgba(0,0,0,.28);
+}
+.face.cara .material-symbols-rounded{font-size:calc(var(--cw,70px) * .52)}
+.card.aparellada .face.cara{
+  box-shadow:inset 0 0 0 3px var(--accent-deep), 0 0 22px rgba(240,160,32,.7), 0 6px 14px rgba(0,0,0,.28);
+  animation:encert .55s cubic-bezier(.34,1.56,.64,1);
+}
+.card.aparellada{cursor:default}
+.card.fallada .face.cara{animation:errada .45s ease}
+@keyframes encert{0%{transform:rotateY(180deg) scale(1)}45%{transform:rotateY(180deg) scale(1.14)}100%{transform:rotateY(180deg) scale(1)}}
+@keyframes errada{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-6px)}75%{transform:rotateY(180deg) translateX(6px)}}
+@media (prefers-reduced-motion:reduce){
+  .card-inner{transition:none}
+  .card.aparellada .face.cara,.card.fallada .face.cara{animation:none}
+}
+
+/* ── joc 2: escena i llista d'opcions ───────────────── */
+.tile{
+  width:var(--cw,64px);height:var(--ch,64px);border-radius:14px;
+  display:grid;place-items:center;background:var(--card-face);
+  box-shadow:inset 0 0 0 2px var(--card-ring), 0 5px 12px rgba(0,0,0,.25);
+}
+.tile.buit{background:transparent;box-shadow:none}
+.tile .material-symbols-rounded{font-size:calc(var(--cw,64px) * .56)}
+
+.opcions{
+  flex:1;min-height:0;overflow-y:auto;padding:6px 2px 2px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px;align-content:start;
+}
+.opt-tile{
+  position:relative;aspect-ratio:1/1;border:none;cursor:pointer;border-radius:18px;
+  display:grid;place-items:center;background:var(--chip-bg);box-shadow:var(--chip-shadow);
+  border:2px solid var(--chip-border);color:var(--ink);
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1),background .2s,border-color .2s;
+}
+.opt-tile .material-symbols-rounded{font-size:34px}
+.opt-tile:active{transform:scale(.94)}
+.opt-tile:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.opt-tile[aria-pressed="true"]{
+  border-color:var(--accent-deep);
+  background:linear-gradient(160deg,var(--accent),var(--accent-deep));color:var(--accent-ink);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.6), 0 5px 0 rgba(0,0,0,.2);
+}
+.opt-tile .marca{
+  position:absolute;top:-7px;right:-7px;width:26px;height:26px;border-radius:50%;
+  display:none;place-items:center;color:#fff;
+}
+.opt-tile .marca .material-symbols-rounded{font-size:18px}
+.opt-tile.correcta{border-color:#16a34a;background:linear-gradient(160deg,#4ade80,#16a34a);color:#06310f}
+.opt-tile.erronia{border-color:#b91c1c;background:linear-gradient(160deg,#fb7185,#b91c1c);color:#fff}
+.opt-tile.perduda{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.45)}
+.opt-tile.correcta .marca,.opt-tile.erronia .marca{display:grid}
+.opt-tile.correcta .marca{background:#16a34a}
+.opt-tile.erronia .marca{background:#b91c1c}
+.opcions.bloquejada .opt-tile{cursor:default}
+
+.acciona{display:flex;justify-content:center;padding:6px 0 2px}
+
+/* ── missatge flotant ───────────────────────────────── */
+.log{
+  position:absolute;left:50%;bottom:16px;z-index:5;transform:translate(-50%,6px);
+  max-width:calc(100% - 28px);padding:2px 8px;
+  font-size:15px;font-weight:600;color:#fff;letter-spacing:.2px;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 1px 2px rgba(0,0,0,.9), 0 0 12px rgba(0,0,0,.6);
+  pointer-events:none;opacity:0;transition:opacity .45s ease, transform .45s ease;
+}
+.log.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.log{transition:opacity .2s}}
+
+/* ── celebració ─────────────────────────────────────── */
+.espurna{
+  position:fixed;z-index:1200;width:10px;height:10px;border-radius:3px;pointer-events:none;
+  animation:volar .9s ease-out forwards;
+}
+@keyframes volar{
+  0%{transform:translate(0,0) scale(1) rotate(0);opacity:1}
+  100%{transform:translate(var(--dx),var(--dy)) scale(.2) rotate(var(--rot));opacity:0}
+}
+
+/* ── finestres emergents ────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;
+  padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right))
+          max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+  background:rgba(10,6,20,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.modal-overlay.active{display:flex}
+.modal{
+  position:relative;background:var(--panel-bg);color:var(--ink);
+  padding:22px 18px 20px;border-radius:28px;text-align:center;
+  border:2px solid var(--board-border);
+  box-shadow:0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.25);
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+  max-width:min(560px,100%);max-height:100%;overflow-y:auto;
+  display:flex;flex-direction:column;align-items:center;
+}
+.modal h2{
+  font-family:'Baloo 2',sans-serif;font-weight:800;letter-spacing:-.5px;
+  font-size:clamp(22px,6vw,32px);line-height:1.1;margin:0 34px 12px;color:var(--ink);
+}
+.modal-close{
+  position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;
+  border:none;cursor:pointer;display:grid;place-items:center;background:rgba(0,0,0,.08);color:var(--ink);
+}
+.modal-close:active{transform:scale(.9)}
+.modal-info{max-width:min(440px,100%)}
+.modal-icon{
+  font-size:46px;color:var(--accent);margin-bottom:2px;
+  filter:drop-shadow(0 3px 0 var(--accent-deep)) drop-shadow(0 6px 12px rgba(0,0,0,.35));
+}
+.modal .credit{font-size:16px;line-height:1.4;margin-bottom:10px;max-width:36ch}
+.modal .how{font-size:14px;line-height:1.45;color:var(--ink-soft);margin-bottom:12px;max-width:36ch;text-align:left}
+.modal .how li{margin-left:18px;margin-bottom:4px}
+.modal .modal-version{font-size:11px;letter-spacing:1px;color:var(--ink-soft);margin-bottom:14px}
+.modal-actions{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.btn-big{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 28px;border:none;border-radius:99px;cursor:pointer;
+  font-family:'Fredoka';font-weight:600;font-size:16px;color:var(--accent-ink);
+  background:linear-gradient(160deg,var(--accent),var(--accent-deep));
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.7), 0 5px 0 rgba(0,0,0,.3), 0 10px 20px rgba(0,0,0,.4);
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1),box-shadow .13s;
+}
+.btn-big:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 1px 0 rgba(0,0,0,.3),0 3px 8px rgba(0,0,0,.4)}
+.btn-big:disabled{opacity:.45;cursor:default;transform:none}
+.btn-soft{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:99px;cursor:pointer;
+  font-family:'Fredoka';font-weight:600;font-size:15px;color:var(--ink);
+  background:transparent;border:2px solid var(--ink-soft);
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1),background .2s;
+}
+.btn-soft:active{transform:scale(.95)}
+.btn-soft:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.trofeu{
+  font-size:56px;color:var(--accent);
+  filter:drop-shadow(0 4px 0 var(--accent-deep)) drop-shadow(0 8px 14px rgba(0,0,0,.45));
+  font-variation-settings:'FILL' 1,'wght' 700,'opsz' 48;
+}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+@media (max-height:560px){
+  .modal{padding:14px 16px 12px}
+  .modal h2{font-size:20px;margin-bottom:6px}
+  .modal-icon,.trofeu{font-size:34px}
+  .modal .btn-big,.modal .btn-soft{padding:9px 18px;font-size:14px}
+  .stats{margin-bottom:8px}
+}
+
+/* ── peu ────────────────────────────────────────────── */
+footer.footer{flex:0 0 auto;margin-top:6px;padding:2px 8px 0;text-align:center}
+footer.footer p{color:var(--ink-soft);font-size:11px;margin-bottom:3px}
+footer.footer .version{color:var(--ink-soft);font-size:11px;letter-spacing:1px}
+.footer-links{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+.footer-links a{color:var(--ink);font-size:11px;text-decoration:none;opacity:.75;border-bottom:1px solid transparent;transition:all .2s}
+.footer-links a:hover{opacity:1;border-bottom-color:currentColor}
+.divider{color:var(--ink-soft)}
+
+/* ═══════════════════════════════════════════════════════
+   VERTICAL / HORITZONTAL / PANTALLA PETITA
+   ═══════════════════════════════════════════════════════ */
+body.portrait-mode{padding:max(8px,env(safe-area-inset-top)) 8px max(6px,env(safe-area-inset-bottom))}
+body.portrait-mode.web-browser{padding:8px 8px 6px}
+body.portrait-mode.ios-app{padding:max(12px,calc(env(safe-area-inset-top) + 4px)) 8px max(6px,env(safe-area-inset-bottom))}
+body.portrait-mode.android-app{padding:max(12px,calc(env(safe-area-inset-top) + 4px)) 8px 6px}
+
+body.landscape-mode{padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+body.landscape-mode.web-browser{padding:6px 10px 6px}
+body.landscape-mode.ios-app{padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
+body.landscape-mode.android-app{padding:max(10px,env(safe-area-inset-top)) 14px 12px}
+body.landscape-mode .stage{padding:12px;border-radius:22px}
+body.landscape-mode .play{flex-direction:row;gap:12px;align-items:stretch}
+body.landscape-mode .bar{
+  --pill:clamp(26px, calc((100dvh - 110px) / 7), 44px);
+  flex-direction:column;width:auto;flex:0 0 auto;padding:6px 5px 8px;gap:4px;
+  border-radius:99px;overflow-x:hidden;overflow-y:auto;
+}
+body.landscape-mode .spacer{min-width:0;min-height:10px}
+body.landscape-mode .menu{justify-content:flex-start}
+
+@media (max-height:560px), (max-width:820px){
+  body.landscape-mode .brand{display:none}
+  body.landscape-mode .stage{padding:6px;border-radius:18px}
+  body.landscape-mode .play{gap:8px}
+  body.landscape-mode .log{font-size:13px;bottom:12px}
+  body.landscape-mode .board-wrap{padding:5px 0}
+  body.landscape-mode .board{padding:5px;border-width:2px;box-shadow:0 0 0 4px var(--board-halo), 0 10px 24px rgba(0,0,0,.3)}
+  body.landscape-mode footer.footer{display:none}
+}
+@media (orientation:landscape) and (max-height:560px){.brand{display:none}}
+@media (max-width:430px){
+  body.portrait-mode .stage{padding:8px;border-radius:22px}
+  body.portrait-mode .brand{font-size:clamp(22px,6.5vw,30px);margin-bottom:6px}
+  body.portrait-mode .play{gap:6px}
+  body.portrait-mode .board-wrap{padding:5px 0}
+  body.portrait-mode .board{padding:5px;border-width:2px;border-radius:16px;
+    box-shadow:0 0 0 4px var(--board-halo), 0 10px 24px rgba(0,0,0,.3)}
+  footer.footer{margin-top:4px}
+  footer.footer p{font-size:10px;margin-bottom:2px}
+  .footer-links a, footer.footer .version{font-size:10px}
+}
+</style>
 </head>
-<body>
-    <h1>Benvingut al meu repositori</h1>
-    <p>Aquest és el fitxer index.html inicial.</p>
+<body class="day portrait-mode">
+
+<div class="container">
+  <div class="stage">
+
+    <h1 class="brand">
+      <svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(-59.043076923076924 -59.043076923076924) scale(0.61703) translate(0 960)"><path d="M352-120H200q-33 0-56.5-23.5T120-200v-152q48 0 84-30.5t36-77.5q0-47-36-77.5T120-568v-152q0-33 23.5-56.5T200-800h160q0-42 29-71t71-29q42 0 71 29t29 71h160q33 0 56.5 23.5T800-720v160q42 0 71 29t29 71q0 42-29 71t-71 29v160q0 33-23.5 56.5T720-120H568q0-50-31.5-85T460-240q-45 0-76.5 35T352-120Z" fill="var(--icona-peca)" /></g><g transform="translate(176.5 297.2) scale(0.3376)" ><path d="M253 -20Q193 -20 142.0 -43.0Q91 -66 60.5 -118.5Q30 -171 30 -257Q30 -337 62.0 -391.5Q94 -446 152.5 -473.5Q211 -501 289 -501Q346 -501 394.5 -486.0Q443 -471 469 -454Q489 -441 500.5 -423.0Q512 -405 512 -378V-63H349V-356Q339 -361 327.0 -364.5Q315 -368 296 -368Q253 -368 226.0 -341.5Q199 -315 199 -256Q199 -193 223.5 -170.0Q248 -147 285 -147Q315 -147 335.0 -157.5Q355 -168 371 -181L376 -48Q353 -36 323.5 -28.0Q294 -20 253 -20ZM352 -11V-101H512V-7Q512 63 478.0 108.5Q444 154 386.5 176.0Q329 198 258 198Q205 198 163.5 189.5Q122 181 98 165Q62 141 62 97Q62 74 71.5 55.0Q81 36 93 27Q122 43 158.5 54.0Q195 65 235 65Q288 65 320.0 47.0Q352 29 352 -11Z" fill="var(--icona-lletra)"/></g></svg>
+      <span class="brand-text" id="brandText">Memòria</span>
+    </h1>
+
+    <div class="play">
+
+      <div class="bar">
+        <button class="pill" id="backBtn" title="Tornar al menú" aria-label="Tornar al menú" hidden
+                style="--glow:#94a3b8;--tint:#64748b;--tint-deep:#334155">
+          <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+
+        <button class="pill" id="restartBtn" title="Tornar a començar" aria-label="Tornar a començar" hidden
+                style="--glow:#f472b6;--tint:#ec4899;--tint-deep:#9d174d">
+          <span class="material-symbols-rounded">replay</span>
+        </button>
+
+        <button class="pill" id="levelBtn" title="Canviar el nivell" aria-label="Canviar el nivell" hidden
+                aria-haspopup="dialog"
+                style="--glow:#a78bfa;--tint:#8b5cf6;--tint-deep:#5b21b6">
+          <span class="material-symbols-rounded">grid_view</span>
+        </button>
+
+        <button class="pill" id="helpBtn" title="Com es juga" aria-label="Com es juga"
+                style="--glow:#fbbf24;--tint:#f59e0b;--tint-deep:#b45309">
+          <span class="material-symbols-rounded">help</span>
+        </button>
+
+        <span class="spacer"></span>
+
+        <button class="pill" id="soundBtn" title="Efectes de celebració" aria-label="Efectes de celebració"
+                style="--glow:#a78bfa;--tint:#a855f7;--tint-deep:#7e22ce">
+          <span class="material-symbols-rounded">auto_awesome</span>
+        </button>
+
+        <button class="pill" id="themeToggle" title="Mode clar o fosc" aria-label="Mode clar o fosc"
+                style="--glow:#fde047;--tint:#ef4444;--tint-deep:#b91c1c">
+          <span class="material-symbols-rounded">dark_mode</span>
+        </button>
+
+        <button class="pill" id="infoBtn" title="Informació" aria-label="Informació"
+                style="--glow:#38bdf8;--tint:#0ea5e9;--tint-deep:#0369a1">
+          <span class="material-symbols-rounded">info</span>
+        </button>
+      </div>
+
+      <!-- ══ Pantalla: menú ══ -->
+      <section class="screen active" id="homeScreen">
+        <div class="menu">
+          <p class="menu-intro">Tria a què vols jugar</p>
+
+          <button class="game-card" data-joc="parelles" style="--tint:#8b5cf6;--tint-deep:#5b21b6">
+            <span class="ico"><span class="material-symbols-rounded">extension</span></span>
+            <span class="txt">
+              <b>Parelles</b>
+              <small>Gira les cartes de dues en dues i troba totes les parelles abans que s'acabi el temps.</small>
+            </span>
+          </button>
+
+          <button class="game-card" data-joc="escena" style="--tint:#0ea5e9;--tint-deep:#0369a1">
+            <span class="ico"><span class="material-symbols-rounded">visibility</span></span>
+            <span class="txt">
+              <b>Què hi havia?</b>
+              <small>Mira una escena plena d'objectes, memoritza'ls i després tria'ls d'una llista.</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ══ Pantalla: parelles ══ -->
+      <section class="screen" id="parellesScreen">
+        <div class="hud">
+          <span class="chip" id="timeChip">
+            <span class="material-symbols-rounded" style="color:#e11d48">timer</span>
+            <b id="timeLeft">0:00</b>
+          </span>
+          <span class="chip">
+            <span class="material-symbols-rounded" style="color:#22c55e">check_circle</span>
+            Parelles <b><span id="found">0</span>/<span id="totalPairs">0</span></b>
+          </span>
+          <span class="chip">
+            <span class="material-symbols-rounded" style="color:#f59e0b">psychology</span>
+            Intents <b id="moves">0</b>
+          </span>
+        </div>
+        <div class="board-wrap">
+          <div class="board" id="cardsBoard"></div>
+          <div class="log" id="logParelles" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ══ Pantalla: què hi havia? ══ -->
+      <section class="screen" id="escenaScreen">
+        <div class="hud">
+          <span class="chip" id="timeChip2">
+            <span class="material-symbols-rounded" style="color:#e11d48">timer</span>
+            <b id="timeLeft2">0:00</b>
+          </span>
+          <span class="chip" id="faseChip">
+            <span class="material-symbols-rounded" style="color:#0ea5e9" id="faseIcon">visibility</span>
+            <span id="faseText">Memoritza</span>
+          </span>
+          <span class="chip" id="triadesChip" hidden>
+            <span class="material-symbols-rounded" style="color:#22c55e">check_circle</span>
+            Triats <b><span id="triats">0</span>/<span id="aTriar">0</span></b>
+          </span>
+        </div>
+
+        <div class="board-wrap" id="escenaWrap">
+          <div class="board" id="sceneBoard"></div>
+          <div class="log" id="logEscena" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="opcions" id="optionsBoard" hidden></div>
+        <div class="acciona" id="checkWrap" hidden>
+          <button class="btn-big" id="checkBtn" disabled>
+            <span class="material-symbols-rounded">check_circle</span> Comprovar
+          </button>
+        </div>
+      </section>
+
+    </div><!-- /play -->
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Memòria. Tots els drets reservats.</p>
+    <div class="footer-links">
+      <a href="privacy-policy.html" target="_blank">Política de Privacitat</a>
+      <span class="divider">·</span>
+      <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
+      <span class="divider">·</span>
+      <span class="version" id="version">v1.00</span>
+    </div>
+  </footer>
+</div>
+
+<!-- Nivell -->
+<div id="levelOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="levelTitle" aria-hidden="true">
+  <div class="modal modal-info">
+    <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+    <span class="material-symbols-rounded modal-icon">grid_view</span>
+    <h2 id="levelTitle">Quantes parelles?</h2>
+    <div class="size-grid" id="levelGrid" role="radiogroup" aria-labelledby="levelTitle"></div>
+    <button class="btn-big" id="levelStartBtn">Comença</button>
+  </div>
+</div>
+
+<!-- Ajuda -->
+<div id="helpOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle" aria-hidden="true">
+  <div class="modal modal-info">
+    <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+    <span class="material-symbols-rounded modal-icon">help</span>
+    <h2 id="helpTitle">Com es juga</h2>
+    <div class="how" id="helpText"></div>
+    <button class="btn-big" data-close>Continuar</button>
+  </div>
+</div>
+
+<!-- Informació -->
+<div id="infoOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="infoTitle" aria-hidden="true">
+  <div class="modal modal-info">
+    <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+    <span class="material-symbols-rounded modal-icon">psychology</span>
+    <h2 id="infoTitle">Memòria</h2>
+    <p class="credit">Jocs senzills per exercitar la memòria. Es juguen amb el dit o amb el ratolí i no cal connexió un cop instal·lats.</p>
+    <div class="stats" id="statsBar">
+      <span class="chip">
+        <span class="material-symbols-rounded" style="color:#f59e0b">emoji_events</span>
+        Partides guanyades <b id="wins">0</b>
+      </span>
+      <span class="chip">
+        <span class="material-symbols-rounded" style="color:#22c55e">extension</span>
+        Millor temps <b id="bestTime">—</b>
+      </span>
+      <span class="chip">
+        <span class="material-symbols-rounded" style="color:#0ea5e9">public</span>
+        Símbols de Google
+      </span>
+      <span class="chip">
+        <span class="material-symbols-rounded" style="color:#e11d48">favorite</span>
+        &copy; Gerard M.
+      </span>
+    </div>
+    <p class="modal-version" id="infoVersion"></p>
+    <button class="btn-big" data-close>Continuar</button>
+  </div>
+</div>
+
+<!-- Final de partida -->
+<div id="resultOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle" aria-hidden="true">
+  <div class="modal modal-info">
+    <span class="material-symbols-rounded trofeu" id="resultIcon">emoji_events</span>
+    <h2 id="resultTitle">Molt bé!</h2>
+    <p class="credit" id="resultText"></p>
+    <div class="stats" id="resultStats"></div>
+    <div class="modal-actions">
+      <button class="btn-soft" id="resultMenuBtn">
+        <span class="material-symbols-rounded">home</span> Canviar de joc
+      </button>
+      <button class="btn-big" id="resultAgainBtn">
+        <span class="material-symbols-rounded">replay</span> Jugar de nou
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   REFERÈNCIES
+   ═══════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+const themeToggle    = $('themeToggle');
+const soundBtn       = $('soundBtn');
+const infoBtn        = $('infoBtn');
+const helpBtn        = $('helpBtn');
+const backBtn        = $('backBtn');
+const restartBtn     = $('restartBtn');
+const levelBtn       = $('levelBtn');
+
+const homeScreen     = $('homeScreen');
+const parellesScreen = $('parellesScreen');
+const escenaScreen   = $('escenaScreen');
+
+const cardsBoard     = $('cardsBoard');
+const sceneBoard     = $('sceneBoard');
+const optionsBoard   = $('optionsBoard');
+const escenaWrap     = $('escenaWrap');
+const checkWrap      = $('checkWrap');
+const checkBtn       = $('checkBtn');
+
+const levelOverlay   = $('levelOverlay');
+const levelGrid      = $('levelGrid');
+const helpOverlay    = $('helpOverlay');
+const infoOverlay    = $('infoOverlay');
+const resultOverlay  = $('resultOverlay');
+
+/* ═══════════════════════════════════════════════════════
+   DADES DEL JOC
+   ═══════════════════════════════════════════════════════ */
+/* Icones disponibles. Si n'afegeixes cap, recorda posar-la també
+   a la llista "icon_names" de l'enllaç de la font. */
+const POOL = [
+  { i:'pets',              c:'#f59e0b' }, { i:'local_florist',     c:'#ec4899' },
+  { i:'rocket_launch',     c:'#8b5cf6' }, { i:'directions_car',    c:'#ef4444' },
+  { i:'sports_soccer',     c:'#0ea5e9' }, { i:'music_note',        c:'#a855f7' },
+  { i:'cake',              c:'#f472b6' }, { i:'coffee',            c:'#92400e' },
+  { i:'icecream',          c:'#06b6d4' }, { i:'lunch_dining',      c:'#d97706' },
+  { i:'flight',            c:'#0369a1' }, { i:'sailing',           c:'#0891b2' },
+  { i:'pedal_bike',        c:'#16a34a' }, { i:'anchor',            c:'#1d4ed8' },
+  { i:'umbrella',          c:'#e11d48' }, { i:'ac_unit',           c:'#38bdf8' },
+  { i:'water_drop',        c:'#0284c7' }, { i:'bolt',              c:'#eab308' },
+  { i:'cloud',             c:'#64748b' }, { i:'forest',            c:'#15803d' },
+  { i:'park',              c:'#22c55e' }, { i:'star',              c:'#f59e0b' },
+  { i:'diamond',           c:'#06b6d4' }, { i:'key',               c:'#a16207' },
+  { i:'lock',              c:'#7c3aed' }, { i:'lightbulb',         c:'#facc15' },
+  { i:'camera',            c:'#334155' }, { i:'headphones',        c:'#db2777' },
+  { i:'watch',             c:'#0f766e' }, { i:'brush',             c:'#c2410c' },
+  { i:'palette',           c:'#9333ea' }, { i:'science',           c:'#059669' },
+  { i:'public',            c:'#2563eb' }, { i:'home',              c:'#b45309' },
+  { i:'sports_basketball', c:'#ea580c' }, { i:'cruelty_free',      c:'#be123c' }
+];
+
+/* Nivells del joc de parelles: parelles i segons de partida */
+const NIVELLS_PARELLES = [
+  { parelles:4,  segons:70,  text:'8 cartes' },
+  { parelles:8,  segons:130, text:'16 cartes' },
+  { parelles:12, segons:190, text:'24 cartes' },
+  { parelles:16, segons:250, text:'32 cartes' }
+];
+
+/* Nivells de l'escena: objectes a memoritzar, segons per mirar i per respondre */
+const NIVELLS_ESCENA = [
+  { objectes:4,  mirar:6,  respondre:45, text:'4 objectes' },
+  { objectes:6,  mirar:8,  respondre:55, text:'6 objectes' },
+  { objectes:8,  mirar:10, respondre:70, text:'8 objectes' },
+  { objectes:10, mirar:12, respondre:90, text:'10 objectes' }
+];
+
+const COLOR_TEMA = { dia:'#ff9f45', nit:'#14101c' };
+const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?' };
+
+const AJUDA = {
+  home: '<ul><li>Tria un joc de la llista.</li><li>Tots els jocs tenen un compte enrere: quan arriba a zero, s\'acaba la partida.</li><li>El botó de la careta canvia entre mode clar i fosc.</li></ul>',
+  parelles: '<ul><li>Totes les cartes comencen cap per avall.</li><li>Toca una carta per girar-la i després una altra.</li><li>Si les dues tenen el mateix dibuix, es queden destapades.</li><li>Si no, es tornen a girar i pots provar-ho de nou.</li><li>Guanyes quan trobes totes les parelles abans que s\'acabi el temps.</li></ul>',
+  escena: '<ul><li>Primer apareix una escena amb uns quants objectes.</li><li>Mira-te-la bé: només la tens uns segons.</li><li>Després surt una llista amb els objectes de l\'escena barrejats amb d\'altres.</li><li>Toca els que hi havia i prem "Comprovar".</li></ul>'
+};
+
+/* ═══════════════════════════════════════════════════════
+   ESTAT
+   ═══════════════════════════════════════════════════════ */
+let joc = 'home';                 // 'home' | 'parelles' | 'escena'
+let efectesActius = true;
+
+let nivellParelles = 1;           // índex dins de NIVELLS_PARELLES
+let nivellEscena   = 1;           // índex dins de NIVELLS_ESCENA
+let nivellEditant  = 'parelles';  // quin joc configura la finestra de nivell
+
+// Parelles
+let cartes = [], girades = [], bloqueig = false, trobades = 0, intents = 0;
+
+// Escena
+let faseEscena = 'mirar';         // 'mirar' | 'triar' | 'revisat'
+let objectesEscena = [], seleccio = [];
+
+// Temporitzador
+let tempsRestant = 0, tickTimer = null, tempsTotal = 0, aturatPerModal = false;
+let temporitzadorFase = null;
+
+// Estadístiques
+let victories = Number(localStorage.getItem('wins') || 0);
+
+let currentOrientation = 'portrait';
+let appContext = 'web-browser';
+
+/* ═══════════════════════════════════════════════════════
+   UTILITATS
+   ═══════════════════════════════════════════════════════ */
+function setIcon(btn, name){ btn.querySelector('.material-symbols-rounded').textContent = name; }
+
+function barrejar(llista){
+  const a = [...llista];
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function mmss(s){
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+
+let logTimer = null;
+function log(msg, durada = 2600){
+  const caixa = joc === 'escena' ? $('logEscena') : $('logParelles');
+  caixa.textContent = msg;
+  caixa.classList.add('show');
+  clearTimeout(logTimer);
+  if (durada > 0) logTimer = setTimeout(() => caixa.classList.remove('show'), durada);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMA I EFECTES
+   ═══════════════════════════════════════════════════════ */
+function aplicarTema(isDark){
+  document.body.classList.toggle('day', !isDark);
+  setIcon(themeToggle, isDark ? 'light_mode' : 'dark_mode');
+  metaThemeColor.setAttribute('content', isDark ? COLOR_TEMA.nit : COLOR_TEMA.dia);
+}
+themeToggle.addEventListener('click', () => {
+  const isDark = document.body.classList.contains('day');
+  aplicarTema(isDark);
+  localStorage.setItem('darkMode', isDark);
+});
+
+soundBtn.addEventListener('click', () => {
+  efectesActius = !efectesActius;
+  localStorage.setItem('efectes', efectesActius);
+  soundBtn.classList.toggle('off', !efectesActius);
+  log(efectesActius ? 'Efectes activats' : 'Efectes desactivats');
+});
+
+/* Celebració: unes espurnes que surten disparades des d'un punt */
+function celebrar(element, quantitat = 14){
+  if (!efectesActius) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const r = element.getBoundingClientRect();
+  const x = r.left + r.width / 2, y = r.top + r.height / 2;
+  const colors = ['#ffd166','#f0a020','#ec4899','#22c55e','#38bdf8','#a855f7'];
+  for (let i = 0; i < quantitat; i++){
+    const p = document.createElement('span');
+    p.className = 'espurna';
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 60 + Math.random() * 90;
+    p.style.left = x + 'px';
+    p.style.top  = y + 'px';
+    p.style.background = colors[i % colors.length];
+    p.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+    p.style.setProperty('--rot', (Math.random() * 540 - 270) + 'deg');
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 950);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   FINESTRES EMERGENTS
+   ═══════════════════════════════════════════════════════ */
+let modalObert = null, focusAnterior = null;
+
+function obrirModal(overlay){
+  if (modalObert) tancarModal(modalObert);
+  focusAnterior = document.activeElement;
+  overlay.classList.add('active');
+  overlay.setAttribute('aria-hidden', 'false');
+  modalObert = overlay;
+  if (tickTimer){ aturatPerModal = true; pararRellotge(); }
+  const boto = overlay.querySelector('.btn-big');
+  if (boto) boto.focus({ preventScroll:true });
+}
+
+function tancarModal(overlay){
+  overlay.classList.remove('active');
+  overlay.setAttribute('aria-hidden', 'true');
+  if (modalObert === overlay) modalObert = null;
+  if (aturatPerModal && tempsRestant > 0){ aturatPerModal = false; arrencarRellotge(); }
+  if (focusAnterior && typeof focusAnterior.focus === 'function') focusAnterior.focus({ preventScroll:true });
+}
+
+document.querySelectorAll('.modal-overlay [data-close]').forEach(b => {
+  b.addEventListener('click', () => tancarModal(b.closest('.modal-overlay')));
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modalObert && modalObert !== resultOverlay) tancarModal(modalObert);
+});
+
+helpBtn.addEventListener('click', () => {
+  $('helpText').innerHTML = AJUDA[joc] || AJUDA.home;
+  obrirModal(helpOverlay);
+});
+
+infoBtn.addEventListener('click', () => {
+  $('wins').textContent = victories;
+  const millor = localStorage.getItem('bestTime_' + nivellParelles);
+  $('bestTime').textContent = millor ? mmss(Number(millor)) : '—';
+  $('infoVersion').textContent = 'Versió ' + $('version').textContent;
+  obrirModal(infoOverlay);
+});
+
+/* ═══════════════════════════════════════════════════════
+   COMPTE ENRERE
+   ═══════════════════════════════════════════════════════ */
+let alAcabarElTemps = null;
+
+function pintarRellotge(){
+  const txt = mmss(Math.max(0, tempsRestant));
+  $('timeLeft').textContent  = txt;
+  $('timeLeft2').textContent = txt;
+  const perill = tempsRestant <= 10;
+  $('timeChip').classList.toggle('alerta', perill);
+  $('timeChip2').classList.toggle('alerta', perill);
+}
+
+function arrencarRellotge(){
+  pararRellotge();
+  tickTimer = setInterval(() => {
+    tempsRestant--;
+    pintarRellotge();
+    if (tempsRestant <= 0){
+      pararRellotge();
+      if (alAcabarElTemps) alAcabarElTemps();
+    }
+  }, 1000);
+}
+
+function pararRellotge(){ clearInterval(tickTimer); tickTimer = null; }
+
+function iniciarCompte(segons, alFinal){
+  tempsTotal = segons;
+  tempsRestant = segons;
+  alAcabarElTemps = alFinal;
+  aturatPerModal = false;
+  pintarRellotge();
+  arrencarRellotge();
+}
+
+function aturarTot(){
+  pararRellotge();
+  clearTimeout(temporitzadorFase);
+  temporitzadorFase = null;
+  alAcabarElTemps = null;
+  aturatPerModal = false;
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAVEGACIÓ ENTRE PANTALLES
+   ═══════════════════════════════════════════════════════ */
+function mostrarPantalla(nom){
+  joc = nom;
+  homeScreen.classList.toggle('active', nom === 'home');
+  parellesScreen.classList.toggle('active', nom === 'parelles');
+  escenaScreen.classList.toggle('active', nom === 'escena');
+
+  backBtn.hidden = restartBtn.hidden = levelBtn.hidden = (nom === 'home');
+  $('brandText').textContent = TITOLS[nom];
+  programarAjust();
+}
+
+backBtn.addEventListener('click', () => {
+  aturarTot();
+  mostrarPantalla('home');
+});
+
+restartBtn.addEventListener('click', () => {
+  if (joc === 'parelles') iniciarParelles();
+  else if (joc === 'escena') iniciarEscena();
+});
+
+document.querySelectorAll('.game-card').forEach(card => {
+  card.addEventListener('click', () => obrirNivell(card.dataset.joc));
+});
+
+/* ═══════════════════════════════════════════════════════
+   TRIA DE NIVELL
+   ═══════════════════════════════════════════════════════ */
+function obrirNivell(quinJoc){
+  nivellEditant = quinJoc;
+  const esParelles = quinJoc === 'parelles';
+  const llista = esParelles ? NIVELLS_PARELLES : NIVELLS_ESCENA;
+  const triat  = esParelles ? nivellParelles : nivellEscena;
+
+  $('levelTitle').textContent = esParelles ? 'Quantes parelles?' : 'Quants objectes?';
+  levelGrid.innerHTML = '';
+
+  llista.forEach((n, idx) => {
+    const boto = document.createElement('button');
+    boto.type = 'button';
+    boto.className = 'size-option';
+    boto.setAttribute('role', 'radio');
+    boto.setAttribute('aria-checked', idx === triat ? 'true' : 'false');
+    boto.dataset.idx = idx;
+
+    const quantitat = esParelles ? n.parelles : n.objectes;
+    const mini = document.createElement('div');
+    mini.className = 'mini';
+    const cols = quantitat <= 4 ? 2 : (quantitat <= 8 ? 4 : (quantitat <= 12 ? 4 : 4));
+    mini.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    mini.setAttribute('aria-hidden', 'true');
+    const cel = esParelles ? Math.min(quantitat * 2, 16) : Math.min(quantitat, 16);
+    for (let i = 0; i < cel; i++) mini.appendChild(document.createElement('i'));
+
+    const titol = document.createElement('span');
+    titol.textContent = esParelles ? `${n.parelles} parelles` : `${n.objectes} objectes`;
+    const sub = document.createElement('small');
+    sub.textContent = esParelles ? n.text : `${n.mirar} s per mirar`;
+
+    boto.append(mini, titol, sub);
+    boto.addEventListener('click', () => {
+      levelGrid.querySelectorAll('.size-option').forEach(b => b.setAttribute('aria-checked', 'false'));
+      boto.setAttribute('aria-checked', 'true');
+      if (esParelles) nivellParelles = idx; else nivellEscena = idx;
+      localStorage.setItem(esParelles ? 'nivellParelles' : 'nivellEscena', idx);
+    });
+    levelGrid.appendChild(boto);
+  });
+
+  obrirModal(levelOverlay);
+}
+
+$('levelStartBtn').addEventListener('click', () => {
+  tancarModal(levelOverlay);
+  if (nivellEditant === 'parelles') iniciarParelles();
+  else iniciarEscena();
+});
+
+levelBtn.addEventListener('click', () => obrirNivell(joc));
+
+/* ═══════════════════════════════════════════════════════
+   MIDA DELS TAULERS
+   Busca la disposició de files i columnes que aprofita
+   millor l'espai lliure, i en fixa la mida de la cel·la.
+   ═══════════════════════════════════════════════════════ */
+function encaixar(board, total, proporcio){
+  if (!total) return;
+  const wrap = board.parentElement;
+  const wcs = getComputedStyle(wrap);
+  let availW = wrap.clientWidth  - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight);
+  let availH = wrap.clientHeight - parseFloat(wcs.paddingTop)  - parseFloat(wcs.paddingBottom);
+  if (availW < 40) availW = window.innerWidth * 0.9;
+  if (availH < 40) availH = window.innerHeight * 0.5;
+
+  const bcs = getComputedStyle(board);
+  const marcX = parseFloat(bcs.paddingLeft) + parseFloat(bcs.paddingRight) +
+                parseFloat(bcs.borderLeftWidth) + parseFloat(bcs.borderRightWidth);
+  const marcY = parseFloat(bcs.paddingTop) + parseFloat(bcs.paddingBottom) +
+                parseFloat(bcs.borderTopWidth) + parseFloat(bcs.borderBottomWidth);
+  const gap = total > 20 ? 6 : 8;
+
+  let millor = { area:0, cols:1, w:10, h:10 };
+  for (let cols = 1; cols <= total; cols++){
+    const files = Math.ceil(total / cols);
+    const w = (availW - marcX - gap * (cols - 1)) / cols;
+    const h = (availH - marcY - gap * (files - 1)) / files;
+    if (w <= 8 || h <= 8) continue;
+    // La cel·la manté la proporció demanada (amplada/alçada)
+    let cw = Math.min(w, h * proporcio);
+    let ch = cw / proporcio;
+    const area = cw * ch * total;
+    if (area > millor.area) millor = { area, cols, w:cw, h:ch };
+  }
+
+  board.style.setProperty('--gap', gap + 'px');
+  board.style.setProperty('--cw', Math.floor(millor.w) + 'px');
+  board.style.setProperty('--ch', Math.floor(millor.h) + 'px');
+  board.style.gridTemplateColumns = `repeat(${millor.cols}, ${Math.floor(millor.w)}px)`;
+}
+
+function ajustarTauler(){
+  if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 0.78);
+  if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length)
+    encaixar(sceneBoard, sceneBoard.children.length, 1);
+}
+
+let ajustPendent = false;
+function programarAjust(){
+  if (ajustPendent) return;
+  ajustPendent = true;
+  requestAnimationFrame(() => { ajustPendent = false; ajustarTauler(); });
+}
+if ('ResizeObserver' in window){
+  const ro = new ResizeObserver(programarAjust);
+  ro.observe(document.querySelector('#parellesScreen .board-wrap'));
+  ro.observe(escenaWrap);
+}
+
+/* ═══════════════════════════════════════════════════════
+   JOC 1 — PARELLES
+   ═══════════════════════════════════════════════════════ */
+const DORS_SVG = `<svg viewBox="0 0 512 512" aria-hidden="true"><g transform="translate(-59.04 -59.04) scale(0.61703) translate(0 960)"><path d="M352-120H200q-33 0-56.5-23.5T120-200v-152q48 0 84-30.5t36-77.5q0-47-36-77.5T120-568v-152q0-33 23.5-56.5T200-800h160q0-42 29-71t71-29q42 0 71 29t29 71h160q33 0 56.5 23.5T800-720v160q42 0 71 29t29 71q0 42-29 71t-71 29v160q0 33-23.5 56.5T720-120H568q0-50-31.5-85T460-240q-45 0-76.5 35T352-120Z" fill="#ffffff" opacity=".92"/></g><g transform="translate(176.5 297.2) scale(0.3376)"><path d="M253 -20Q193 -20 142.0 -43.0Q91 -66 60.5 -118.5Q30 -171 30 -257Q30 -337 62.0 -391.5Q94 -446 152.5 -473.5Q211 -501 289 -501Q346 -501 394.5 -486.0Q443 -471 469 -454Q489 -441 500.5 -423.0Q512 -405 512 -378V-63H349V-356Q339 -361 327.0 -364.5Q315 -368 296 -368Q253 -368 226.0 -341.5Q199 -315 199 -256Q199 -193 223.5 -170.0Q248 -147 285 -147Q315 -147 335.0 -157.5Q355 -168 371 -181L376 -48Q353 -36 323.5 -28.0Q294 -20 253 -20ZM352 -11V-101H512V-7Q512 63 478.0 108.5Q444 154 386.5 176.0Q329 198 258 198Q205 198 163.5 189.5Q122 181 98 165Q62 141 62 97Q62 74 71.5 55.0Q81 36 93 27Q122 43 158.5 54.0Q195 65 235 65Q288 65 320.0 47.0Q352 29 352 -11Z" fill="#6d28d9"/></g></svg>`;
+
+function iniciarParelles(){
+  aturarTot();
+  mostrarPantalla('parelles');
+
+  const nivell = NIVELLS_PARELLES[nivellParelles];
+  const triades = barrejar(POOL).slice(0, nivell.parelles);
+  cartes = barrejar([...triades, ...triades]);
+
+  girades = []; bloqueig = false; trobades = 0; intents = 0;
+  $('found').textContent = '0';
+  $('totalPairs').textContent = nivell.parelles;
+  $('moves').textContent = '0';
+
+  cardsBoard.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  cartes.forEach((carta, idx) => {
+    const boto = document.createElement('button');
+    boto.type = 'button';
+    boto.className = 'card';
+    boto.dataset.idx = idx;
+    boto.setAttribute('aria-label', 'Carta amagada');
+    boto.innerHTML =
+      '<span class="card-inner">' +
+        '<span class="face dors">' + DORS_SVG + '</span>' +
+        '<span class="face cara"><span class="material-symbols-rounded" style="color:' + carta.c + '">' + carta.i + '</span></span>' +
+      '</span>';
+    boto.addEventListener('click', () => girarCarta(idx));
+    frag.appendChild(boto);
+  });
+  cardsBoard.appendChild(frag);
+  ajustarTauler();
+
+  iniciarCompte(nivell.segons, () => finalPartida(false, 'S\'ha acabat el temps'));
+  log('Troba totes les parelles!');
+}
+
+function girarCarta(idx){
+  if (bloqueig || modalObert) return;
+  const el = cardsBoard.children[idx];
+  if (!el || el.classList.contains('girada') || el.classList.contains('aparellada')) return;
+
+  el.classList.add('girada');
+  el.setAttribute('aria-label', 'Carta destapada');
+  girades.push(idx);
+  if (girades.length < 2) return;
+
+  intents++;
+  $('moves').textContent = intents;
+  const [a, b] = girades;
+  const elA = cardsBoard.children[a], elB = cardsBoard.children[b];
+
+  if (cartes[a].i === cartes[b].i){
+    girades = [];
+    elA.classList.add('aparellada'); elB.classList.add('aparellada');
+    elA.disabled = elB.disabled = true;
+    celebrar(elB);
+    trobades++;
+    $('found').textContent = trobades;
+    if (trobades === NIVELLS_PARELLES[nivellParelles].parelles){
+      const usat = tempsTotal - tempsRestant;
+      finalPartida(true, null, usat);
+    } else {
+      log('Parella trobada!');
+    }
+  } else {
+    bloqueig = true;
+    elA.classList.add('fallada'); elB.classList.add('fallada');
+    setTimeout(() => {
+      elA.classList.remove('girada','fallada');
+      elB.classList.remove('girada','fallada');
+      elA.setAttribute('aria-label','Carta amagada');
+      elB.setAttribute('aria-label','Carta amagada');
+      girades = []; bloqueig = false;
+    }, 850);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   JOC 2 — QUÈ HI HAVIA?
+   ═══════════════════════════════════════════════════════ */
+function iniciarEscena(){
+  aturarTot();
+  mostrarPantalla('escena');
+
+  const nivell = NIVELLS_ESCENA[nivellEscena];
+  faseEscena = 'mirar';
+  seleccio = [];
+  objectesEscena = barrejar(POOL).slice(0, nivell.objectes);
+
+  escenaWrap.hidden = false;
+  optionsBoard.hidden = true;
+  checkWrap.hidden = true;
+  optionsBoard.classList.remove('bloquejada');
+  $('triadesChip').hidden = true;
+  $('faseIcon').textContent = 'visibility';
+  $('faseText').textContent = 'Memoritza';
+
+  // L'escena: una graella amb algunes cel·les buides, perquè no sembli una llista
+  const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
+  const posicions = barrejar(Array.from({ length: total }, (_, i) => i)).slice(0, nivell.objectes);
+
+  sceneBoard.innerHTML = '';
+  for (let i = 0; i < total; i++){
+    const cel = document.createElement('div');
+    const on = posicions.indexOf(i);
+    if (on === -1){
+      cel.className = 'tile buit';
+    } else {
+      const o = objectesEscena[on];
+      cel.className = 'tile';
+      cel.innerHTML = '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>';
+    }
+    sceneBoard.appendChild(cel);
+  }
+  ajustarTauler();
+
+  log('Memoritza els objectes…', 0);
+  iniciarCompte(nivell.mirar, passarATriar);
+  temporitzadorFase = setTimeout(passarATriar, nivell.mirar * 1000 + 200);
+}
+
+function passarATriar(){
+  if (faseEscena !== 'mirar') return;
+  aturarTot();
+  faseEscena = 'triar';
+
+  const nivell = NIVELLS_ESCENA[nivellEscena];
+  const distractors = barrejar(POOL.filter(p => !objectesEscena.some(o => o.i === p.i)))
+                        .slice(0, nivell.objectes);
+  const opcions = barrejar([...objectesEscena, ...distractors]);
+
+  escenaWrap.hidden = true;
+  optionsBoard.hidden = false;
+  checkWrap.hidden = false;
+  checkBtn.disabled = true;
+  $('triadesChip').hidden = false;
+  $('triats').textContent = '0';
+  $('aTriar').textContent = nivell.objectes;
+  $('faseIcon').textContent = 'psychology';
+  $('faseText').textContent = 'Tria';
+
+  optionsBoard.innerHTML = '';
+  opcions.forEach(o => {
+    const boto = document.createElement('button');
+    boto.type = 'button';
+    boto.className = 'opt-tile';
+    boto.dataset.icona = o.i;
+    boto.setAttribute('aria-pressed', 'false');
+    boto.setAttribute('aria-label', 'Objecte');
+    boto.innerHTML =
+      '<span class="material-symbols-rounded" style="color:' + o.c + '">' + o.i + '</span>' +
+      '<span class="marca"><span class="material-symbols-rounded">check_circle</span></span>';
+    boto.addEventListener('click', () => triarObjecte(boto, o.i));
+    optionsBoard.appendChild(boto);
+  });
+
+  iniciarCompte(nivell.respondre, () => comprovarEscena(true));
+}
+
+function triarObjecte(boto, icona){
+  if (faseEscena !== 'triar' || modalObert) return;
+  const objectiu = NIVELLS_ESCENA[nivellEscena].objectes;
+  const i = seleccio.indexOf(icona);
+
+  if (i === -1){
+    if (seleccio.length >= objectiu){
+      log(`Només en pots triar ${objectiu}`);
+      return;
+    }
+    seleccio.push(icona);
+    boto.setAttribute('aria-pressed', 'true');
+  } else {
+    seleccio.splice(i, 1);
+    boto.setAttribute('aria-pressed', 'false');
+  }
+
+  $('triats').textContent = seleccio.length;
+  checkBtn.disabled = seleccio.length !== objectiu;
+}
+
+checkBtn.addEventListener('click', () => comprovarEscena(false));
+
+function comprovarEscena(perTemps){
+  if (faseEscena !== 'triar') return;
+  aturarTot();
+  faseEscena = 'revisat';
+  optionsBoard.classList.add('bloquejada');
+  checkBtn.disabled = true;
+
+  const correctes = objectesEscena.map(o => o.i);
+  let encerts = 0;
+
+  optionsBoard.querySelectorAll('.opt-tile').forEach(boto => {
+    const icona = boto.dataset.icona;
+    const triat = seleccio.includes(icona);
+    const toca  = correctes.includes(icona);
+    if (triat && toca){ boto.classList.add('correcta'); encerts++; celebrar(boto, 6); }
+    else if (triat && !toca) boto.classList.add('erronia');
+    else if (!triat && toca) boto.classList.add('perduda');
+  });
+
+  const guanyat = encerts === correctes.length;
+  finalPartida(guanyat,
+    perTemps ? 'S\'ha acabat el temps' : null,
+    null,
+    `${encerts} de ${correctes.length} objectes encertats`);
+}
+
+/* ═══════════════════════════════════════════════════════
+   FINAL DE PARTIDA
+   ═══════════════════════════════════════════════════════ */
+function finalPartida(guanyat, motiu, segonsUsats, detall){
+  aturarTot();
+
+  if (guanyat){
+    victories++;
+    localStorage.setItem('wins', victories);
+    if (joc === 'parelles' && segonsUsats != null){
+      const clau = 'bestTime_' + nivellParelles;
+      const millor = Number(localStorage.getItem(clau) || 0);
+      if (!millor || segonsUsats < millor) localStorage.setItem(clau, segonsUsats);
+    }
+  }
+
+  $('resultIcon').textContent = guanyat ? 'emoji_events' : 'timer';
+  $('resultTitle').textContent = guanyat ? 'Molt bé!' : 'Gairebé!';
+
+  let text;
+  if (guanyat){
+    text = joc === 'parelles'
+      ? 'Has trobat totes les parelles.'
+      : 'Has recordat tots els objectes de l\'escena.';
+  } else {
+    text = motiu ? motiu + '. Torna-ho a provar!' : 'Torna-ho a provar!';
+  }
+  $('resultText').textContent = text;
+
+  const stats = $('resultStats');
+  stats.innerHTML = '';
+  const afegir = (icona, color, etiqueta, valor) => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.innerHTML = '<span class="material-symbols-rounded" style="color:' + color + '">' + icona + '</span> ' +
+                     etiqueta + (valor !== undefined ? ' <b>' + valor + '</b>' : '');
+    stats.appendChild(chip);
+  };
+
+  if (joc === 'parelles'){
+    afegir('check_circle', '#22c55e', 'Parelles', `${trobades}/${NIVELLS_PARELLES[nivellParelles].parelles}`);
+    afegir('psychology', '#f59e0b', 'Intents', intents);
+    if (guanyat && segonsUsats != null) afegir('timer', '#0ea5e9', 'Temps', mmss(segonsUsats));
+  } else {
+    if (detall) afegir('check_circle', '#22c55e', detall);
+  }
+  afegir('emoji_events', '#f59e0b', 'Guanyades', victories);
+
+  if (guanyat){
+    setTimeout(() => celebrar(document.querySelector('.stage'), 26), 120);
+  }
+  obrirModal(resultOverlay);
+}
+
+$('resultAgainBtn').addEventListener('click', () => {
+  tancarModal(resultOverlay);
+  if (joc === 'parelles') iniciarParelles();
+  else iniciarEscena();
+});
+
+$('resultMenuBtn').addEventListener('click', () => {
+  tancarModal(resultOverlay);
+  aturarTot();
+  mostrarPantalla('home');
+});
+
+/* ═══════════════════════════════════════════════════════
+   CONTEXT I ORIENTACIÓ
+   ═══════════════════════════════════════════════════════ */
+function detectAppContext(){
+  if (navigator.standalone === true) appContext = 'ios-app';
+  else if (window.matchMedia('(display-mode: standalone)').matches) appContext = 'android-app';
+  else appContext = 'web-browser';
+  document.body.classList.remove('web-browser','ios-app','android-app');
+  document.body.classList.add(appContext);
+}
+
+function aplicarOrientacio(){
+  currentOrientation = window.innerWidth < window.innerHeight ? 'portrait' : 'landscape';
+  document.body.classList.remove('portrait-mode','landscape-mode');
+  document.body.classList.add(currentOrientation === 'portrait' ? 'portrait-mode' : 'landscape-mode');
+}
+
+window.addEventListener('resize', () => { aplicarOrientacio(); programarAjust(); });
+window.addEventListener('orientationchange', () => setTimeout(() => {
+  aplicarOrientacio(); programarAjust();
+}, 120));
+
+// Si l'app passa a segon pla, el rellotge s'atura per no perdre temps
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){ if (tickTimer){ aturatPerModal = true; pararRellotge(); } }
+  else if (aturatPerModal && !modalObert && tempsRestant > 0){ aturatPerModal = false; arrencarRellotge(); }
+});
+
+/* ═══════════════════════════════════════════════════════
+   ARRENCADA
+   ═══════════════════════════════════════════════════════ */
+aplicarTema(localStorage.getItem('darkMode') === 'true');
+efectesActius = localStorage.getItem('efectes') !== 'false';
+soundBtn.classList.toggle('off', !efectesActius);
+
+const np = parseInt(localStorage.getItem('nivellParelles'), 10);
+if (np >= 0 && np < NIVELLS_PARELLES.length) nivellParelles = np;
+const ne = parseInt(localStorage.getItem('nivellEscena'), 10);
+if (ne >= 0 && ne < NIVELLS_ESCENA.length) nivellEscena = ne;
+
+detectAppContext();
+aplicarOrientacio();
+mostrarPantalla('home');
+
+// Service worker: permet instal·lar l'app i obrir-la sense connexió
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.warn('Service worker:', err));
+  });
+}
+</script>
 </body>
 </html>
