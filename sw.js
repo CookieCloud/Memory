@@ -1,7 +1,7 @@
 /* Service worker de Memòria
    Puja el número de CACHE cada cop que canviïs index.html: així el navegador
    descarta la còpia antiga i es queda la nova. */
-const CACHE = 'memoria-v1.00';
+const CACHE = 'memoria-v1.01';
 
 const FITXERS = [
   './',
