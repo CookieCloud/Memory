@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.04
+    Version: 2.05
 -->
 <html lang="ca">
 <head>
@@ -709,7 +709,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.04</span>
+      <span class="version" id="version">v2.05</span>
     </div>
   </footer>
 </div>
@@ -722,7 +722,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
     <p class="credit">A "Memory" pots jugar utilitzant la col·lecció de dibuixos (icones), o bé utilitzant les fotos fetes per nosaltres.</p>
     <div style="display:flex;gap:12px;margin:16px 0;width:100%;justify-content:center;">
        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border)">
+          <div id="previewFotoContenidor" style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border)">
              <span class="material-symbols-rounded" style="color:#0ea5e9;font-size:40px;">sports_soccer</span>
           </div>
        </div>
@@ -991,12 +991,20 @@ assetModeBtn.addEventListener('click', () => {
   localStorage.setItem('modeGrafic', modeGrafic);
   aplicarModeGraficSelector();
   
-  if (modeGrafic === 'foto' && POOL_FOTOS.length === 0) {
-    log("Revisant la carpeta Fotos...", 1500);
-    escanejarFotosDirectori();
-  } else {
-    log(`Mode canviat a ${modeGrafic === 'foto' ? 'Fotos' : 'Dibuixos'}`, 2000);
-  }
+    if (modeGrafic) {
+      aplicarModeGraficSelector();
+      if (modeGrafic === 'foto') escanejarFotosDirectori();
+    } else {
+      // Mode per primera vegada: Escanegem primer per veure si hi ha fotos
+      escanejarFotosDirectori().then(() => {
+        if (POOL_FOTOS.length > 0) {
+          // Si en troba, n'agafa una a l'atzar i la posa al requadre
+          const randomFoto = POOL_FOTOS[Math.floor(Math.random() * POOL_FOTOS.length)];
+          $('previewFotoContenidor').innerHTML = `<img src="Fotos/${randomFoto.id}.png" alt="Foto" style="width:75%;height:75%;object-fit:cover;border-radius:8px;pointer-events:none;">`;
+        }
+        obrirModal(welcomeOverlay);
+      });
+    }
   
   // Reinicia a l'inici per assegurar que els canvis s'apliquin correctament sense errors
   aturarTot();
