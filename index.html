@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 1.09
+    Version: 1.10
 -->
 <html lang="ca">
 <head>
@@ -132,7 +132,7 @@ body.day .brand-icon{filter:drop-shadow(0 2px 4px rgba(150,50,0,.4))}
 
 /* ── barra de control ───────────────────────────────── */
 .bar{
-  --pill:clamp(28px, calc((100vw - 90px) / 7.2), 44px);
+  --pill:clamp(28px, calc((100vw - 90px) / 8.2), 44px);
   display:flex;align-items:center;gap:4px;flex-wrap:nowrap;
   background:var(--bar-bg);border:1px solid var(--bar-border);
   border-radius:99px;padding:6px 7px 8px;box-shadow:var(--bar-shadow);
@@ -560,6 +560,11 @@ body.landscape-mode .menu{justify-content:flex-start}
           <span class="material-symbols-rounded">grid_view</span>
         </button>
 
+        <button class="pill" id="historyBtn" title="Historial de partides" aria-label="Historial de partides"
+                style="--glow:#64748b;--tint:#475569;--tint-deep:#334155">
+          <span class="material-symbols-rounded">bar_chart</span>
+        </button>
+
         <button class="pill" id="helpBtn" title="Com es juga" aria-label="Com es juga"
                 style="--glow:#fbbf24;--tint:#f59e0b;--tint-deep:#b45309">
           <span class="material-symbols-rounded">help</span>
@@ -625,15 +630,6 @@ body.landscape-mode .menu{justify-content:flex-start}
             <span class="txt">
               <b>On era?</b>
               <small>Fixa't bé on és cada objecte a la graella. On estava situat aquest en concret?</small>
-            </span>
-          </button>
-
-          <!-- Nou botó d'historial amb disseny de joc -->
-          <button class="game-card" id="historyMenuBtn" style="--tint:#64748b;--tint-deep:#475569">
-            <span class="ico"><span class="material-symbols-rounded">bar_chart</span></span>
-            <span class="txt">
-              <b>Historial de partides</b>
-              <small>Consulta els teus rècords i les estadístiques de les partides jugades.</small>
             </span>
           </button>
 
@@ -762,7 +758,7 @@ body.landscape-mode .menu{justify-content:flex-start}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v1.09</span>
+      <span class="version" id="version">v1.10</span>
     </div>
   </footer>
 </div>
@@ -867,7 +863,7 @@ const helpBtn        = $('helpBtn');
 const backBtn        = $('backBtn');
 const restartBtn     = $('restartBtn');
 const levelBtn       = $('levelBtn');
-const historyMenuBtn = $('historyMenuBtn');
+const historyBtn     = $('historyBtn');
 
 const homeScreen     = $('homeScreen');
 const parellesScreen = $('parellesScreen');
@@ -1117,7 +1113,7 @@ infoBtn.addEventListener('click', () => {
   obrirModal(infoOverlay);
 });
 
-historyMenuBtn.addEventListener('click', () => {
+historyBtn.addEventListener('click', () => {
   const cont = $('historyContent');
   cont.innerHTML = '';
   
@@ -1237,10 +1233,7 @@ restartBtn.addEventListener('click', () => {
 });
 
 document.querySelectorAll('.game-card').forEach(card => {
-  // Ignorem la targeta de l'historial que té un funcionament especial
-  if (card.id !== 'historyMenuBtn') {
-    card.addEventListener('click', () => obrirNivell(card.dataset.joc));
-  }
+  card.addEventListener('click', () => obrirNivell(card.dataset.joc));
 });
 
 /* ═══════════════════════════════════════════════════════
