@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.14
+    Version: 2.15
 -->
 <html lang="ca">
 <head>
@@ -728,7 +728,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.14</span>
+      <span class="version" id="version">v2.15</span>
     </div>
   </footer>
 </div>
@@ -1713,6 +1713,7 @@ function getGridCols(total) {
 
 function encaixar(board, total, proporcio, maxCols, minCols = 1){
   if (!total) return;
+  let millor = { area: 0, cols: 1, w: 50, h: 50 };
   const wrap = board.parentElement; const wcs = getComputedStyle(wrap);
   let availW = wrap.clientWidth - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight);
   let availH = wrap.clientHeight - parseFloat(wcs.paddingTop) - parseFloat(wcs.paddingBottom);
