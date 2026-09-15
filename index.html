@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.08
+    Version: 2.09
 -->
 <html lang="ca">
 <head>
@@ -182,7 +182,10 @@ body.day .pill:active{
 @keyframes latir{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
 
 /* ── pantalles ──────────────────────────────────────── */
-.screen{display:none;flex:1;min-height:0;flex-direction:column;gap:8px}
+/* Fem les pantalles relatives perquè el rètol hi pugui surar */
+.screen{display:none;flex:1;min-height:0;flex-direction:column;gap:8px;position:relative;}
+/* Fotos més grans a les opcions de 'Què hi havia?' */
+.opt-tile .foto-asset{width:90%;height:90%;border-radius:12px;}
 .screen.active{display:flex}
 
 /* ── menú de jocs ───────────────────────────────────── */
@@ -313,10 +316,10 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .tile.clickable{cursor:pointer;transition:transform .1s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,filter .2s,border .2s;}
 .tile.clickable:active{transform:scale(0.92);}
 .tile.seq-activa{
-  transform:scale(1.12); filter:brightness(1.2);
-  box-shadow:0 0 20px var(--accent-deep); z-index:2; border:2px solid var(--accent);
+  transform:scale(1.15); filter:brightness(1.1);
+  box-shadow:0 0 30px #a855f7, inset 0 0 15px rgba(168,85,247,0.6); z-index:2; border:4px solid #a855f7;
 }
-body.day .tile.seq-activa{filter:brightness(1.1);}
+body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, inset 0 0 15px rgba(147,51,234,0.4); }
 .tile.buit.clickable{
   background:var(--chip-bg); box-shadow:var(--chip-shadow);
   border:2px dashed var(--board-border); opacity:0.7;
@@ -686,7 +689,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
           </span>
         </div>
         
-        <div id="oneraTargetContainer" hidden style="display:flex;justify-content:center;width:100%;z-index:10">
+        <div id="oneraTargetContainer" hidden style="position:absolute; top:20px; left:50%; transform:translateX(-50%); z-index:100; pointer-events:none; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.4));">
           <div class="target-gegant-wrap">
              <span style="font-family:'Baloo 2';font-size:22px;margin-bottom:6px;">On era això?</span>
              <div id="objectiuGegantContenidor" style="width:80px;height:80px;display:grid;place-items:center;"></div>
@@ -709,7 +712,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.08</span>
+      <span class="version" id="version">v2.09</span>
     </div>
   </footer>
 </div>
@@ -722,9 +725,9 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
     <p class="credit">A "Memory" pots jugar utilitzant la col·lecció de dibuixos (icones), o bé utilitzant les fotos fetes per nosaltres.</p>
     <div style="display:flex;gap:12px;margin:16px 0;width:100%;justify-content:center;">
        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div id="previewFotoContenidor" style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border)">
-             <span class="material-symbols-rounded" style="color:#0ea5e9;font-size:40px;">sports_soccer</span>
-          </div>
+            <div id="previewFotoContenidor" style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border); overflow:hidden;">
+               <img src="Fotos/52.png" alt="Foto" style="width:100%;height:100%;object-fit:cover;">
+            </div>
        </div>
        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
           <div style="width:64px;height:64px;background:var(--chip-bg);border-radius:14px;display:grid;place-items:center;box-shadow:var(--chip-shadow);border:2px solid var(--chip-border)">
@@ -820,6 +823,17 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <button class="btn-soft" id="resultMenuBtn">
         <span class="material-symbols-rounded">home</span> Canviar de joc
       </button>
+    <div class="modal-actions">
+      <button class="btn-soft" id="resultMenuBtn">
+        <span class="material-symbols-rounded">home</span> Menú
+      </button>
+      <button class="btn-soft" id="resultLevelBtn" style="border-color:var(--accent-deep); color:var(--accent-deep);">
+        <span class="material-symbols-rounded">grid_view</span> Nivell
+      </button>
+      <button class="btn-big" id="resultAgainBtn">
+        <span class="material-symbols-rounded">replay</span> Jugar
+      </button>
+    </div>
       <button class="btn-big" id="resultAgainBtn">
         <span class="material-symbols-rounded">replay</span> Jugar de nou
       </button>
@@ -1130,14 +1144,29 @@ infoBtn.addEventListener('click', () => { $('wins').textContent = victories; $('
 $('btnTriaDibuixos').addEventListener('click', () => tancarBenvinguda('icona'));
 $('btnTriaFotos').addEventListener('click', () => tancarBenvinguda('foto'));
 
-function tancarBenvinguda(mode) {
+assetModeBtn.addEventListener('click', () => {
+  obrirModal(welcomeOverlay); // Ara sempre obre la finestra
+});
+
+async function tancarBenvinguda(mode) {
   modeGrafic = mode;
   localStorage.setItem('modeGrafic', mode);
   aplicarModeGraficSelector();
-  tancarModal(welcomeOverlay);
-  if (mode === 'foto') escanejarFotosDirectori();
-}
 
+  // Si triem fotos, ESPEREM que escanegi la carpeta abans de tancar
+  if (mode === 'foto') await escanejarFotosDirectori();
+
+  tancarModal(welcomeOverlay);
+
+  // Reiniciem la partida actual immediatament amb els nous gràfics
+  aturarTot();
+  if (joc === 'parelles') iniciarParelles();
+  else if (joc === 'escena') iniciarEscena();
+  else if (joc === 'sequencia') iniciarSequencia();
+  else if (joc === 'canvi') iniciarCanvi();
+  else if (joc === 'onera') iniciarOnera();
+}
+    
 /* ═══════════════════════════════════════════════════════
    COMPTE ENRERE I NAVEGACIÓ
    ═══════════════════════════════════════════════════════ */
@@ -1402,7 +1431,7 @@ function clicSequencia(idx) {
   if (idx === correcte) {
     seqPasJugador++; cel.classList.add('seq-activa'); setTimeout(() => cel.classList.remove('seq-activa'), 200);
     if (seqPasJugador === seqActiva.length) {
-      seqReproduint = true; celebrar(cel, 5); setTimeout(novaRondaSequencia, 1000);
+      seqReproduint = true; celebrar(cel, 15); setTimeout(novaRondaSequencia, 1000);
     }
   } else {
     cel.classList.add('erronia');
@@ -1641,7 +1670,7 @@ function encaixar(board, total, proporcio, maxCols, minCols = 1){
 }
 
 function ajustarTauler(){
-  if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 0.78, getGridCols(cartes.length));
+  if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 1, getGridCols(cartes.length));
   if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length) encaixar(sceneBoard, sceneBoard.children.length, 1, getGridCols(sceneBoard.children.length));
   if (joc === 'sequencia' && seqBoard.children.length) encaixar(seqBoard, seqBoard.children.length, 1, getGridCols(seqBoard.children.length));
   if (joc === 'canvi' && canviBoard.children.length) encaixar(canviBoard, canviBoard.children.length, 1, getGridCols(canviBoard.children.length));
@@ -1724,6 +1753,7 @@ historyBtn.addEventListener('click', () => {
 });
 
 $('resultAgainBtn').addEventListener('click', () => { tancarModal(resultOverlay); if (joc === 'parelles') iniciarParelles(); else if (joc === 'escena') iniciarEscena(); else if (joc === 'sequencia') iniciarSequencia(); else if (joc === 'canvi') iniciarCanvi(); else if (joc === 'onera') iniciarOnera(); });
+$('resultLevelBtn').addEventListener('click', () => { tancarModal(resultOverlay); obrirNivell(joc); });
 $('resultMenuBtn').addEventListener('click', () => { tancarModal(resultOverlay); aturarTot(); mostrarPantalla('home'); });
 if (screen.orientation && screen.orientation.lock) {
   screen.orientation.lock('portrait').catch(() => { /* S'ignora en navegadors PC */ });
