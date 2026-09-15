@@ -1423,7 +1423,7 @@ function clicSequencia(idx) {
   if (idx === correcte) {
     seqPasJugador++; cel.classList.add('seq-activa'); setTimeout(() => cel.classList.remove('seq-activa'), 200);
     if (seqPasJugador === seqActiva.length) {
-      seqReproduint = true; celebrar(cel, 25); setTimeout(novaRondaSequencia, 1000);
+      seqReproduint = true; celebrar(cel, 125); setTimeout(novaRondaSequencia, 1000);
     }
   } else {
     cel.classList.add('erronia');
