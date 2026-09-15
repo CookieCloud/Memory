@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.05
+    Version: 2.06
 -->
 <html lang="ca">
 <head>
@@ -709,7 +709,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.05</span>
+      <span class="version" id="version">v2.06</span>
     </div>
   </footer>
 </div>
@@ -1498,6 +1498,7 @@ function resoldreCanvi(idx) {
    ═══════════════════════════════════════════════════════ */
 function iniciarOnera(){
   aturarTot(); mostrarPantalla('onera'); oneraBoard.style.pointerEvents = 'auto';
+  oneraBoard.dataset.lockedCols = ''; // Alliberem memòria de columnes
   const nivell = NIVELLS_ONERA[nivellOnera];
   const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
   oneraDades = Array(total).fill(null);
@@ -1527,7 +1528,8 @@ function dibuixarTaulerOnera(dades, interactiu) {
 }
 
 function preguntarOnera() {
-  aturarTot(); oneraBoard.innerHTML = ''; dibuixarTaulerOnera(Array(oneraDades.length).fill(null), true);
+  aturarTot(); oneraBoard.dataset.lockedCols = oneraBoard.dataset.cols; // Bloquegem les columnes perquè no es moguin
+  oneraBoard.innerHTML = ''; dibuixarTaulerOnera(Array(oneraDades.length).fill(null), true);
   const plens = oneraDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
   oneraPosicio = plens[Math.floor(Math.random() * plens.length)]; oneraObjectiu = oneraDades[oneraPosicio];
   
@@ -1593,7 +1595,15 @@ function obrirNivell(quinJoc){
 }
 levelBtn.addEventListener('click', () => obrirNivell(joc));
 
-function encaixar(board, total, proporcio, maxCols){
+function getGridCols(total) {
+  if (total <= 4) return 2;
+  if (total <= 6) return 3;
+  if (total <= 16) return 4;
+  if (total <= 24) return 6;
+  return 8; // Màxim 8 columnes. Així les cartes s'expandeixen al màxim a PC
+}
+
+function encaixar(board, total, proporcio, maxCols, minCols = 1){
   if (!total) return;
   const wrap = board.parentElement; const wcs = getComputedStyle(wrap);
   let availW = wrap.clientWidth - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight);
@@ -1602,29 +1612,35 @@ function encaixar(board, total, proporcio, maxCols){
   const bcs = getComputedStyle(board);
   const marcX = parseFloat(bcs.paddingLeft) + parseFloat(bcs.paddingRight) + parseFloat(bcs.borderLeftWidth) + parseFloat(bcs.borderRightWidth);
   const marcY = parseFloat(bcs.paddingTop) + parseFloat(bcs.paddingBottom) + parseFloat(bcs.borderTopWidth) + parseFloat(bcs.borderBottomWidth);
-  const gap = total > 20 ? 6 : 8; let millor = { area:0, cols:1, w:10, h:10 };
+  const gap = total > 20 ? 6 : 8; let millor = { area:0, cols:minCols, w:10, h:10 };
   const sostre = Math.min(maxCols || total, total);
-  for (let cols = 1; cols <= sostre; cols++){
+  
+  for (let cols = minCols; cols <= sostre; cols++){
     const files = Math.ceil(total / cols);
     const w = (availW - marcX - gap * (cols - 1)) / cols;
     const h = (availH - marcY - gap * (files - 1)) / files;
     if (w <= 8 || h <= 8) continue;
     let cw = Math.min(w, h * proporcio), ch = cw / proporcio;
     const area = cw * ch * total;
-    if (area > millor.area) millor = { area, cols, w:cw, h:ch };
+    if (area >= millor.area) millor = { area, cols, w:cw, h:ch };
   }
   board.style.setProperty('--gap', gap + 'px'); board.style.setProperty('--cw', Math.floor(millor.w) + 'px');
   board.style.setProperty('--ch', Math.floor(millor.h) + 'px'); board.style.gridTemplateColumns = `repeat(${millor.cols}, ${Math.floor(millor.w)}px)`;
+  board.dataset.cols = millor.cols; // Memoritzem la decisió
 }
 
 function ajustarTauler(){
-  if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 0.78);
-  if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length) encaixar(sceneBoard, sceneBoard.children.length, 1, Math.ceil(Math.sqrt(sceneBoard.children.length * 1.6)));
-  if (joc === 'sequencia' && seqBoard.children.length) encaixar(seqBoard, seqBoard.children.length, 1, Math.ceil(Math.sqrt(seqBoard.children.length)));
-  if (joc === 'canvi' && canviBoard.children.length) encaixar(canviBoard, canviBoard.children.length, 1, Math.ceil(Math.sqrt(canviBoard.children.length * 1.6)));
-  if (joc === 'onera' && oneraBoard.children.length) encaixar(oneraBoard, oneraBoard.children.length, 1, Math.ceil(Math.sqrt(oneraBoard.children.length * 1.6)));
+  if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 0.78, getGridCols(cartes.length));
+  if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length) encaixar(sceneBoard, sceneBoard.children.length, 1, getGridCols(sceneBoard.children.length));
+  if (joc === 'sequencia' && seqBoard.children.length) encaixar(seqBoard, seqBoard.children.length, 1, getGridCols(seqBoard.children.length));
+  if (joc === 'canvi' && canviBoard.children.length) encaixar(canviBoard, canviBoard.children.length, 1, getGridCols(canviBoard.children.length));
+  if (joc === 'onera' && oneraBoard.children.length) {
+     let locked = parseInt(oneraBoard.dataset.lockedCols);
+     if (locked) encaixar(oneraBoard, oneraBoard.children.length, 1, locked, locked); // Forcem columnes
+     else encaixar(oneraBoard, oneraBoard.children.length, 1, getGridCols(oneraBoard.children.length));
+  }
 }
-
+    
 let ajustPendent = false;
 function programarAjust(){
   if (ajustPendent) return; ajustPendent = true;
@@ -1698,6 +1714,9 @@ historyBtn.addEventListener('click', () => {
 
 $('resultAgainBtn').addEventListener('click', () => { tancarModal(resultOverlay); if (joc === 'parelles') iniciarParelles(); else if (joc === 'escena') iniciarEscena(); else if (joc === 'sequencia') iniciarSequencia(); else if (joc === 'canvi') iniciarCanvi(); else if (joc === 'onera') iniciarOnera(); });
 $('resultMenuBtn').addEventListener('click', () => { tancarModal(resultOverlay); aturarTot(); mostrarPantalla('home'); });
+if (screen.orientation && screen.orientation.lock) {
+  screen.orientation.lock('portrait').catch(() => { /* S'ignora en navegadors PC */ });
+}
 
 /* ═══════════════════════════════════════════════════════
    INICIALITZACIÓ
