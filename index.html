@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.18
+    Version: 2.19
 -->
 <html lang="ca">
 <head>
@@ -721,9 +721,9 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
           </span>
         </div>
         
-        <div id="oneraTargetContainer" hidden style="position:absolute; top:15px; right:15px; z-index:100; pointer-events:none; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.3));">
-          <div class="target-gegant-wrap" style="padding:6px; margin-bottom:0; background:var(--card-face); border:1px solid var(--card-ring); border-radius:14px;">
-             <div id="objectiuGegantContenidor" style="width:80px;height:80px;display:grid;place-items:center;"></div>
+        <div id="oneraTargetContainer" hidden style="position:absolute; top:15px; right:15px; z-index:100; pointer-events:none; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.25));">
+          <div style="background:var(--card-face); padding:4px; border-radius:12px; border:1px solid var(--card-ring); display:grid; place-items:center;">
+             <div id="objectiuGegantContenidor" style="width:70px;height:70px;display:grid;place-items:center;"></div>
           </div>
         </div>
           
@@ -743,7 +743,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.18</span>
+      <span class="version" id="version">v2.19</span>
     </div>
   </footer>
 </div>
@@ -1086,15 +1086,22 @@ function mmss(s){
 }
 
 let logTimer = null;
+function getLogCaixa() {
+  if (joc === 'parelles') return $('logParelles');
+  if (joc === 'escena') return $('logEscena');
+  if (joc === 'sequencia') return $('logSequencia');
+  if (joc === 'canvi') return $('logCanvi');
+  if (joc === 'onera') return $('logOnera');
+  return null;
+}
+
 function log(msg, durada = 2600){
-  let caixa = null;
-  if (joc === 'parelles') caixa = $('logParelles');
-  else if (joc === 'escena') caixa = $('logEscena');
-  else if (joc === 'sequencia') caixa = $('logSequencia');
-  else if (joc === 'canvi') caixa = $('logCanvi');
-  else if (joc === 'onera') caixa = $('logOnera');
-  
-  if (!caixa && modalObert) return; // Si som al menú i no hi ha on, ignorem excepte global
+  let caixa = getLogCaixa();
+  if (!msg) {
+    if (caixa) caixa.classList.remove('show');
+    return;
+  }
+  if (!caixa && modalObert) return;
   if (!caixa) {
      caixa = document.createElement('div');
      caixa.className = 'log show';
@@ -1104,7 +1111,6 @@ function log(msg, durada = 2600){
      setTimeout(() => { caixa.classList.remove('show'); setTimeout(()=>caixa.remove(),500); }, durada);
      return;
   }
-  
   caixa.textContent = msg;
   caixa.classList.add('show');
   clearTimeout(logTimer);
@@ -1537,15 +1543,13 @@ function dibuixarTaulerCanvi(dades, interactiu) {
   dades.forEach((o, i) => {
     const cel = document.createElement('div');
     if (o === null) {
-      // Si a la posició original no hi havia res, crearem un espai buit invisible/fantasmes
-      cel.className = 'tile buit';
-      cel.style.visibility = 'hidden'; // Oculta totalment la casella buida
+      cel.className = 'tile buit' + (interactiu ? ' clickable' : '');
     } else {
       cel.className = 'tile' + (interactiu ? ' clickable' : '');
       cel.innerHTML = renderContent(o);
-      if (interactiu) {
-        cel.addEventListener('click', () => resoldreCanvi(i));
-      }
+    }
+    if (interactiu) {
+      cel.addEventListener('click', () => resoldreCanvi(i));
     }
     canviBoard.appendChild(cel);
   });
