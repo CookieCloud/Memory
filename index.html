@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.07
+    Version: 2.08
 -->
 <html lang="ca">
 <head>
@@ -709,7 +709,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.07</span>
+      <span class="version" id="version">v2.08</span>
     </div>
   </footer>
 </div>
@@ -1749,7 +1749,9 @@ function actualitzarOrientacio() {
 
 window.addEventListener('resize', () => { actualitzarOrientacio(); programarAjust(); });
 window.addEventListener('orientationchange', () => setTimeout(() => { actualitzarOrientacio(); programarAjust(); }, 120));
-actualitzarOrientacio(); // S'aplica el càlcul just en obrir el jocdocument.addEventListener('visibilitychange', () => {
+actualitzarOrientacio(); // S'aplica el càlcul just en obrir el joc
+
+document.addEventListener('visibilitychange', () => {
   if (document.hidden){ if (tickTimer){ aturatPerModal = true; pararRellotge(); } }
   else if (aturatPerModal && !modalObert && tempsRestant > 0){ aturatPerModal = false; arrencarRellotge(); }
 });
