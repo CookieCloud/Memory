@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.17
+    Version: 2.18
 -->
 <html lang="ca">
 <head>
@@ -722,9 +722,8 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
         </div>
         
         <div id="oneraTargetContainer" hidden style="position:absolute; top:15px; right:15px; z-index:100; pointer-events:none; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.3));">
-          <div class="target-gegant-wrap" style="padding:8px; margin-bottom:0;">
-             <span style="font-family:'Baloo 2';font-size:16px; margin-bottom:4px;">On era?</span>
-             <div id="objectiuGegantContenidor" style="width:55px;height:55px;display:grid;place-items:center;"></div>
+          <div class="target-gegant-wrap" style="padding:6px; margin-bottom:0; background:var(--card-face); border:1px solid var(--card-ring); border-radius:14px;">
+             <div id="objectiuGegantContenidor" style="width:80px;height:80px;display:grid;place-items:center;"></div>
           </div>
         </div>
           
@@ -744,7 +743,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.17</span>
+      <span class="version" id="version">v2.18</span>
     </div>
   </footer>
 </div>
@@ -879,7 +878,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
 <div id="oneraIntroOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal modal-info" style="text-align:center;">
     <h2 style="margin-bottom:16px;">On era aquesta foto?</h2>
-    <div id="oneraIntroContenidor" style="width:110px;height:110px;margin:0 auto;display:grid;place-items:center;background:var(--card-face);border-radius:18px;box-shadow:inset 0 0 0 2px var(--card-ring), 0 8px 20px rgba(0,0,0,0.25);"></div>
+    <div id="oneraIntroContenidor" style="width:120px;height:120px;margin:0 auto;display:grid;place-items:center;background:var(--card-face);border-radius:18px;border:1px solid var(--card-ring);box-shadow:0 8px 20px rgba(0,0,0,0.25);"></div>
   </div>
 </div>
 
@@ -1537,14 +1536,22 @@ function dibuixarTaulerCanvi(dades, interactiu) {
   canviBoard.innerHTML = '';
   dades.forEach((o, i) => {
     const cel = document.createElement('div');
-    cel.className = 'tile' + (!o ? ' buit' : '') + (interactiu ? ' clickable' : '');
-    if (o) cel.innerHTML = renderContent(o);
-    if (interactiu) cel.addEventListener('click', () => resoldreCanvi(i));
+    if (o === null) {
+      // Si a la posició original no hi havia res, crearem un espai buit invisible/fantasmes
+      cel.className = 'tile buit';
+      cel.style.visibility = 'hidden'; // Oculta totalment la casella buida
+    } else {
+      cel.className = 'tile' + (interactiu ? ' clickable' : '');
+      cel.innerHTML = renderContent(o);
+      if (interactiu) {
+        cel.addEventListener('click', () => resoldreCanvi(i));
+      }
+    }
     canviBoard.appendChild(cel);
   });
   ajustarTauler();
 }
-
+    
 function aplicarCanvi() {
   aturarTot(); canviBoard.innerHTML = ''; log('Què ha canviat?', 0);
 
