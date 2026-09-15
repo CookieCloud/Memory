@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.11
+    Version: 2.12
 -->
 <html lang="ca">
 <head>
@@ -180,6 +180,13 @@ body.day .pill:active{
 .chip.alerta .material-symbols-rounded{color:#fff !important}
 .chip.alerta b{animation:latir .9s ease-in-out infinite}
 @keyframes latir{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+/* Transició suau cap a gris apagat per l'efecte de derrota */
+.tile.apagada {
+  filter: grayscale(100%) opacity(0.3) !important;
+  transition: filter 0.4s ease, opacity 0.4s ease;
+  pointer-events: none;
+}
 
 /* ── pantalles ──────────────────────────────────────── */
 /* Fem les pantalles relatives perquè el rètol hi pugui surar */
@@ -689,13 +696,13 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
           </span>
         </div>
         
-        <div id="oneraTargetContainer" hidden style="position:absolute; top:20px; left:50%; transform:translateX(-50%); z-index:100; pointer-events:none; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.4));">
-          <div class="target-gegant-wrap">
-             <span style="font-family:'Baloo 2';font-size:22px;margin-bottom:6px;">On era això?</span>
-             <div id="objectiuGegantContenidor" style="width:80px;height:80px;display:grid;place-items:center;"></div>
+        <div id="oneraTargetContainer" hidden style="position:absolute; top:15px; right:15px; z-index:100; pointer-events:none; filter:drop-shadow(0 8px 16px rgba(0,0,0,0.3));">
+          <div class="target-gegant-wrap" style="padding:8px; margin-bottom:0;">
+             <span style="font-family:'Baloo 2';font-size:16px; margin-bottom:4px;">On era?</span>
+             <div id="objectiuGegantContenidor" style="width:55px;height:55px;display:grid;place-items:center;"></div>
           </div>
         </div>
-
+          
         <div class="board-wrap">
           <div class="board" id="oneraBoard"></div>
           <div class="log" id="logOnera" role="status" aria-live="polite"></div>
@@ -712,7 +719,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.11</span>
+      <span class="version" id="version">v2.12</span>
     </div>
   </footer>
 </div>
@@ -1085,21 +1092,30 @@ function celebrar(element, quantitat = 14){
   const r = element.getBoundingClientRect();
   const x = r.left + r.width / 2, y = r.top + r.height / 2;
   const colors = ['#ffd166','#f0a020','#ec4899','#22c55e','#38bdf8','#a855f7'];
+  
   for (let i = 0; i < quantitat; i++){
-    const p = document.createElement('span');
-    p.className = 'espurna';
-    const ang = Math.random() * Math.PI * 2;
-    const dist = 60 + Math.random() * 90;
-    p.style.left = x + 'px'; p.style.top  = y + 'px';
-    p.style.background = colors[i % colors.length];
-    p.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
-    p.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
-    p.style.setProperty('--rot', (Math.random() * 540 - 270) + 'deg');
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 950);
+    // Repartim l'aparició de les partícules durant 500ms
+    setTimeout(() => {
+      const p = document.createElement('span');
+      p.className = 'espurna';
+      const ang = Math.random() * Math.PI * 2;
+      
+      // Si demanes més de 30 partícules, el radi de l'explosió s'amplia fins a 250 píxels
+      const distMax = quantitat > 30 ? 250 : 150;
+      const dist = 30 + Math.random() * distMax;
+      
+      p.style.left = x + 'px'; p.style.top  = y + 'px';
+      p.style.background = colors[i % colors.length];
+      p.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      p.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+      p.style.setProperty('--rot', (Math.random() * 540 - 270) + 'deg');
+      
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 950);
+    }, i * (500 / quantitat)); 
   }
 }
-
+    
 /* ═══════════════════════════════════════════════════════
    FINESTRES EMERGENTS
    ═══════════════════════════════════════════════════════ */
@@ -1420,17 +1436,39 @@ function clicSequencia(idx) {
   if (seqReproduint || modalObert) return;
   const correcte = seqActiva[seqPasJugador];
   const cel = seqBoard.children[idx];
+  
   if (idx === correcte) {
-    seqPasJugador++; cel.classList.add('seq-activa'); setTimeout(() => cel.classList.remove('seq-activa'), 200);
+    seqPasJugador++; 
+    cel.classList.add('seq-activa'); 
+    setTimeout(() => cel.classList.remove('seq-activa'), 200);
+    
     if (seqPasJugador === seqActiva.length) {
-      seqReproduint = true; celebrar(cel, 125); setTimeout(novaRondaSequencia, 1000);
+      seqReproduint = true; 
+      celebrar(cel, 60); // Amb la nova funció de font contínua, 60 queda espectacular
+      setTimeout(novaRondaSequencia, 1500); // Pujem a 1.5s per deixar que l'animació respiri
     }
   } else {
+    seqReproduint = true; // Bloquegem immediatament els futurs clics
     cel.classList.add('erronia');
-    finalPartida(false, 'Has errat la seqüència', null, `Has arribat a la ronda ${seqActiva.length}`);
+    
+    // Obtenim totes les caselles per fer l'efecte en cadena
+    const fitxes = Array.from(seqBoard.children);
+    
+    // Apaguem les cartes restants una a una, cada 150 mil·lisegons
+    fitxes.forEach((fitxa, i) => {
+      setTimeout(() => {
+        if (i !== idx) fitxa.classList.add('apagada');
+      }, i * 150);
+    });
+
+    // Calculem quan ha d'aparèixer la finestra final: temps de l'última carta + 400ms de la transició CSS
+    const tempsTotalAnimacio = (fitxes.length * 150) + 400;
+
+    setTimeout(() => {
+      finalPartida(false, 'Has errat la seqüència', null, `Has arribat a la ronda ${seqActiva.length}`);
+    }, tempsTotalAnimacio);
   }
 }
-
 /* ═══════════════════════════════════════════════════════
    JOC 4 — QUÈ HA CANVIAT?
    ═══════════════════════════════════════════════════════ */
@@ -1548,18 +1586,37 @@ function dibuixarTaulerOnera(dades, interactiu) {
   ajustarTauler();
 }
 
+    
 function preguntarOnera() {
-  aturarTot(); oneraBoard.dataset.lockedCols = oneraBoard.dataset.cols; // Bloquegem les columnes perquè no es moguin
-  oneraBoard.innerHTML = ''; dibuixarTaulerOnera(Array(oneraDades.length).fill(null), true);
-  const plens = oneraDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
-  oneraPosicio = plens[Math.floor(Math.random() * plens.length)]; oneraObjectiu = oneraDades[oneraPosicio];
+  aturarTot(); 
+  oneraBoard.style.pointerEvents = 'auto';
   
-  $('faseIconOnera').textContent = 'location_on'; $('faseTextOnera').textContent = 'Recorda';
+  // Triem l'objectiu a buscar
+  const plens = oneraDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
+  oneraPosicio = plens[Math.floor(Math.random() * plens.length)]; 
+  oneraObjectiu = oneraDades[oneraPosicio];
+  
+  // En lloc de destruir el tauler, actualitzem les caselles existents.
+  // Així garantim que la graella no es mou ni un sol píxel.
+  Array.from(oneraBoard.children).forEach((cel, i) => {
+    cel.innerHTML = '';
+    cel.className = 'tile buit clickable';
+    
+    // Clonem la casella ràpidament per netejar qualsevol esdeveniment de clic antic
+    const nouCel = cel.cloneNode(true);
+    nouCel.addEventListener('click', () => resoldreOnera(i));
+    oneraBoard.replaceChild(nouCel, cel);
+  });
+
+  $('faseIconOnera').textContent = 'location_on'; 
+  $('faseTextOnera').textContent = 'Recorda';
   $('oneraTargetContainer').hidden = false;
   $('objectiuGegantContenidor').innerHTML = renderContent(oneraObjectiu);
 
-  log(``, 0); iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
+  log('', 0); 
+  iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
 }
+    
 
 function resoldreOnera(idx) {
   aturarTot(); oneraBoard.style.pointerEvents = 'none'; const cel = oneraBoard.children[idx];
