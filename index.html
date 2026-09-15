@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.00
+    Version: 3.10
 -->
 <html lang="ca">
 <head>
@@ -297,6 +297,23 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 #objectiuGegantContenidor .material-symbols-rounded{font-size:min(20vw,96px)}
 #objectiuGegantContenidor .foto-asset{width:100%;height:100%;border-radius:12px;object-fit:cover}
 
+/* ── "On era?": les caselles on hi havia alguna cosa ──────
+   Quan s'amaga tot, cal veure la graella per poder assenyalar un lloc.
+   Per això aquí les caselles buides SÍ que es veuen (a diferència de
+   "Què ha canviat?", on han de passar desapercebudes). */
+.tile.forat{
+  background:var(--chip-bg);
+  box-shadow:inset 0 0 0 2px var(--card-ring), 0 5px 12px rgba(0,0,0,.2);
+  opacity:.9;
+}
+.tile.forat.clickable:hover{opacity:1;background:var(--card-face)}
+
+/* ── "Què ha canviat?": tauler en blanc entre les dues escenes ── */
+.tile.blanc{
+  background:var(--chip-bg);opacity:.5;
+  box-shadow:inset 0 0 0 2px var(--card-ring);
+}
+
 /* ── "Què ha canviat?": la casella que explica el canvi ── */
 .tile.demo{box-shadow:inset 0 0 0 4px var(--accent-deep), 0 0 26px rgba(240,160,32,.7);}
 .tile.demo.buit{background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 4px var(--accent-deep)}
@@ -314,15 +331,37 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .stage-flash{animation:entrada-imatge .22s ease-out}
 @media (prefers-reduced-motion:reduce){.stage-flash{animation:none}}
 
+/* ── "N-enrere": tira de fotogrames ─────────────────────
+   Es veu nítid el fotograma del mig; el que ja ha passat i el que ve
+   només s'intueixen, desenfocats, de manera que no es poden reconèixer. */
+.film{
+  --lateral:min(26vw,150px);
+  width:100%;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 20%,#000 80%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0%,#000 20%,#000 80%,transparent 100%);
+}
+.film-track{display:flex;align-items:center;justify-content:center;gap:14px;will-change:transform}
+.film-item{flex:0 0 auto}
+.film-item.lateral{
+  width:var(--lateral);height:var(--lateral);border-radius:20px;overflow:hidden;
+  display:grid;place-items:center;background:var(--card-face);
+  filter:blur(14px) saturate(.6) brightness(.95);opacity:.45;
+}
+.film-item.lateral:empty{background:transparent;box-shadow:none}
+.film-item.lateral .foto-asset{width:100%;height:100%;object-fit:cover}
+.film-item.lateral .material-symbols-rounded{font-size:calc(var(--lateral) * .62)}
+@media (prefers-reduced-motion:reduce){ .film-track{transition:none !important} }
+
 /* ── zona de pregunta amb números ─────────────────────── */
 .quiz-zona{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
 .quiz-zona[hidden]{display:none}
 .quiz-zona .pregunta-text{font-size:15px;color:var(--ink);font-weight:600}
-.num-opcions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:420px}
+/* Tots els números en una sola fila: s'estrenyen si cal, però no baixen */
+.num-opcions{display:flex;flex-wrap:nowrap;gap:8px;justify-content:center;max-width:100%}
 .num-btn{
-  min-width:66px;padding:12px 18px;border-radius:18px;cursor:pointer;
+  min-width:0;flex:0 1 auto;padding:10px clamp(10px,3vw,20px);border-radius:16px;cursor:pointer;
   background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
-  color:var(--ink);font-family:'Baloo 2';font-weight:800;font-size:26px;
+  color:var(--ink);font-family:'Baloo 2';font-weight:800;font-size:clamp(18px,4.6vw,28px);
   transition:transform .12s cubic-bezier(.34,1.56,.64,1);
 }
 .num-btn:active{transform:scale(.93)}
@@ -332,19 +371,22 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 
 /* ── "Parelles impossibles": la llista a memoritzar ───── */
 #assocBoard{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
-  gap:10px;max-width:560px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:12px;max-width:760px;
 }
 #assocBoard[hidden]{display:none}
 .pair-card{
   display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 10px;border-radius:16px;
   background:var(--card-face);box-shadow:inset 0 0 0 2px var(--card-ring), 0 4px 10px rgba(0,0,0,.2);
 }
-.pair-asset{width:58px;height:58px;display:grid;place-items:center;overflow:hidden;border-radius:10px}
-.pair-asset .material-symbols-rounded{font-size:44px}
-.pair-asset .foto-asset{width:100%;height:100%;border-radius:10px;object-fit:cover}
-.pair-fletxa{color:var(--ink-soft);font-size:18px}
-.pair-num{font-family:'Baloo 2';font-weight:800;font-size:34px;color:var(--accent-deep);line-height:1}
+.pair-asset{
+  width:min(26vw,110px);height:min(26vw,110px);
+  display:grid;place-items:center;overflow:hidden;border-radius:14px;
+}
+.pair-asset .material-symbols-rounded{font-size:min(20vw,84px)}
+.pair-asset .foto-asset{width:100%;height:100%;border-radius:14px;object-fit:cover}
+.pair-fletxa{color:var(--ink-soft);font-size:22px}
+.pair-num{font-family:'Baloo 2';font-weight:800;font-size:min(12vw,48px);color:var(--accent-deep);line-height:1}
 
 /* ── imatge petita dins d'un xip (l'objectiu de "Compta-les") ── */
 .mini-asset{width:26px;height:26px;display:grid;place-items:center;overflow:hidden;border-radius:6px}
@@ -479,11 +521,17 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 }
 .opt-tile:active{transform:scale(.94)}
 .opt-tile:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+/* Triada: marc gruixut de color, la imatge s'encongeix perquè es vegi el
+   marc, i hi surt el senyal de verificació al cantó */
 .opt-tile[aria-pressed="true"]{
-  border-color:var(--accent-deep);
+  border-color:var(--accent-deep);border-width:4px;
   background:linear-gradient(160deg,var(--accent),var(--accent-deep));color:var(--accent-ink);
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.6), 0 5px 0 rgba(0,0,0,.2);
+  box-shadow:0 0 0 4px rgba(240,160,32,.45), inset 0 2px 0 rgba(255,255,255,.6), 0 5px 0 rgba(0,0,0,.2);
+  transform:scale(.94);
 }
+.opt-tile[aria-pressed="true"] .foto-asset{width:78%;height:78%;border-radius:9px}
+.opt-tile[aria-pressed="true"] .material-symbols-rounded{filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+.opt-tile[aria-pressed="true"] .marca{display:grid;background:var(--accent-deep)}
 .opt-tile .marca{
   position:absolute;top:-7px;right:-7px;width:26px;height:26px;border-radius:50%;
   display:none;place-items:center;color:#fff;
@@ -919,7 +967,13 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
           </span>
         </div>
         <div class="board-wrap">
-          <div class="mega-tile" id="nbackStage"></div>
+          <div class="film" id="nbackFilm">
+            <div class="film-track" id="nbackTrack">
+              <div class="film-item lateral" id="nbackPrev"></div>
+              <div class="film-item mega-tile" id="nbackStage"></div>
+              <div class="film-item lateral" id="nbackNext"></div>
+            </div>
+          </div>
           <div class="log" id="logNback" role="status" aria-live="polite"></div>
         </div>
         <div class="acciona">
@@ -939,7 +993,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.00</span>
+      <span class="version" id="version">v3.10</span>
     </div>
   </footer>
 </div>
@@ -1590,7 +1644,7 @@ function girarCarta(idx){
   if (cartes[a].uid === cartes[b].uid){
     girades = []; elA.classList.add('aparellada'); elB.classList.add('aparellada');
     elA.disabled = elB.disabled = true;
-    celebrar(elB); trobades++; $('found').textContent = trobades;
+    celebrar(elB, 50); trobades++; $('found').textContent = trobades;
     
     if (trobades === NIVELLS_PARELLES[nivellParelles].parelles){
       const usat = tempsTotal - tempsRestant;
@@ -1688,7 +1742,7 @@ function comprovarEscena(perTemps){
   optionsBoard.querySelectorAll('.opt-tile').forEach(boto => {
     const triat = seleccio.includes(boto.dataset.uid);
     const toca  = correctes.includes(boto.dataset.uid);
-    if (triat && toca){ boto.classList.add('correcta'); encerts++; celebrar(boto, 6); }
+    if (triat && toca){ boto.classList.add('correcta'); encerts++; celebrar(boto, 30); }
     else if (triat && !toca){ boto.classList.add('erronia'); errorsMarcats++; }
     else if (!triat && toca){ boto.classList.add('perduda'); errorsOblidats++; }
   });
@@ -1831,8 +1885,22 @@ function dibuixarTaulerCanvi(dades, interactiu) {
   ajustarTauler();
 }
     
+/* Deixa el tauler en blanc, amb les caselles al seu lloc però sense res a dins:
+   així la memòria ha de treballar i el canvi no es veu "en directe". */
+function taulerCanviEnBlanc(){
+  canviBoard.innerHTML = '';
+  canviDades.forEach(() => {
+    const cel = document.createElement('div');
+    cel.className = 'tile blanc';
+    canviBoard.appendChild(cel);
+  });
+  ajustarTauler();
+}
+
 function aplicarCanvi() {
-  aturarTot(); log('', 0);
+  aturarTot();
+  taulerCanviEnBlanc();
+  log('Un moment…', 1200);
 
   const plens = canviDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
   const buits = canviDades.map((o,i) => o === null ? i : -1).filter(i => i !== -1);
@@ -1887,7 +1955,7 @@ function aplicarCanvi() {
     $('faseIconCanvi').textContent = 'find_replace'; $('faseTextCanvi').textContent = 'Troba el canvi';
     log('Què ha canviat?', 2200);
     iniciarCompte(NIVELLS_CANVI[nivellCanvi].respondre, () => resoldreCanvi(-1, true));
-  }, 1000);
+  }, 1500);
 }
 
 /* Ensenya el canvi a càmera lenta: la casella va alternant entre com estava
@@ -1927,7 +1995,7 @@ function resoldreCanvi(idx, perTemps) {
   const cel = canviBoard.children[canviResposta];
 
   if (encertat){
-    cel.classList.add('correcta'); celebrar(cel, 12);
+    cel.classList.add('correcta'); celebrar(cel, 60);
   } else {
     if (idx >= 0) canviBoard.children[idx].classList.add('erronia');
     cel.classList.add('correcta');   // on era el canvi de debò
@@ -1986,7 +2054,7 @@ function preguntarOnera() {
   
   Array.from(oneraBoard.children).forEach((cel, i) => {
     cel.innerHTML = '';
-    cel.className = 'tile buit clickable';
+    cel.className = 'tile forat clickable';
     const nouCel = cel.cloneNode(true);
     nouCel.addEventListener('click', () => resoldreOnera(i));
     oneraBoard.replaceChild(nouCel, cel);
@@ -2012,15 +2080,15 @@ function preguntarOnera() {
 
 function resoldreOnera(idx) {
   aturarTot(); oneraBoard.style.pointerEvents = 'none'; const cel = oneraBoard.children[idx];
-  cel.classList.remove('buit'); cel.innerHTML = renderContent(oneraObjectiu);
+  cel.classList.remove('buit','forat'); cel.innerHTML = renderContent(oneraObjectiu);
 
   if (idx === oneraPosicio) {
-    cel.classList.add('correcta'); celebrar(cel, 10);
+    cel.classList.add('correcta'); celebrar(cel, 60);
     setTimeout(() => finalPartida(true, null, null, 'Has recordat la posició!'), 1500);
   } else {
     cel.classList.add('erronia');
     const bona = oneraBoard.children[oneraPosicio];
-    bona.classList.remove('buit'); bona.classList.add('correcta'); bona.innerHTML = renderContent(oneraObjectiu);
+    bona.classList.remove('buit','forat'); bona.classList.add('correcta'); bona.innerHTML = renderContent(oneraObjectiu);
     setTimeout(() => finalPartida(false, 'L\'element no era aquí'), 2000);
   }
 }
@@ -2089,7 +2157,7 @@ function respondreAssoc(boto, num){
 
   if (bo){
     boto.classList.add('correcta'); assocEncerts++;
-    $('assocProg').textContent = assocEncerts; celebrar(boto, 8); log('Molt bé!');
+    $('assocProg').textContent = assocEncerts; celebrar(boto, 60); log('Molt bé!');
   } else {
     boto.classList.add('erronia');
     const bona = [...$('assocOptions').children].find(b => Number(b.textContent) === correcte);
@@ -2131,6 +2199,8 @@ function iniciarCompta(){
   $('comptaQuiz').hidden = true; $('comptaStage').hidden = false;
   $('comptaStage').innerHTML = '';
   $('comptaProg').textContent = '0'; $('comptaTotal').textContent = nivell.mostres;
+  // Mentre van passant imatges no hi ha res a cronometrar: el rellotge fa nosa
+  $('timeChipCompta').hidden = true;
   tempsRestant = 0; pintarRellotge();
 
   log('Compta quantes vegades surt la imatge de dalt', 3200);
@@ -2166,6 +2236,7 @@ function preguntarCompta(){
   });
 
   log('', 0);
+  $('timeChipCompta').hidden = false;
   iniciarCompte(25, () => respondreCompta(null, -1));
 }
 
@@ -2180,7 +2251,7 @@ function respondreCompta(boto, n){
     const bona = [...$('comptaOptions').children].find(b => Number(b.textContent) === comptaCompte);
     if (bona) bona.classList.add('correcta');
   }
-  if (bo) celebrar(boto, 12);
+  if (bo) celebrar(boto, 60);
 
   setTimeout(() => finalPartida(bo, bo ? null : (n < 0 ? 'Temps esgotat' : 'No era aquest nombre'),
                                 null, `N'hi havia ${comptaCompte}`), 1800);
@@ -2216,7 +2287,7 @@ function iniciarNback(){
   $('nbackN').textContent = nivell.n;
   $('nbackEncerts').textContent = '0'; $('nbackErrors').textContent = '0';
   $('nbackTotalHits').textContent = nbackTotal;
-  $('nbackStage').innerHTML = '';
+  $('nbackStage').innerHTML = ''; $('nbackPrev').innerHTML = ''; $('nbackNext').innerHTML = '';
   tempsRestant = 0; pintarRellotge();
 
   log(`Avisa quan la imatge sigui igual que la de fa ${nivell.n}`, 3600);
@@ -2236,11 +2307,25 @@ function passaNback(){
   if (nbackIdx >= nbackSeq.length) return acabarNback();
 
   nbackRespost = false;
-  const escenari = $('nbackStage');
-  escenari.innerHTML = renderContent(nbackSeq[nbackIdx]);
-  escenari.classList.remove('stage-flash'); void escenari.offsetWidth; escenari.classList.add('stage-flash');
+  pintarFilm();
   nbackIdx++;
   nbackTimer = setTimeout(passaNback, nivell.velocitat);
+}
+
+/* Col·loca els tres fotogrames i fa lliscar la tira cap a l'esquerra */
+function pintarFilm(){
+  const posa = (el, item) => { el.innerHTML = item ? renderContent(item) : ''; };
+  posa($('nbackPrev'),  nbackSeq[nbackIdx - 1]);
+  posa($('nbackStage'), nbackSeq[nbackIdx]);
+  posa($('nbackNext'),  nbackSeq[nbackIdx + 1]);
+
+  const tira = $('nbackTrack');
+  const pas = $('nbackStage').offsetWidth + 14;   // una passa = un fotograma
+  tira.style.transition = 'none';
+  tira.style.transform = `translateX(${pas}px)`;
+  void tira.offsetWidth;                          // forcem el repintat
+  tira.style.transition = 'transform .45s cubic-bezier(.25,.8,.35,1)';
+  tira.style.transform = 'translateX(0)';
 }
 
 function premerNback(){
@@ -2252,7 +2337,7 @@ function premerNback(){
 
   if (encertat){
     nbackEncerts++; $('nbackEncerts').textContent = nbackEncerts;
-    celebrar($('nbackStage'), 8); log('Sí, era la mateixa!', 900);
+    celebrar($('nbackStage'), 45); log('Sí, era la mateixa!', 900);
   } else {
     nbackErrors++; $('nbackErrors').textContent = nbackErrors;
     log('Aquesta no ho era', 900);
