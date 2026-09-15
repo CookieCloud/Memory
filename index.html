@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.16
+    Version: 2.17
 -->
 <html lang="ca">
 <head>
@@ -187,6 +187,13 @@ body.day .pill:active{
   transition: filter 0.4s ease, opacity 0.4s ease;
   pointer-events: none;
 }
+
+.tile.buit{background:transparent;box-shadow:none;border:none}
+.tile.buit.clickable{
+  background:transparent; box-shadow:none;
+  border:2px dashed var(--ink-soft); opacity:0.4; border-radius:14px;
+}
+.tile.buit.clickable:hover{opacity:0.8; background:rgba(255,255,255,0.1);}
 
 /* ── pantalles ──────────────────────────────────────── */
 /* Fem les pantalles relatives perquè el rètol hi pugui surar */
@@ -737,7 +744,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.16</span>
+      <span class="version" id="version">v2.17</span>
     </div>
   </footer>
 </div>
@@ -865,6 +872,14 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
         <span class="material-symbols-rounded">replay</span> Jugar de nou
       </button>
     </div>
+  </div>
+</div>
+
+<!-- Modal Intro On Era -->
+<div id="oneraIntroOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal modal-info" style="text-align:center;">
+    <h2 style="margin-bottom:16px;">On era aquesta foto?</h2>
+    <div id="oneraIntroContenidor" style="width:110px;height:110px;margin:0 auto;display:grid;place-items:center;background:var(--card-face);border-radius:18px;box-shadow:inset 0 0 0 2px var(--card-ring), 0 8px 20px rgba(0,0,0,0.25);"></div>
   </div>
 </div>
 
@@ -1617,32 +1632,35 @@ function dibuixarTaulerOnera(dades, interactiu) {
     
 function preguntarOnera() {
   aturarTot(); 
-  oneraBoard.style.pointerEvents = 'auto';
+  oneraBoard.style.pointerEvents = 'none';
   
-  // Triem l'objectiu a buscar
   const plens = oneraDades.map((o,i) => o !== null ? i : -1).filter(i => i !== -1);
   oneraPosicio = plens[Math.floor(Math.random() * plens.length)]; 
   oneraObjectiu = oneraDades[oneraPosicio];
   
-  // En lloc de destruir el tauler, actualitzem les caselles existents.
-  // Així garantim que la graella no es mou ni un sol píxel.
   Array.from(oneraBoard.children).forEach((cel, i) => {
     cel.innerHTML = '';
     cel.className = 'tile buit clickable';
-    
-    // Clonem la casella ràpidament per netejar qualsevol esdeveniment de clic antic
     const nouCel = cel.cloneNode(true);
     nouCel.addEventListener('click', () => resoldreOnera(i));
     oneraBoard.replaceChild(nouCel, cel);
   });
 
-  $('faseIconOnera').textContent = 'location_on'; 
-  $('faseTextOnera').textContent = 'Recorda';
-  $('oneraTargetContainer').hidden = false;
   $('objectiuGegantContenidor').innerHTML = renderContent(oneraObjectiu);
-
-  log('', 0); 
-  iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
+  $('oneraIntroContenidor').innerHTML = renderContent(oneraObjectiu);
+  
+  obrirModal($('oneraIntroOverlay'));
+  
+  setTimeout(() => {
+    tancarModal($('oneraIntroOverlay'));
+    oneraBoard.style.pointerEvents = 'auto';
+    $('faseIconOnera').textContent = 'location_on'; 
+    $('faseTextOnera').textContent = 'Recorda';
+    $('oneraTargetContainer').hidden = false;
+    
+    log('', 0); 
+    iniciarCompte(NIVELLS_ONERA[nivellOnera].respondre, () => finalPartida(false, 'Temps esgotat'));
+  }, 2000);
 }
     
 
