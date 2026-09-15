@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 2.13
+    Version: 2.14
 -->
 <html lang="ca">
 <head>
@@ -193,6 +193,15 @@ body.day .pill:active{
 .screen{display:none;flex:1;min-height:0;flex-direction:column;gap:8px;position:relative;}
 /* Fotos més grans a les opcions de 'Què hi havia?' */
 .opt-tile .foto-asset{width:90%;height:90%;border-radius:12px;}
+/* Mode de màxima densitat per a 32 cartes (Parelles) */
+.board.dense-board .foto-asset {
+  width: 96%;
+  height: 96%;
+  border-radius: 6px;
+}
+.board.dense-board .face.cara {
+  box-shadow: inset 0 0 0 1px var(--card-ring), 0 2px 6px rgba(0,0,0,.2);
+}
 .screen.active{display:flex}
 
 /* ── menú de jocs ───────────────────────────────────── */
@@ -719,7 +728,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v2.13</span>
+      <span class="version" id="version">v2.14</span>
     </div>
   </footer>
 </div>
@@ -1241,7 +1250,7 @@ function iniciarParelles(){
   const poolBase = getActivePool(nivell.parelles);
   const triades = barrejar(poolBase).slice(0, nivell.parelles);
   cartes = barrejar([...triades, ...triades]);
-
+  cardsBoard.classList.toggle('dense-board', cartes.length >= 32);
   girades = []; bloqueig = false; trobades = 0; intents = 0;
   $('found').textContent = '0'; $('totalPairs').textContent = nivell.parelles; $('moves').textContent = '0';
 
@@ -1711,7 +1720,7 @@ function encaixar(board, total, proporcio, maxCols, minCols = 1){
   const bcs = getComputedStyle(board);
   const marcX = parseFloat(bcs.paddingLeft) + parseFloat(bcs.paddingRight) + parseFloat(bcs.borderLeftWidth) + parseFloat(bcs.borderRightWidth);
   const marcY = parseFloat(bcs.paddingTop) + parseFloat(bcs.paddingBottom) + parseFloat(bcs.borderTopWidth) + parseFloat(bcs.borderBottomWidth);
-  const gap = total > 20 ? 6 : 8; let millor = { area:0, cols:minCols, w:10, h:10 };
+  const gap = total >= 32 ? 4 : (total > 20 ? 6 : 8);
   const sostre = Math.min(maxCols || total, total);
   
   for (let cols = minCols; cols <= sostre; cols++){
