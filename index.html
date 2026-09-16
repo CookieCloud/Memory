@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.20
+    Version: 3.21
 -->
 <html lang="ca">
 <head>
@@ -332,6 +332,39 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 @keyframes entrada-imatge{0%{transform:scale(.86);opacity:.2}100%{transform:scale(1);opacity:1}}
 .stage-flash{animation:entrada-imatge .22s ease-out}
 @media (prefers-reduced-motion:reduce){.stage-flash{animation:none}}
+
+/* ── avís de versió nova ───────────────────────────────
+   Surt a baix de tot, per damunt de tot, i no interromp la partida:
+   l'actualització només es fa quan la persona hi diu que sí. */
+#avisVersio{
+  position:fixed;z-index:1400;left:50%;transform:translate(-50%,120%);
+  bottom:max(12px,env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:10px;
+  max-width:min(94vw,520px);padding:10px 10px 10px 16px;border-radius:99px;
+  background:var(--panel-bg);color:var(--ink);
+  border:2px solid var(--board-border);
+  box-shadow:0 14px 34px rgba(0,0,0,.45);
+  font-size:14px;font-weight:600;
+  opacity:0;pointer-events:none;
+  transition:transform .35s cubic-bezier(.34,1.4,.64,1),opacity .35s;
+}
+#avisVersio.visible{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+#avisVersio .material-symbols-rounded{font-size:22px;color:var(--accent)}
+#avisVersio .avis-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#avisVersioBtn{
+  flex:0 0 auto;border:none;cursor:pointer;padding:9px 18px;border-radius:99px;
+  font-family:'Fredoka';font-weight:600;font-size:14px;color:var(--accent-ink);
+  background:linear-gradient(160deg,var(--accent),var(--accent-deep));
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.6), 0 3px 0 rgba(0,0,0,.28);
+}
+#avisVersioBtn:active{transform:translateY(2px)}
+#avisVersioBtn:disabled{opacity:.6;cursor:default}
+.avis-tanca{
+  flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
+  display:grid;place-items:center;background:rgba(0,0,0,.12);color:var(--ink);
+}
+.avis-tanca .material-symbols-rounded{font-size:18px;color:var(--ink)}
+#avisVersioBtn:focus-visible,.avis-tanca:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
 /* ── esperant que carregui la foto ─────────────────────
    Una brillantor que va passant: així es distingeix "s'està carregant"
@@ -1047,7 +1080,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.20</span>
+      <span class="version" id="version">v3.21</span>
     </div>
   </footer>
 </div>
@@ -1176,6 +1209,16 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       </button>
     </div>
   </div>
+</div>
+
+<!-- Avís de versió nova -->
+<div id="avisVersio" role="status" aria-live="polite">
+  <span class="material-symbols-rounded">auto_awesome</span>
+  <span class="avis-text">Hi ha una versió nova</span>
+  <button id="avisVersioBtn" type="button">Actualitza</button>
+  <button id="avisVersioTanca" type="button" class="avis-tanca" title="Ara no" aria-label="Ara no">
+    <span class="material-symbols-rounded">close</span>
+  </button>
 </div>
 
 <!-- Modal Intro Compta-les -->
@@ -2691,8 +2734,57 @@ if (modeGrafic) {
 
 mostrarPantalla('home');
 
+/* ═══════════════════════════════════════════════════════
+   ACTUALITZACIONS
+   El service worker instal·la la versió nova en segon pla i avisa.
+   No es recarrega res pel seu compte: fins que no es prem "Actualitza",
+   la partida en curs continua tal com està.
+   ═══════════════════════════════════════════════════════ */
+function mostrarAvisVersio(reg){
+  const avis = $('avisVersio');
+  if (!avis || avis.classList.contains('visible')) return;
+  avis.classList.add('visible');
+
+  $('avisVersioBtn').onclick = () => {
+    $('avisVersioBtn').disabled = true;
+    $('avisVersioBtn').textContent = 'Un moment…';
+    if (reg.waiting) reg.waiting.postMessage({ tipus:'ACTIVA_JA' });
+    else location.reload();
+    // Si el canvi de versió no arriba, recarreguem igualment
+    setTimeout(() => location.reload(), 3000);
+  };
+  $('avisVersioTanca').onclick = () => avis.classList.remove('visible');
+}
+
 if ('serviceWorker' in navigator){
-  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+  let recarregant = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (recarregant) return;          // el navegador pot avisar dues vegades
+    recarregant = true;
+    location.reload();
+  });
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js', { updateViaCache:'none' }).then(reg => {
+      // Ja n'hi ha una d'esperant d'una visita anterior
+      if (reg.waiting && navigator.serviceWorker.controller) mostrarAvisVersio(reg);
+
+      reg.addEventListener('updatefound', () => {
+        const nou = reg.installing;
+        if (!nou) return;
+        nou.addEventListener('statechange', () => {
+          // "installed" amb un controlador actiu vol dir: n'hi havia una d'abans
+          if (nou.state === 'installed' && navigator.serviceWorker.controller) mostrarAvisVersio(reg);
+        });
+      });
+
+      const comprovar = () => reg.update().catch(() => {});
+      setInterval(comprovar, 30 * 60 * 1000);                    // cada mitja hora
+      document.addEventListener('visibilitychange', () => {       // i en tornar a l'app
+        if (!document.hidden) comprovar();
+      });
+    }).catch(() => {});
+  });
 }
 </script>
 </body>

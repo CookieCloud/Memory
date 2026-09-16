@@ -1,9 +1,22 @@
-/* Service worker de Memòria
-   Puja el número de CACHE cada cop que canviïs index.html: així el navegador
-   descarta la còpia antiga i es queda la nova. */
-const CACHE = 'memoria-v3.20';
+/* ═══════════════════════════════════════════════════════
+   MEMÒRIA — Service worker
+   ═══════════════════════════════════════════════════════
 
-const FITXERS = [
+   COM FUNCIONEN LES ACTUALITZACIONS
+
+   Cada cop que publiquis canvis, canvia el número de VERSIO d'aquí sota.
+   Això fa que el navegador vegi un sw.js diferent, l'instal·li en segon pla
+   i avisi la pàgina, que ensenya la barra "Hi ha una versió nova".
+
+   Si no canvies VERSIO, el web continuarà servint la còpia desada i la gent
+   no veurà els canvis. És l'únic que has de recordar de fer.
+   ═══════════════════════════════════════════════════════ */
+const VERSIO = '3.21';
+const CACHE  = 'memoria-v' + VERSIO;
+
+/* Fitxers propis que es desen en instal·lar. Si en falta algun no passa res:
+   es desen un a un perquè un error no faci caure tota la instal·lació. */
+const NUCLI = [
   './',
   './index.html',
   './manifest.json',
@@ -17,9 +30,9 @@ const FITXERS = [
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE)
-      // addAll falla sencer si hi manca un fitxer; d'un en un, el que hi sigui es desa
-      .then(c => Promise.all(FITXERS.map(f => c.add(f).catch(err => console.warn('Cache:', f, err)))))
-      .then(() => self.skipWaiting())
+      .then(c => Promise.all(NUCLI.map(f => c.add(f).catch(() => {}))))
+    // Sense skipWaiting automàtic: qui decideix quan s'actualitza és la persona
+    // que juga, des de la barra d'avís, i així no es talla cap partida.
   );
 });
 
@@ -31,12 +44,38 @@ self.addEventListener('activate', e => {
   );
 });
 
+/* La pàgina demana passar a la versió nova ara mateix */
+self.addEventListener('message', e => {
+  if (e.data && e.data.tipus === 'ACTIVA_JA') self.skipWaiting();
+});
+
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
 
-  // Les fonts de Google: primer la xarxa, i si no hi ha connexió, la còpia desada
-  if (req.url.includes('fonts.googleapis.com') || req.url.includes('fonts.gstatic.com')){
+  const url = new URL(req.url);
+  const propi = url.origin === location.origin;
+
+  /* L'HTML i la llista de fotos: primer la xarxa. Així els canvis arriben de
+     seguida i, si no hi ha connexió, se serveix la còpia desada. */
+  const esPagina = req.mode === 'navigate' ||
+                   (propi && (url.pathname.endsWith('.html') || url.pathname.endsWith('fotos.json')));
+
+  if (esPagina){
+    e.respondWith(
+      fetch(req)
+        .then(resp => {
+          const copia = resp.clone();
+          caches.open(CACHE).then(c => c.put(req, copia));
+          return resp;
+        })
+        .catch(() => caches.match(req).then(hit => hit || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  /* Tipografies de Google: primer la xarxa, amb còpia de recanvi */
+  if (url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('fonts.gstatic.com')){
     e.respondWith(
       fetch(req).then(resp => {
         const copia = resp.clone();
@@ -47,14 +86,17 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Fitxers propis: primer la còpia desada, i si no hi és, la xarxa
+  /* La resta (fotos, icones): primer la còpia desada, que és molt més ràpid */
   e.respondWith(
-    caches.match(req).then(hit => hit || fetch(req).then(resp => {
-      if (resp.ok && new URL(req.url).origin === location.origin){
-        const copia = resp.clone();
-        caches.open(CACHE).then(c => c.put(req, copia));
-      }
-      return resp;
-    }).catch(() => caches.match('./index.html')))
+    caches.match(req).then(hit => {
+      if (hit) return hit;
+      return fetch(req).then(resp => {
+        if (resp.ok && propi){
+          const copia = resp.clone();
+          caches.open(CACHE).then(c => c.put(req, copia));
+        }
+        return resp;
+      });
+    })
   );
 });
