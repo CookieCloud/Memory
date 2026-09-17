@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.21
+    Version: 3.30
 -->
 <html lang="ca">
 <head>
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <!-- Icones: afegits 'image' i 'brush' per al selector de gràfics 
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,anchor,arrow_back,auto_awesome,bar_chart,bolt,brush,cake,calculate,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,history,home,icecream,image,info,key,link,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,timer,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,anchor,arrow_back,arrow_forward,auto_awesome,bar_chart,bolt,brush,cake,calculate,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,history,home,icecream,image,info,key,link,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,timer,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
 -->
 <!-- Canvia la línia llarga de Material Symbols per aquesta: -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&display=block" rel="stylesheet">
@@ -62,8 +62,10 @@ body{
   --chip-border:rgba(255,255,255,.18);
   --chip-shadow:inset 0 1px 0 rgba(255,255,255,.35);
   --panel-bg:linear-gradient(170deg,#2c2050,#161029);
-  --card-face:linear-gradient(160deg,rgba(255,255,255,.94),rgba(235,228,255,.9));
-  --card-ring:rgba(255,209,102,.45);
+  /* De nit, la cara de les cartes és fosca: un rectangle blanc a les fosques
+     enlluerna i costa de mirar durant una estona llarga. */
+  --card-face:linear-gradient(160deg,#302547,#201a36);
+  --card-ring:rgba(255,209,102,.3);
   --icona-peca:#ffd166;
   --icona-lletra:#241a3d;
   --log-bg:rgba(30,41,59,.9);
@@ -280,8 +282,12 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   border-radius:20px;box-shadow:inset 0 0 0 2px var(--card-ring), 0 10px 26px rgba(0,0,0,.3);
   overflow:hidden;
 }
-#oneraIntroContenidor .material-symbols-rounded{font-size:min(44vw,210px)}
+#comptaIntroContenidor .material-symbols-rounded,
+#oneraIntroContenidor .material-symbols-rounded{font-size:min(44vw,30vh,210px)}
+#comptaIntroContenidor .foto-asset,
 #oneraIntroContenidor .foto-asset{width:100%;height:100%;border-radius:20px;object-fit:cover}
+#comptaIntroContenidor,
+#oneraIntroContenidor{max-height:44vh}
 
 #oneraTargetContainer{
   position:absolute;top:6px;right:2px;z-index:100;pointer-events:none;
@@ -378,6 +384,44 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 @keyframes brillar{0%{background-position:130% 0}100%{background-position:-30% 0}}
 @media (prefers-reduced-motion:reduce){ .carregant::after{animation:none;opacity:.35} }
 
+/* ── "N-enrere": la demostració de com funciona ─────────
+   Una tira d'imatges que va passant. El requadre del mig és el que veuràs
+   a la pantalla; la resta queda enfosquida i desenfocada, com si ja hagués
+   passat o encara no hagués arribat. */
+.demo-film{
+  position:relative;width:100%;max-width:430px;height:120px;overflow:hidden;
+  margin:4px auto 8px;border-radius:18px;
+}
+.demo-track{
+  position:absolute;top:50%;left:50%;display:flex;gap:10px;align-items:center;
+  transition:transform .6s cubic-bezier(.3,.8,.35,1);
+}
+.demo-item{
+  width:82px;height:82px;flex:0 0 auto;border-radius:16px;
+  display:grid;place-items:center;overflow:hidden;
+  background:var(--card-face);box-shadow:inset 0 0 0 2px var(--card-ring);
+  opacity:.3;filter:blur(3px);
+  transition:opacity .45s,filter .45s,box-shadow .45s;
+}
+.demo-item .material-symbols-rounded{font-size:50px}
+.demo-item .foto-asset{width:100%;height:100%;object-fit:cover}
+.demo-item.dins{opacity:1;filter:none}
+.demo-item.parella{opacity:.9;filter:none;box-shadow:inset 0 0 0 4px var(--accent-deep), 0 0 20px rgba(240,160,32,.6)}
+.demo-finestra{
+  position:absolute;top:50%;left:50%;width:94px;height:94px;
+  transform:translate(-50%,-50%);border-radius:20px;pointer-events:none;
+  border:3px solid var(--accent);
+  box-shadow:0 0 0 999px rgba(0,0,0,.45);
+}
+.demo-peu{min-height:2.6em;display:flex;align-items:center;justify-content:center;
+  font-size:14px;line-height:1.3;max-width:30ch;margin:0 auto}
+@media (max-height:620px){
+  .demo-film{height:96px}
+  .demo-item{width:66px;height:66px}
+  .demo-item .material-symbols-rounded{font-size:40px}
+  .demo-finestra{width:78px;height:78px}
+}
+
 /* ── "N-enrere": tira de fotogrames ─────────────────────
    Es veu nítid el fotograma del mig; el que ja ha passat i el que ve
    només s'intueixen, desenfocats, de manera que no es poden reconèixer. */
@@ -398,6 +442,43 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .film-item.lateral .foto-asset{width:100%;height:100%;object-fit:cover}
 .film-item.lateral .material-symbols-rounded{font-size:calc(var(--lateral) * .62)}
 @media (prefers-reduced-motion:reduce){ .film-track{transition:none !important} }
+
+/* ── "Compta-les": les imatges passen com en una roda ───
+   Entren per la dreta i surten per l'esquerra, amb una lleugera inclinació
+   perquè sembli que giren. Els costats s'esvaeixen. */
+.roda-vista{
+  width:min(94vw,620px);display:grid;place-items:center;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 22%,#000 78%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0%,#000 22%,#000 78%,transparent 100%);
+}
+.roda-vista[hidden]{display:none}
+.roda{position:relative;width:min(58vw,44vh,300px);height:min(58vw,44vh,300px)}
+.roda .mega-tile{position:absolute;inset:0;width:100%;height:100%}
+@keyframes rodaEntra{
+  from{transform:translateX(150%) rotate(9deg) scale(.72);opacity:0}
+  to{transform:none;opacity:1}
+}
+@keyframes rodaSurt{
+  from{transform:none;opacity:1}
+  to{transform:translateX(-150%) rotate(-9deg) scale(.72);opacity:0}
+}
+.roda .entra{animation:rodaEntra .45s cubic-bezier(.25,.9,.35,1) both}
+.roda .surt{animation:rodaSurt .45s cubic-bezier(.4,.1,.75,.4) both}
+@media (prefers-reduced-motion:reduce){
+  .roda .entra,.roda .surt{animation-duration:.01s}
+}
+
+/* La imatge de referència de la pregunta: més petita i amb un marc
+   diferent, perquè no es confongui amb una imatge més del recompte */
+.ref-tile{
+  width:min(34vw,26vh,150px);height:min(34vw,26vh,150px);
+  border-radius:20px;display:grid;place-items:center;overflow:hidden;
+  background:var(--chip-bg);border:3px dashed var(--accent-deep);
+  box-shadow:0 0 0 4px rgba(240,160,32,.2);
+}
+.ref-tile .material-symbols-rounded{font-size:min(22vw,96px)}
+.ref-tile .foto-asset{width:100%;height:100%;border-radius:16px;object-fit:cover}
+.pregunta-gran{font-size:clamp(15px,4.4vw,19px);font-weight:600;max-width:24ch}
 
 /* ── zona de pregunta amb números ─────────────────────── */
 .quiz-zona{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
@@ -432,7 +513,12 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 }
 .pair-asset .material-symbols-rounded{font-size:min(20vw,84px)}
 .pair-asset .foto-asset{width:100%;height:100%;border-radius:14px;object-fit:cover}
-.pair-fletxa{color:var(--ink-soft);font-size:22px}
+.pair-fletxa{color:var(--ink-soft);font-size:26px}
+/* Repàs final: verd si l'has encertada, vermell amb el que havies dit si no */
+.pair-card.ok{box-shadow:inset 0 0 0 3px #16a34a, 0 4px 10px rgba(0,0,0,.2)}
+.pair-card.ko{box-shadow:inset 0 0 0 3px #b91c1c, 0 4px 10px rgba(0,0,0,.2)}
+.pair-res{display:flex;flex-direction:column;align-items:center;line-height:1}
+.pair-dit{font-size:12px;color:#ef4444;text-decoration:line-through;margin-top:2px}
 .pair-num{font-family:'Baloo 2';font-weight:800;font-size:min(12vw,48px);color:var(--accent-deep);line-height:1}
 
 /* Telèfon en vertical: dues columnes que hi càpiguen, i la imatge de la
@@ -520,6 +606,23 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   box-shadow: inset 0 0 0 2px rgba(255,255,255,0.5), 0 4px 0 #d95b24, 0 7px 12px rgba(0,0,0,.28);
   border: 3px solid #fff;
 }
+/* El dors de les cartes i les caselles tapades, també de nit */
+body:not(.day) .face.dors{
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,.05), rgba(255,255,255,.05) 4px, transparent 4px, transparent 8px),
+              linear-gradient(135deg,#3a2c63 0%,#2a1f47 55%,#1b1430 100%);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.12), 0 4px 0 #120e21, 0 7px 12px rgba(0,0,0,.45);
+  border:3px solid rgba(255,255,255,.14);
+}
+body:not(.day) .face.dors img{opacity:.55;filter:saturate(.7) brightness(.8)}
+body:not(.day) .tile.tapada{
+  background:linear-gradient(160deg,#3a2c63,#231b3d);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.12), 0 5px 12px rgba(0,0,0,.4);
+}
+body:not(.day) .tile.tapada img{opacity:.55;filter:saturate(.7) brightness(.8)}
+/* Les fotos, una mica menys enceses de nit */
+body:not(.day) .foto-asset{filter:brightness(.86) saturate(.95)}
+body:not(.day) .tile.forat{background:rgba(255,255,255,.07)}
+
 .face.cara{
   transform:rotateY(180deg);
   background:var(--card-face);
@@ -1027,10 +1130,12 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
           </span>
         </div>
         <div class="board-wrap">
-          <div class="mega-tile" id="comptaStage"></div>
+          <div class="roda-vista" id="comptaRodaVista">
+            <div class="roda" id="comptaRoda"></div>
+          </div>
           <div class="quiz-zona" id="comptaQuiz" hidden>
-            <div class="mega-tile" id="comptaTargetGran"></div>
-            <p class="pregunta-text">Quantes vegades ha sortit aquesta imatge?</p>
+            <p class="pregunta-text pregunta-gran">Quantes vegades ha sortit aquesta imatge?</p>
+            <div class="ref-tile" id="comptaTargetGran"></div>
             <div class="num-opcions" id="comptaOptions"></div>
           </div>
           <div class="log" id="logCompta" role="status" aria-live="polite"></div>
@@ -1040,9 +1145,9 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <!-- ══ Pantalla: n-enrere ══ -->
       <section class="screen" id="nbackScreen">
         <div class="hud">
-          <span class="chip">
-            <span class="material-symbols-rounded" style="color:#64748b">history</span>
-            Fa <b id="nbackN">1</b>
+          <span class="chip" id="nbackNivellChip">
+            <span class="material-symbols-rounded" style="color:#a78bfa">history</span>
+            Igual que la de fa <b id="nbackN">1</b>
           </span>
           <span class="chip">
             <span class="material-symbols-rounded" style="color:#22c55e">check_circle</span>
@@ -1080,7 +1185,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.21</span>
+      <span class="version" id="versió">v3.30</span>
     </div>
   </footer>
 </div>
@@ -1221,6 +1326,20 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
   </button>
 </div>
 
+<!-- Modal Intro N-enrere -->
+<div id="nbackIntroOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="nbackIntroTitol" aria-hidden="true">
+  <div class="modal modal-info">
+    <h2 id="nbackIntroTitol">Igual que la de fa 1</h2>
+    <p class="how" id="nbackIntroText"></p>
+    <div class="demo-film">
+      <div class="demo-track" id="nbackDemoTrack"></div>
+      <div class="demo-finestra" aria-hidden="true"></div>
+    </div>
+    <p class="pregunta-text demo-peu" id="nbackDemoPeu">&nbsp;</p>
+    <button class="btn-big" id="nbackIntroBtn">Ho tinc, comencem</button>
+  </div>
+</div>
+
 <!-- Modal Intro Compta-les -->
 <div id="comptaIntroOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal modal-info" style="text-align:center;">
@@ -1314,7 +1433,7 @@ const NIVELLS_ONERA = [ { objectes:4, mirar:6, respondre:15, text:'4 objectes' }
 
 const NIVELLS_ASSOC = [ { parelles:3, mirar:12, respondre:45, text:'3 parelles' }, { parelles:4, mirar:15, respondre:55, text:'4 parelles' }, { parelles:5, mirar:18, respondre:65, text:'5 parelles' }, { parelles:6, mirar:22, respondre:80, text:'6 parelles' } ];
 const NIVELLS_COMPTA = [ { mostres:12, velocitat:1000, variants:3, text:'12 imatges' }, { mostres:18, velocitat:900, variants:4, text:'18 imatges' }, { mostres:24, velocitat:800, variants:5, text:'24 imatges' }, { mostres:32, velocitat:700, variants:6, text:'32 imatges' } ];
-const NIVELLS_NBACK = [ { n:1, mostres:14, velocitat:2600, variants:4, text:'La d\'abans' }, { n:1, mostres:20, velocitat:2200, variants:5, text:'La d\'abans, més ràpid' }, { n:2, mostres:20, velocitat:2600, variants:5, text:'Dues enrere' }, { n:3, mostres:22, velocitat:2800, variants:6, text:'Tres enrere' } ];
+const NIVELLS_NBACK = [ { n:1, mostres:14, velocitat:3000, variants:4, text:'Per començar' }, { n:1, mostres:18, velocitat:1900, variants:5, text:'Més ràpid' }, { n:2, mostres:20, velocitat:2600, variants:5, text:'Costa més' }, { n:3, mostres:22, velocitat:2900, variants:6, text:'Per a experts' } ];
 
 const COLOR_TEMA = { dia:'#ff9f45', nit:'#14101c' };
 const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?', sequencia:'Seqüència', canvi:'Què ha canviat?', onera:'On era?', assoc:'Parelles impossibles', compta:'Compta-les', nback:'N-enrere' };
@@ -1355,6 +1474,7 @@ let canviDades = [], canviResposta = -1, canviExplicacio = '';
 let oneraDades = [], oneraObjectiu = null, oneraPosicio = -1;
 let canviVell = null, canviNou = null, canviDemoInterval = null;
 let assocParelles = [], assocPendents = [], assocActual = null, assocEncerts = 0, assocFet = false;
+let assocRespostes = {};
 let comptaObjectiu = null, comptaCompte = 0, comptaTimer = null, comptaFet = false;
 let nbackSeq = [], nbackIdx = 0, nbackEncerts = 0, nbackErrors = 0, nbackTotal = 0;
 let nbackTimer = null, nbackRespost = false, nbackFet = false;
@@ -1703,6 +1823,7 @@ function aturarTot(){
   clearInterval(canviDemoInterval); canviDemoInterval = null;
   clearTimeout(comptaTimer); comptaTimer = null;
   clearTimeout(nbackTimer); nbackTimer = null;
+  clearTimeout(demoTimer); demoTimer = null;
   alAcabarElTemps = null; aturatPerModal = false;
 }
 
@@ -2000,6 +2121,7 @@ function iniciarCanvi(){
   dibuixarTaulerCanvi(canviDades, false);
   $('faseIconCanvi').textContent = 'visibility'; $('faseTextCanvi').textContent = 'Memoritza';
   log('Memoritza l\'escena…', 0);
+  canviBoard.style.visibility = 'visible';
   canviBoard.style.pointerEvents = 'none';
   iniciarCompte(nivell.mirar, aplicarCanvi); temporitzadorFase = setTimeout(aplicarCanvi, nivell.mirar * 1000 + 200);
 }
@@ -2025,13 +2147,9 @@ function dibuixarTaulerCanvi(dades, interactiu) {
 /* Deixa el tauler en blanc, amb les caselles al seu lloc però sense res a dins:
    així la memòria ha de treballar i el canvi no es veu "en directe". */
 function taulerCanviEnBlanc(){
-  canviBoard.innerHTML = '';
-  canviDades.forEach(() => {
-    const cel = document.createElement('div');
-    cel.className = 'tile blanc';
-    canviBoard.appendChild(cel);
-  });
-  ajustarTauler();
+  // Les caselles continuen ocupant el seu lloc, però no es veuen:
+  // així no apareix una graella de cartes buides que despisti.
+  canviBoard.style.visibility = 'hidden';
 }
 
 function aplicarCanvi() {
@@ -2087,6 +2205,7 @@ function aplicarCanvi() {
   canviDades = nouDades;
 
   setTimeout(() => {
+    canviBoard.style.visibility = 'visible';
     dibuixarTaulerCanvi(canviDades, true);
     canviBoard.style.pointerEvents = 'auto';
     $('faseIconCanvi').textContent = 'find_replace'; $('faseTextCanvi').textContent = 'Troba el canvi';
@@ -2149,11 +2268,19 @@ function resoldreCanvi(idx, perTemps) {
 /* ═══════════════════════════════════════════════════════
    JOC 5 — ON ERA?
    ═══════════════════════════════════════════════════════ */
+/* Arrodoneix el nombre de caselles perquè la graella quedi completa:
+   files senceres, sense forats a la darrera fila. */
+function totalGraellaPlena(minim){
+  const cols = getGridCols(minim);
+  return Math.max(cols * 2, Math.ceil(minim / cols) * cols);
+}
+
 function iniciarOnera(){
   aturarTot(); mostrarPantalla('onera'); oneraBoard.style.pointerEvents = 'auto';
-  oneraBoard.dataset.lockedCols = ''; // Alliberem memòria de columnes
   const nivell = NIVELLS_ONERA[nivellOnera];
-  const total = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
+  const minim = Math.max(nivell.objectes + Math.ceil(nivell.objectes / 2), 6);
+  const total = totalGraellaPlena(minim);
+  oneraBoard.dataset.lockedCols = getGridCols(minim);   // les columnes no canvien en amagar-ho tot
   oneraDades = Array(total).fill(null);
 
   const poolBase = getActivePool(nivell.objectes);
@@ -2243,7 +2370,7 @@ function iniciarAssoc(){
   const items = barrejar(pool).slice(0, nivell.parelles);
   const nums  = barrejar([1,2,3,4,5,6,7,8,9]).slice(0, nivell.parelles);
   assocParelles = items.map((it, k) => ({ item:it, num:nums[k] }));
-  assocEncerts = 0;
+  assocEncerts = 0; assocRespostes = {};
 
   $('assocProg').textContent = '0';
   $('assocTotal').textContent = nivell.parelles;
@@ -2252,7 +2379,8 @@ function iniciarAssoc(){
 
   assocBoard.innerHTML = assocParelles.map(p =>
     `<div class="pair-card"><div class="pair-asset">${renderContent(p.item)}</div>` +
-    `<span class="pair-fletxa">→</span><span class="pair-num">${p.num}</span></div>`).join('');
+    `<span class="material-symbols-rounded pair-fletxa">arrow_forward</span>` +
+    `<span class="pair-num">${p.num}</span></div>`).join('');
 
   $('faseIconAssoc').textContent = 'visibility'; $('faseTextAssoc').textContent = 'Memoritza';
   log('Memoritza quin número va amb cada imatge…', 0);
@@ -2292,6 +2420,7 @@ function respondreAssoc(boto, num){
   const correcte = assocActual.num;
   $('assocOptions').style.pointerEvents = 'none';
 
+  assocRespostes[correcte] = num;
   if (bo){
     boto.classList.add('correcta'); assocEncerts++;
     $('assocProg').textContent = assocEncerts; celebrar(boto, 60); log('Molt bé!');
@@ -2306,12 +2435,36 @@ function respondreAssoc(boto, num){
   temporitzadorFase = setTimeout(seguentAssoc, bo ? 800 : 2000);
 }
 
+/* Abans del resultat, un repàs de totes les parelles: quin número anava
+   amb cada imatge i, si has fallat, què havies dit. */
 function acabarAssoc(){
   if (assocFet) return;
   assocFet = true; aturarTot();
   const n = NIVELLS_ASSOC[nivellAssoc];
-  finalPartida(assocEncerts === n.parelles, assocPendents.length ? 'Temps esgotat' : null,
-               null, `${assocEncerts} de ${n.parelles} parelles recordades`);
+  const guanyat = assocEncerts === n.parelles;
+
+  $('assocQuiz').hidden = true; assocBoard.hidden = false;
+  $('faseIconAssoc').textContent = 'check_circle'; $('faseTextAssoc').textContent = 'Repàs';
+
+  assocBoard.innerHTML = assocParelles.map(p => {
+    const dit = assocRespostes[p.num];
+    const be = dit === p.num;
+    const peu = be ? '' :
+      `<small class="pair-dit">${dit === undefined ? 'sense resposta' : 'has dit ' + dit}</small>`;
+    return `<div class="pair-card ${be ? 'ok' : 'ko'}">` +
+           `<div class="pair-asset">${renderContent(p.item)}</div>` +
+           `<span class="material-symbols-rounded pair-fletxa">arrow_forward</span>` +
+           `<span class="pair-res"><span class="pair-num">${p.num}</span>${peu}</span></div>`;
+  }).join('');
+
+  const errades = n.parelles - assocEncerts;
+  log(guanyat ? 'Totes correctes!'
+              : (errades === 1 ? 'Mira la que no t\'ha sortit' : `Mira les ${errades} que no t'han sortit`), 4200);
+
+  temporitzadorFase = setTimeout(() => {
+    finalPartida(guanyat, guanyat ? null : (assocPendents.length ? 'Temps esgotat' : `${errades} de mal recordades`),
+                 null, `${assocEncerts} de ${n.parelles} parelles recordades`);
+  }, guanyat ? 2200 : 4500);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -2332,9 +2485,9 @@ function iniciarCompta(){
   comptaCompte = seq.filter(o => o.uid === comptaObjectiu.uid).length;
 
   $('comptaTargetMini').innerHTML = renderContent(comptaObjectiu);
-  $('comptaTargetGran').innerHTML = renderContent(comptaObjectiu);
-  $('comptaQuiz').hidden = true; $('comptaStage').hidden = false;
-  $('comptaStage').innerHTML = '';
+  posarImatge($('comptaTargetGran'), comptaObjectiu);
+  $('comptaQuiz').hidden = true; $('comptaRodaVista').hidden = false;
+  $('comptaRoda').innerHTML = '';
   $('comptaProg').textContent = '0'; $('comptaTotal').textContent = nivell.mostres;
   // Mentre van passant imatges no hi ha res a cronometrar: el rellotge fa nosa
   $('timeChipCompta').hidden = true;
@@ -2343,9 +2496,16 @@ function iniciarCompta(){
   let k = 0;
   const passa = () => {
     if (k >= seq.length) return preguntarCompta();
-    const escenari = $('comptaStage');
-    posarImatge(escenari, seq[k]);
-    escenari.classList.remove('stage-flash'); void escenari.offsetWidth; escenari.classList.add('stage-flash');
+    const roda = $('comptaRoda');
+    const anterior = roda.lastElementChild;
+    if (anterior){
+      anterior.classList.remove('entra'); anterior.classList.add('surt');
+      setTimeout(() => anterior.remove(), 500);
+    }
+    const nova = document.createElement('div');
+    nova.className = 'mega-tile entra';
+    roda.appendChild(nova);
+    posarImatge(nova, seq[k]);
     k++; $('comptaProg').textContent = k;
     comptaTimer = setTimeout(passa, nivell.velocitat);
   };
@@ -2367,7 +2527,7 @@ function iniciarCompta(){
 }
 
 function preguntarCompta(){
-  $('comptaStage').hidden = true; $('comptaQuiz').hidden = false;
+  $('comptaRodaVista').hidden = true; $('comptaQuiz').hidden = false;
 
   // Quatre respostes possibles al voltant de la bona
   const opcions = new Set([comptaCompte]);
@@ -2411,8 +2571,73 @@ function respondreCompta(boto, n){
    Passen imatges seguides; cal avisar quan la d'ara és igual
    que la de fa N imatges.
    ═══════════════════════════════════════════════════════ */
+/* ── La demostració ── */
+let demoTimer = null, demoIdx = 0, demoSeq = [], demoN = 1;
+
+function muntarDemoNback(n){
+  demoN = n;
+  const base = barrejar(POOL_ICONES).slice(0, 5);
+  const [a, b, c, d, e] = base;
+
+  // Una tira curta on hi ha, segur, una coincidència a la distància que toca
+  if (n === 1)      demoSeq = [a, b, b, c, d];
+  else if (n === 2) demoSeq = [a, b, a, c, e];
+  else              demoSeq = [a, b, c, a, d];
+
+  $('nbackIntroTitol').textContent = `Igual que la de fa ${n}`;
+  $('nbackIntroText').innerHTML = n === 1
+    ? 'Van passant imatges. Prem el botó quan la que veus sigui <b>igual que l\'anterior</b>.'
+    : `Van passant imatges. Prem el botó quan la que veus sigui <b>igual que la de fa ${n}</b>, és a dir, saltant-te'n ${n - 1}.`;
+
+  $('nbackDemoTrack').innerHTML = demoSeq
+    .map(o => `<div class="demo-item">${renderContent(o)}</div>`).join('');
+  demoIdx = 0;
+  passaDemo();
+}
+
+function passaDemo(){
+  const tira = $('nbackDemoTrack');
+  const items = [...tira.children];
+  if (!items.length) return;
+
+  const ample = items[0].offsetWidth + 10;
+  tira.style.transform = `translate(calc(-50% + ${(items.length - 1) / 2 * ample}px - ${demoIdx * ample}px), -50%)`;
+
+  items.forEach((el, i) => {
+    el.classList.toggle('dins', i === demoIdx);
+    el.classList.remove('parella');
+  });
+
+  const coincideix = demoIdx >= demoN && demoSeq[demoIdx].uid === demoSeq[demoIdx - demoN].uid;
+  if (coincideix){
+    items[demoIdx].classList.add('parella');
+    items[demoIdx - demoN].classList.add('parella');
+    $('nbackDemoPeu').innerHTML = demoN === 1
+      ? 'Aquesta és <b>igual que l\'anterior</b>: aquí premeries el botó.'
+      : `Aquesta és <b>igual que la de fa ${demoN}</b>: aquí premeries el botó.`;
+  } else {
+    $('nbackDemoPeu').textContent = demoIdx === 0 ? 'Comencem…' : 'Aquesta no s\'assembla: no facis res.';
+  }
+
+  demoIdx++;
+  const espera = coincideix ? 2600 : 1400;
+  if (demoIdx >= demoSeq.length){
+    demoTimer = setTimeout(() => { demoIdx = 0; passaDemo(); }, espera);
+  } else {
+    demoTimer = setTimeout(passaDemo, espera);
+  }
+}
+
+function aturarDemo(){ clearTimeout(demoTimer); demoTimer = null; }
+
+$('nbackIntroBtn').addEventListener('click', () => {
+  aturarDemo();
+  tancarModal($('nbackIntroOverlay'));
+  if (joc === 'nback' && !nbackFet) nbackTimer = setTimeout(passaNback, 900);
+});
+
 function iniciarNback(){
-  aturarTot(); mostrarPantalla('nback'); nbackFet = false;
+  aturarTot(); aturarDemo(); mostrarPantalla('nback'); nbackFet = false;
   const nivell = NIVELLS_NBACK[nivellNback];
 
   const pool = getActivePool(nivell.variants);
@@ -2439,11 +2664,12 @@ function iniciarNback(){
   $('nbackStage').innerHTML = ''; $('nbackPrev').innerHTML = ''; $('nbackNext').innerHTML = '';
   tempsRestant = 0; pintarRellotge();
 
-  log(`Avisa quan la imatge sigui igual que la de fa ${nivell.n}`, 3600);
-  precarregarImatges(nbackSeq).then(() => {
-    if (joc !== 'nback' || nbackFet) return;
-    nbackTimer = setTimeout(passaNback, 1200);
-  });
+  // Primer la demostració; el joc no arrenca fins que es prem "Ho tinc"
+  // La finestra s'obre primer: si no, els fotogrames encara no tenen mida
+  obrirModal($('nbackIntroOverlay'));
+  muntarDemoNback(nivell.n);
+  precarregarImatges(nbackSeq);
+  log('', 0);
 }
 
 function passaNback(){
@@ -2454,6 +2680,7 @@ function passaNback(){
     const i = nbackIdx - 1;
     if (i >= nivell.n && nbackSeq[i].uid === nbackSeq[i - nivell.n].uid){
       nbackErrors++; $('nbackErrors').textContent = nbackErrors;
+      if (nbackTotal > 0 && nbackEncerts + nbackErrors >= nbackTotal) return acabarNback();
     }
   }
   if (nbackIdx >= nbackSeq.length) return acabarNback();
@@ -2492,6 +2719,10 @@ function premerNback(){
   } else {
     nbackErrors++; $('nbackErrors').textContent = nbackErrors;
     log('Aquesta no ho era', 900);
+  }
+  // Quan encerts i errades sumen totes les coincidències possibles, s'ha acabat
+  if (nbackTotal > 0 && nbackEncerts + nbackErrors >= nbackTotal){
+    nbackTimer = setTimeout(acabarNback, 1000);
   }
 }
 
