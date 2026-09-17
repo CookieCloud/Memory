@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.40
+    Version: 3.41
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -468,7 +468,7 @@ body.landscape-mode .bar{--pill:clamp(26px, calc((100dvh - 110px) / 8), 44px);fl
   <footer class="footer">
     <p>&copy; 2026 Memòria. Tots els drets reservats.</p>
     <div class="footer-links">
-      <a href="#">Política de Privacitat</a><span class="divider">·</span><a href="#">Condicions del Servei</a><span class="divider">·</span><span class="version" id="version">v3.40</span>
+      <a href="#">Política de Privacitat</a><span class="divider">·</span><a href="#">Condicions del Servei</a><span class="divider">·</span><span class="version" id="version">v3.41</span>
     </div>
   </footer>
 </div>
@@ -609,7 +609,7 @@ function mmss(s){ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 
 let tickTimer=null, tempsRestant=0, tempsTotal=0, alAcabarTemps=null;
 function pararRellotge(){ clearInterval(tickTimer); tickTimer=null; }
-function arrencarRellotge(){ pararRellotge(); tickTimer=setInterval(()=>{tempsRestant--; if($('timeLeft'+(joc==='parelles'?'':(joc==='escena'?'2':(joc==='canvi'?'Canvi':(joc==='onera'?'Onera':(joc==='assoc'?'Assoc':(joc==='compta'?'Compta':(joc==='piramide'?'Pir':'CB'))))))))) $('timeLeft'+(joc==='parelles'?'':(joc==='escena'?'2':(joc==='canvi'?'Canvi':(joc==='onera'?'Onera':(joc==='assoc'?'Assoc':(joc==='compta'?'Compta':(joc==='piramide'?'Pir':'CB'))))))))).textContent=mmss(Math.max(0,tempsRestant)); if(tempsRestant<=0){pararRellotge();if(alAcabarTemps)alAcabarTemps();} },1000); }
+function arrencarRellotge(){ pararRellotge(); tickTimer=setInterval(()=>{tempsRestant--; if($('timeLeft'+(joc==='parelles'?'':(joc==='escena'?'2':(joc==='canvi'?'Canvi':(joc==='onera'?'Onera':(joc==='assoc'?'Assoc':(joc==='compta'?'Compta':(joc==='piramide'?'Pir':'CB'))))))))) $('timeLeft'+(joc==='parelles'?'':(joc==='escena'?'2':(joc==='canvi'?'Canvi':(joc==='onera'?'Onera':(joc==='assoc'?'Assoc':(joc==='compta'?'Compta':(joc==='piramide'?'Pir':'CB')))))))).textContent=mmss(Math.max(0,tempsRestant)); if(tempsRestant<=0){pararRellotge();if(alAcabarTemps)alAcabarTemps();} },1000); }
 function iniciarCompte(s, alF){ tempsTotal=s; tempsRestant=s; alAcabarTemps=alF; arrencarRellotge(); }
 function aturarTot(){ pararRellotge(); }
 
