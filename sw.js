@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════
    MEMÒRIA — Service worker
    ═══════════════════════════════════════════════════════ */
-const VERSIO = '3.40';
+const VERSIO = '3.50';
 const CACHE  = 'memoria-v' + VERSIO;
 
 const NUCLI = [
