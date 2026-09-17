@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.50
+    Version: 3.60
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,13 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v3.60
+    - "La piràmide": cada cinc a nou cartes surt una preguntona (sumes,
+      restes, lletres, sèries, sí o no). Si es falla, cauen dues cartes més
+    - "Carta blanca": rètols a les caselles lliures i a les ordenades, els
+      destins possibles s'encenen en verd en triar una carta, i les A que
+      són a la vista pugen soles en repartir
 
     CANVIS v3.50
     - Joc nou "Carta blanca": solitari de 32 cartes (A–H en quatre colors)
@@ -654,6 +661,16 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 }
 .blanca-dalt{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
 .blanca-grup{display:flex;gap:6px}
+.blanca-zona{display:flex;flex-direction:column;align-items:center;gap:3px}
+.blanca-etiqueta{font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.3px}
+/* Les caselles lliures i les de destí es distingeixen a simple vista */
+.bslot.lliure-buida{border-radius:10px;box-shadow:inset 0 0 0 2px var(--chip-border)}
+.bslot.fund{box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+/* Quan tens una carta triada, s'encén tot allà on la pots deixar */
+.bslot.possible,.blanca-columna.possible{
+  box-shadow:0 0 0 3px #22c55e, 0 0 14px rgba(34,197,94,.5);
+}
+.blanca-columna.possible{border-radius:12px}
 .blanca-columnes{display:flex;gap:8px;justify-content:center;align-items:flex-start;width:100%}
 .blanca-columna{
   display:flex;flex-direction:column;align-items:center;
@@ -691,6 +708,23 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .chip-boto{border:1px solid var(--chip-border);cursor:pointer;font-family:'Fredoka'}
 .chip-boto:active{transform:scale(.94)}
 .chip-boto:disabled{opacity:.45;cursor:default}
+
+/* ── proves de la piràmide ─────────────────────────────── */
+.prova-opcions{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:4px 0 10px;max-width:100%;
+}
+.prova-btn{
+  min-width:74px;padding:14px 20px;border-radius:18px;cursor:pointer;
+  background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
+  color:var(--ink);font-family:'Baloo 2';font-weight:800;font-size:clamp(18px,5vw,26px);
+  transition:transform .12s cubic-bezier(.34,1.56,.64,1);
+}
+.prova-btn:active{transform:scale(.93)}
+.prova-btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.prova-btn.correcta{background:linear-gradient(160deg,#4ade80,#16a34a);color:#06310f;border-color:#16a34a}
+.prova-btn.erronia{background:linear-gradient(160deg,#fb7185,#b91c1c);color:#fff;border-color:#b91c1c}
+.ptile.castig{animation:caure .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes caure{0%{transform:translateY(-60px) scale(1.2);opacity:0}100%{transform:none;opacity:1}}
 
 /* ── zona de pregunta amb números ─────────────────────── */
 .quiz-zona{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
@@ -1391,8 +1425,14 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
         <div class="board-wrap blanca-wrap">
           <div class="blanca-taula" id="blancaTaula">
             <div class="blanca-dalt">
-              <div class="blanca-grup" id="blancaLliures"></div>
-              <div class="blanca-grup" id="blancaFundacions"></div>
+              <div class="blanca-zona">
+                <span class="blanca-etiqueta">Caselles lliures</span>
+                <div class="blanca-grup" id="blancaLliures"></div>
+              </div>
+              <div class="blanca-zona">
+                <span class="blanca-etiqueta">Ordenades</span>
+                <div class="blanca-grup" id="blancaFundacions"></div>
+              </div>
             </div>
             <div class="blanca-columnes" id="blancaColumnes"></div>
           </div>
@@ -1463,7 +1503,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.50</span>
+      <span class="version" id="version">v3.60</span>
     </div>
   </footer>
 </div>
@@ -1602,6 +1642,17 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
   <button id="avisVersioTanca" type="button" class="avis-tanca" title="Ara no" aria-label="Ara no">
     <span class="material-symbols-rounded">close</span>
   </button>
+</div>
+
+<!-- Prova de la piràmide -->
+<div id="provaOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="provaTitol" aria-hidden="true">
+  <div class="modal modal-info">
+    <span class="material-symbols-rounded modal-icon">psychology</span>
+    <h2 id="provaTitol">Un moment de pensar</h2>
+    <p class="credit" id="provaPregunta"></p>
+    <div class="prova-opcions" id="provaOpcions"></div>
+    <p class="how" id="provaPeu" style="text-align:center"></p>
+  </div>
 </div>
 
 <!-- Modal Intro N-enrere -->
@@ -1757,7 +1808,7 @@ const AJUDA = {
   assoc: '<ul><li>Cada imatge va acompanyada d\'un número.</li><li>Memoritza quina va amb quin.</li><li>Després et mostrem les imatges una a una i tries el número que li tocava.</li></ul>',
   compta: '<ul><li>Primer et diem quina imatge has de comptar (la tens a dalt).</li><li>Van passant imatges d\'una en una.</li><li>Al final, digues quantes vegades ha sortit la teva.</li></ul>',
   blanca: '<ul><li>Hi ha 32 cartes: quatre colors i vuit valors, de la A a la H.</li><li>L\'objectiu és pujar-les totes a dalt a la dreta, per colors i de la A a la H.</li><li>Sobre una carta n\'hi pots posar una altra d\'un valor menys i de l\'altra família de colors (rosa i groc contra blau i verd).</li><li>Les caselles lliures de dalt a l\'esquerra guarden una carta cadascuna.</li><li>Toca una carta per triar-la i després toca on vols posar-la.</li></ul>',
-  piramide: '<ul><li>Toca les cartes de dalt de tot: les que no estan tapades per cap altra.</li><li>Van a parar a la safata de sota.</li><li>Quan a la safata hi ha dues cartes iguals, marxen totes dues.</li><li>Si omples els sis llocs de la safata sense fer cap parella, s\'ha acabat.</li><li>Les cartes amb estrella, en fer parella, buiden la safata sencera.</li></ul>',
+  piramide: '<ul><li>Toca les cartes de dalt de tot: les que no estan tapades per cap altra.</li><li>Van a parar a la safata de sota.</li><li>Quan a la safata hi ha dues cartes iguals, marxen totes dues.</li><li>Si omples els sis llocs de la safata sense fer cap parella, s\'ha acabat.</li><li>Les cartes amb estrella, en fer parella, buiden la safata sencera.</li><li>De tant en tant sortirà una preguntona: si l\'encertes continues, i si falles et cauen dues cartes més.</li></ul>',
   nback: '<ul><li>Passen imatges seguides, sense parar.</li><li>Prem "És la mateixa!" quan la imatge d\'ara sigui igual que la de fa una, dues o tres imatges (segons el nivell).</li><li>Si la deixes passar o prems quan no toca, compta com a errada.</li></ul>'
 };
 
@@ -3231,9 +3282,10 @@ function iniciarBlanca(){
     // Amb vuit columnes les cartes han de ser més estretes per cabre-hi
     $('blancaTaula').style.setProperty('--cw',
       `min(74px, calc((94vw - ${(nivell.columnes - 1) * 8}px) / ${nivell.columnes}))`);
+    blancaAutomatic();          // les A que ja siguin a la vista pugen soles
     pintarBlanca();
     iniciarCompte(nivell.segons, () => acabarBlanca(false, 'Temps esgotat'));
-    log('Toca una carta i després on vols posar-la', 3400);
+    log('Toca una carta i mira on s\'encén el verd', 4000);
   }, 60);
 }
 
@@ -3263,7 +3315,7 @@ function pintarBlanca(){
       el.addEventListener('click', ev => { ev.stopPropagation(); triarBlanca({ de:'lliure', i, carta }); });
       slot.appendChild(el);
     } else {
-      slot.innerHTML = '<span class="material-symbols-rounded">style</span>';
+      slot.classList.add('lliure-buida');   // buida i prou: sense cap dibuix que despisti
     }
     slot.addEventListener('click', () => deixarBlanca({ a:'lliure', j:i }));
     lliures.appendChild(slot);
@@ -3274,7 +3326,7 @@ function pintarBlanca(){
   fund.innerHTML = '';
   e.fundacions.forEach((valor, pal) => {
     const slot = document.createElement('div');
-    slot.className = 'bslot';
+    slot.className = 'bslot fund';
     if (valor > 0) slot.appendChild(ferCartaBlanca({ pal, valor }, ' morta'));
     else slot.innerHTML = `<span class="material-symbols-rounded" style="color:${BLANCA_PALS[pal].color};opacity:.5">${BLANCA_PALS[pal].icona}</span>`;
     slot.addEventListener('click', () => deixarBlanca({ a:'fund', j:pal }));
@@ -3301,6 +3353,17 @@ function pintarBlanca(){
     caixa.addEventListener('click', () => deixarBlanca({ a:'col', j:i }));
     cols.appendChild(caixa);
   });
+
+  // Amb una carta triada, marquem en verd tots els llocs on pot anar
+  if (blancaSeleccio){
+    blancaMoviments(e)
+      .filter(m => m.de === blancaSeleccio.de && m.i === blancaSeleccio.i)
+      .forEach(m => {
+        if (m.a === 'col') $('blancaColumnes').children[m.j].classList.add('possible');
+        else if (m.a === 'lliure') $('blancaLliures').children[m.j].classList.add('possible');
+        else $('blancaFundacions').children[m.j].classList.add('possible');
+      });
+  }
 
   const fetes = e.fundacions.reduce((s, v) => s + v, 0);
   $('blancaFetes').textContent = fetes;
@@ -3391,8 +3454,149 @@ function acabarBlanca(guanyat, motiu){
    dues d'iguals, marxen.
    ═══════════════════════════════════════════════════════ */
 let piramideCartes = [], piramideSafataLlista = [], piramideRestants = 0, piramideFet = false;
+let piramideCompteEnrere = 0, piramideProves = 0, piramideFallades = 0;
 
 const piramideBoard = $('piramideBoard');
+
+/* ═══════════════════════════════════════════════════════
+   LES PROVES
+   Cada poques cartes surt una preguntona curta. Si l'encertes,
+   continues; si no, et cauen dues cartes més a la piràmide.
+   ═══════════════════════════════════════════════════════ */
+const ABECEDARI = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
+
+function generarProva(){
+  const tipus = Math.floor(Math.random() * 5);
+  const enter = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+
+  if (tipus === 0){                                   // suma
+    const a = enter(7, 39), b = enter(4, 29);
+    return { pregunta:`Quant fan ${a} + ${b}?`, bona:a + b, numerica:true };
+  }
+  if (tipus === 1){                                   // resta
+    const a = enter(20, 60), b = enter(3, 19);
+    return { pregunta:`Quant fan ${a} − ${b}?`, bona:a - b, numerica:true };
+  }
+  if (tipus === 2){                                   // lletres
+    const i = enter(0, ABECEDARI.length - 3);
+    const endavant = Math.random() < .6;
+    const j = endavant ? i + 1 : Math.max(0, i - 1);
+    return {
+      pregunta: endavant ? `Quina lletra va després de la ${ABECEDARI[i]}?`
+                         : `Quina lletra va abans de la ${ABECEDARI[i]}?`,
+      bona: ABECEDARI[j], lletres:true
+    };
+  }
+  if (tipus === 3){                                   // sèrie de números
+    const inici = enter(2, 15), pas = enter(2, 7);
+    const serie = [inici, inici + pas, inici + pas * 2];
+    return {
+      pregunta:`${serie.join(', ')}… quin número ve ara?`,
+      bona: inici + pas * 3, numerica:true
+    };
+  }
+  // sí o no
+  const n = enter(11, 98);
+  const parell = Math.random() < .5;
+  return {
+    pregunta: parell ? `El ${n} és un número parell?` : `El ${n} es pot dividir entre 5?`,
+    bona: (parell ? (n % 2 === 0) : (n % 5 === 0)) ? 'Sí' : 'No',
+    siono:true
+  };
+}
+
+function opcionsProva(prova){
+  if (prova.siono) return ['Sí', 'No'];
+
+  const opcions = new Set([prova.bona]);
+  if (prova.lletres){
+    const pos = ABECEDARI.indexOf(prova.bona);
+    while (opcions.size < 4){
+      const d = Math.floor(Math.random() * 7) - 3;
+      const k = pos + d;
+      if (k >= 0 && k < ABECEDARI.length) opcions.add(ABECEDARI[k]);
+    }
+  } else {
+    while (opcions.size < 4){
+      const d = Math.floor(Math.random() * 13) - 6;
+      const v = prova.bona + d;
+      if (v > 0) opcions.add(v);
+    }
+  }
+  return barrejar([...opcions]);
+}
+
+function programarProva(){
+  // Entre cinc i nou cartes, a l'atzar: així no es pot comptar
+  piramideCompteEnrere = 5 + Math.floor(Math.random() * 5);
+}
+
+function treureProva(){
+  const prova = generarProva();
+  piramideProves++;
+  $('provaPregunta').textContent = prova.pregunta;
+  $('provaPeu').textContent = 'Si t\'equivoques, et cauran dues cartes més a la piràmide.';
+
+  const caixa = $('provaOpcions');
+  caixa.innerHTML = ''; caixa.style.pointerEvents = 'auto';
+  opcionsProva(prova).forEach(op => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'prova-btn'; b.textContent = op;
+    b.addEventListener('click', () => respondreProva(b, op, prova));
+    caixa.appendChild(b);
+  });
+
+  obrirModal($('provaOverlay'));
+}
+
+function respondreProva(boto, resposta, prova){
+  const bo = String(resposta) === String(prova.bona);
+  $('provaOpcions').style.pointerEvents = 'none';
+
+  if (bo){
+    boto.classList.add('correcta');
+    celebrar(boto, 40);
+    $('provaPeu').textContent = 'Molt bé! Continuem.';
+  } else {
+    boto.classList.add('erronia');
+    [...$('provaOpcions').children]
+      .find(b => String(b.textContent) === String(prova.bona))?.classList.add('correcta');
+    piramideFallades++;
+    $('provaPeu').textContent = `Era ${prova.bona}. Et cauen dues cartes més.`;
+  }
+
+  setTimeout(() => {
+    tancarModal($('provaOverlay'));
+    programarProva();
+    if (!bo) afegirCastig();
+  }, bo ? 900 : 2200);
+}
+
+/* Càstig: una parella nova cau a sobre de la piràmide */
+function afegirCastig(){
+  const vives = piramideCartes.filter(c => !c.fora);
+  if (!vives.length) return;
+
+  const capaNova = Math.max(...vives.map(c => c.l)) + 1;
+  const pool = getActivePool(1);
+  const simbol = pool[Math.floor(Math.random() * pool.length)];
+
+  // Dues posicions damunt de cartes que encara hi són, separades entre elles
+  const base = barrejar(vives).slice(0, 2);
+  const noves = base.map((b, k) => ({
+    l: capaNova, x: b.x + (k ? 1 : 0), y: b.y,
+    uid: simbol.uid, item: simbol, especial:false, fora:false, el:null
+  }));
+  // Si per atzar cauen al mateix lloc, les separem
+  if (noves[0].x === noves[1].x && noves[0].y === noves[1].y) noves[1].x += 2;
+
+  piramideCartes.push(...noves);
+  piramideRestants += 2;
+  $('piramideRestants').textContent = piramideRestants;
+  pintarPiramide();
+  noves.forEach(c => c.el && c.el.classList.add('castig'));
+  log('Dues cartes més!', 2600);
+}
 
 /* Reparteix les posicions en capes: cada capa, una mica més petita i
    desplaçada mitja casella, de manera que es vegi el relleu.
@@ -3510,6 +3714,8 @@ function iniciarPiramide(){
   piramideRestants = piramideCartes.length;
   $('piramideRestants').textContent = piramideRestants;
   $('piramideSafataMax').textContent = nivell.safata;
+  piramideProves = 0; piramideFallades = 0;
+  programarProva();
   pintarPiramide();
   pintarSafata();
   iniciarCompte(nivell.segons, () => acabarPiramide(false, 'Temps esgotat'));
@@ -3600,6 +3806,7 @@ function agafarCarta(carta){
   carta.el.classList.add('fora');
   setTimeout(() => { if (carta.el) carta.el.style.display = 'none'; }, 300);
 
+  piramideCompteEnrere--;
   const bessona = piramideSafataLlista.find(c => c.uid === carta.uid);
   piramideSafataLlista.push(carta);
   pintarSafata();
@@ -3622,6 +3829,13 @@ function agafarCarta(carta){
 
   if (piramideSafataLlista.length >= nivell.safata){
     setTimeout(() => acabarPiramide(false, 'La safata s\'ha omplert'), 500);
+    return;
+  }
+
+  // Cada poques cartes, una preguntona
+  if (piramideCompteEnrere <= 0 && piramideRestants > 4){
+    piramideCompteEnrere = 99;   // evitem que en surtin dues de seguides
+    setTimeout(treureProva, 420);
   }
 }
 
@@ -3663,7 +3877,10 @@ function acabarPiramide(guanyat, motiu){
   const nivell = NIVELLS_PIRAMIDE[nivellPiramide];
   const fetes = (nivell.parelles * 2 - Math.max(0, piramideRestants)) / 2;
   if (guanyat) celebrar(piramideBoard, 60);
-  finalPartida(guanyat, motiu, null, `${Math.round(fetes)} de ${nivell.parelles} parelles`);
+  const detall = piramideProves
+    ? `${Math.round(fetes)} parelles · ${piramideProves - piramideFallades} de ${piramideProves} proves encertades`
+    : `${Math.round(fetes)} de ${nivell.parelles} parelles`;
+  finalPartida(guanyat, motiu, null, detall);
 }
 
 /* ═══════════════════════════════════════════════════════
