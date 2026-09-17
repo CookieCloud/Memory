@@ -1,7 +1,57 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.30
+    Version: 3.31
+
+    IMPORTANT EN PUBLICAR
+    Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
+      · aquest comentari
+      · el peu de pàgina  <span class="version" id="version">
+      · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
+        servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v3.31
+    - El tutorial de "N-enrere" ja no treu barra de desplaçament lateral:
+      la tira s'ajusta a l'amplada de la finestra en lloc de 84vw
+    - Cap finestra emergent pot desbordar cap als costats (overflow-x)
+
+    CANVIS v3.30
+    - Mode fosc complet: cara i dors de les cartes, caselles tapades i marcs
+      deixen de ser blancs; les fotos es mostren una mica menys enceses
+    - "N-enrere": tutorial animat abans de cada partida (tira d'imatges amb
+      un requadre central i la resta enfosquida), nivells diferenciats i
+      final de partida quan encerts i errades sumen totes les coincidències
+    - "Compta-les": imatges en roda (entren per la dreta, surten per
+      l'esquerra) i imatge de referència més petita i emmarcada a part
+    - "Què ha canviat?": fora la graella de cartes buides entre escenes
+    - "On era?": la graella es dibuixa sencera, sense forats a l'última fila
+    - "Parelles impossibles": fletxa com a icona i repàs final amb els encerts,
+      els errors i el número que s'havia dit
+
+    CANVIS v3.21
+    - Avís de versió nova amb botó "Actualitza" (service worker)
+
+    CANVIS v3.20
+    - "Compta-les": finestra prèvia amb la imatge a comptar
+    - Precàrrega de fotos i senyal d'espera mentre carreguen
+    - "Parelles impossibles" ajustat per a telèfon en vertical
+    - "Què hi havia?": les oblidades surten en groc i parpellejant
+    - Peu de pàgina compacte en vertical perquè hi càpiguen els vuit jocs
+
+    JOCS
+    1. Parelles          · reconeixement visual
+    2. Què hi havia?     · reconeixement amb intruses
+    3. Seqüència         · memòria de treball seqüencial
+    4. Què ha canviat?   · memòria visuoespacial de detall
+    5. On era?           · evocació espacial
+    6. Parelles impossibles · memòria associativa
+    7. Compta-les        · atenció sostinguda i actualització
+    8. N-enrere          · memòria de treball
+
+    FOTOS
+    Es llegeixen de la carpeta "Fotos": si hi ha un fotos.json amb la llista
+    de noms es fa servir, i si no es sondeja 1.png, 2.png… fins que en falten
+    vint de seguides. No cal tocar el codi per afegir-ne o treure'n.
 -->
 <html lang="ca">
 <head>
@@ -753,6 +803,7 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 .modal{
   position:relative;background:var(--panel-bg);color:var(--ink);
   padding:22px 18px 20px;border-radius:28px;text-align:center;
+  overflow-x:hidden;   /* cap finestra no ha de treure barra de desplaçament lateral */
   border:2px solid var(--board-border);
   box-shadow:0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.25);
   animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
@@ -1185,7 +1236,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.30</span>
+      <span class="version" id="version">v3.31</span>
     </div>
   </footer>
 </div>
