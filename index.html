@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.61
+    Version: 3.70
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,15 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v3.70
+    - "La piràmide": corregit el bloqueig després de fallar una preguntona
+      (en repintar, les cartes ja tretes tornaven a sortir i tapaven tot)
+    - "La piràmide": les dues cartes de càstig cauen apilades, de manera que
+      la de sota no es pot jugar fins que no es treu la de sobre
+    - "La piràmide": animació de construcció, de la base a la punta, amb les
+      últimes cartes més lentes; i icona de triangle
+    - "Carta blanca" amagada del menú de moment (el codi hi continua sencer)
 
     CANVIS v3.60
     - "La piràmide": cada cinc a nou cartes surt una preguntona (sumes,
@@ -93,7 +102,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <!-- Icones: afegits 'image' i 'brush' per al selector de gràfics 
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,anchor,arrow_back,arrow_forward,auto_awesome,bar_chart,bolt,brush,cake,calculate,camera,cancel,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,history,home,icecream,image,info,key,layers,link,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,style,timer,undo,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,anchor,arrow_back,arrow_forward,auto_awesome,bar_chart,bolt,brush,cake,calculate,camera,cancel,change_history,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,history,home,icecream,image,info,key,layers,link,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,style,timer,undo,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
 -->
 <!-- Canvia la línia llarga de Material Symbols per aquesta: -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&display=block" rel="stylesheet">
@@ -724,6 +733,15 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .prova-btn.correcta{background:linear-gradient(160deg,#4ade80,#16a34a);color:#06310f;border-color:#16a34a}
 .prova-btn.erronia{background:linear-gradient(160deg,#fb7185,#b91c1c);color:#fff;border-color:#b91c1c}
 .ptile.castig{animation:caure .5s cubic-bezier(.34,1.56,.64,1)}
+/* Les cartes cauen des de dalt en muntar-se la piràmide */
+@keyframes caiguda{
+  0%{transform:translateY(-70vh) rotate(-12deg) scale(1.15);opacity:0}
+  70%{opacity:1}
+  100%{transform:none;opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .ptile{animation:none !important}
+}
 @keyframes caure{0%{transform:translateY(-60px) scale(1.2);opacity:0}100%{transform:none;opacity:1}}
 
 /* ── zona de pregunta amb números ─────────────────────── */
@@ -1215,16 +1233,18 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
             <small class="curt">Compta quantes surten.</small>
             <small class="llarg">Van passant imatges d'una en una. Al final, quantes vegades ha sortit la que et demanem?</small>
           </button>
-<!--
-          <button class="game-card" data-joc="blanca" style="--tint:#3b82f6;--tint-deep:#1d4ed8">
+          <!-- "Carta blanca": el joc hi és sencer, però la targeta està amagada
+               fins que no estigui a punt. Per tornar-la a treure, prou de
+               descomentar aquest bloc. -->
+          <button class="game-card" data-joc="blanca" hidden style="--tint:#3b82f6;--tint-deep:#1d4ed8">
             <span class="ico"><span class="material-symbols-rounded">style</span></span>
             <b>Carta blanca</b>
             <small class="curt">Ordena la baralla.</small>
             <small class="llarg">Trenta-dues cartes de la A a la H en quatre colors. Ordena-les totes fent servir tres caselles lliures.</small>
           </button>
--->
+
           <button class="game-card" data-joc="piramide" style="--tint:#d946ef;--tint-deep:#86198f">
-            <span class="ico"><span class="material-symbols-rounded">layers</span></span>
+            <span class="ico"><span class="material-symbols-rounded">change_history</span></span>
             <b>La piràmide</b>
             <small class="curt">Desmunta-la per parelles.</small>
             <small class="llarg">Treu les cartes de dalt i posa-les a la safata: quan en tens dues d'iguals, marxen. Compte, que la safata només té sis llocs.</small>
@@ -1449,7 +1469,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
             <b id="timeLeftPiramide">0:00</b>
           </span>
           <span class="chip">
-            <span class="material-symbols-rounded" style="color:#d946ef">layers</span>
+            <span class="material-symbols-rounded" style="color:#d946ef">change_history</span>
             Queden <b id="piramideRestants">0</b>
           </span>
           <span class="chip" id="piramideSafataChip">
@@ -1504,7 +1524,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.61</span>
+      <span class="version" id="version">v3.70</span>
     </div>
   </footer>
 </div>
@@ -3582,14 +3602,13 @@ function afegirCastig(){
   const pool = getActivePool(1);
   const simbol = pool[Math.floor(Math.random() * pool.length)];
 
-  // Dues posicions damunt de cartes que encara hi són, separades entre elles
-  const base = barrejar(vives).slice(0, 2);
-  const noves = base.map((b, k) => ({
-    l: capaNova, x: b.x + (k ? 1 : 0), y: b.y,
-    uid: simbol.uid, item: simbol, especial:false, fora:false, el:null
-  }));
-  // Si per atzar cauen al mateix lloc, les separem
-  if (noves[0].x === noves[1].x && noves[0].y === noves[1].y) noves[1].x += 2;
+  /* Les dues cartes cauen apilades, l'una damunt de l'altra: així no te les
+     pots treure totes dues de cop i el càstig es nota de debò. */
+  const sota = barrejar(vives)[0];
+  const noves = [
+    { l:capaNova,     x:sota.x, y:sota.y, uid:simbol.uid, item:simbol, especial:false, fora:false, el:null },
+    { l:capaNova + 1, x:sota.x, y:sota.y, uid:simbol.uid, item:simbol, especial:false, fora:false, el:null }
+  ];
 
   piramideCartes.push(...noves);
   piramideRestants += 2;
@@ -3717,15 +3736,21 @@ function iniciarPiramide(){
   $('piramideSafataMax').textContent = nivell.safata;
   piramideProves = 0; piramideFallades = 0;
   programarProva();
-  pintarPiramide();
+  pintarPiramide(true);
   pintarSafata();
   iniciarCompte(nivell.segons, () => acabarPiramide(false, 'Temps esgotat'));
   log('Treu les cartes de dalt i fes parelles', 3200);
 }
 
-function pintarPiramide(){
+/* Torna a dibuixar la piràmide.
+   Només les cartes que encara hi són: si es tornaven a pintar les que ja
+   havies tret, quedaven damunt de tot, inertes, i el joc s'encallava.
+   Amb ambCaiguda, les cartes van caient de la base cap a la punta. */
+function pintarPiramide(ambCaiguda){
   piramideBoard.innerHTML = '';
-  piramideCartes.forEach((carta, idx) => {
+  const vives = piramideCartes.filter(c => !c.fora);
+
+  vives.forEach((carta, idx) => {
     const el = document.createElement('div');
     el.className = 'ptile';
     el.style.zIndex = carta.l * 100 + idx;
@@ -3735,7 +3760,32 @@ function pintarPiramide(){
     carta.el = el;
     piramideBoard.appendChild(el);
   });
+  piramideCartes.filter(c => c.fora).forEach(c => { c.el = null; });
+
   ajustarPiramide();
+  if (ambCaiguda) muntarPiramideAmbCaiguda(vives);
+}
+
+/* La construcció: primer la base, després cada capa, i les últimes cartes
+   una mica més a poc a poc per rematar l'efecte. */
+function muntarPiramideAmbCaiguda(vives){
+  const ordre = [...vives].sort((a, b) => (a.l - b.l) || (a.y - b.y) || (a.x - b.x));
+  const queden = 5;                 // les últimes, més lentes
+  let retard = 0;
+
+  piramideBoard.style.pointerEvents = 'none';
+  ordre.forEach((carta, i) => {
+    if (!carta.el) return;
+    const lenta = i >= ordre.length - queden;
+    retard += lenta ? 180 : Math.max(10, 26 - ordre.length / 12);
+    carta.el.style.animation = `caiguda ${lenta ? 520 : 380}ms cubic-bezier(.34,1.56,.64,1) ${Math.round(retard)}ms both`;
+  });
+
+  setTimeout(() => {
+    piramideBoard.style.pointerEvents = 'auto';
+    ordre.forEach(c => { if (c.el) c.el.style.animation = ''; });
+    marcarLliures();
+  }, retard + 700);
 }
 
 /* Encaixa la piràmide a l'espai lliure i marca quines cartes es poden agafar */
@@ -4063,7 +4113,7 @@ historyBtn.addEventListener('click', () => {
     {id:'assoc', name:'Parelles impossibles', icon:'link', color:'#f97316', metric:'', format: null},
     {id:'compta', name:'Compta-les', icon:'calculate', color:'#14b8a6', metric:'', format: null},
     {id:'nback', name:'N-enrere', icon:'history', color:'#64748b', metric:'', format: null},
-    {id:'piramide', name:'La piràmide', icon:'layers', color:'#d946ef', metric:'', format: null},
+    {id:'piramide', name:'La piràmide', icon:'change_history', color:'#d946ef', metric:'', format: null},
     {id:'blanca', name:'Carta blanca', icon:'style', color:'#3b82f6', metric:'', format: null}
   ];
   let anyData = false;
