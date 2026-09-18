@@ -11,7 +11,7 @@
    Si no canvies VERSIO, el web continuarà servint la còpia desada i la gent
    no veurà els canvis. És l'únic que has de recordar de fer.
    ═══════════════════════════════════════════════════════ */
-const VERSIO = '3.80';
+const VERSIO = '3.90';
 const CACHE  = 'memoria-v' + VERSIO;
 
 /* Fitxers propis que es desen en instal·lar. Si en falta algun no passa res:

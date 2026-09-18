@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.80
+    Version: 3.90
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,14 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v3.90
+    - "La piràmide": la base es tria segons la forma de la pantalla i guanya
+      la que fa les cartes més grosses, de manera que s'aprofiten els costats
+    - Marc daurat a les cartes que es poden agafar (rosa a les de l'estrella)
+    - La finestra de la preguntona és més ampla: pregunta i respostes en una
+      sola línia sempre que hi càpiguen
+    - Fora el missatge d'avís sobre les cartes de càstig
 
     CANVIS v3.80
     - Tot més gran i més llegible: missatges, botons, text de les finestres
@@ -646,20 +654,23 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .ptile .foto-asset{width:100%;height:100%;object-fit:cover}
 /* Tapada: marc apagat i la imatge enfosquida */
 .ptile.tapada{filter:brightness(.5) saturate(.55);cursor:default;border-color:rgba(90,90,110,.5)}
-/* Lliure: marc verd brillant, es veu d'una ullada quines pots tocar */
+/* Lliure: marc daurat i brillant, es veu d'una ullada quines pots tocar */
 .ptile.lliure{
-  cursor:pointer;border-color:#16a34a;
-  box-shadow:0 0 0 2px rgba(34,197,94,.35), 2px 3px 0 rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
+  cursor:pointer;border-color:#f5b301;
+  box-shadow:0 0 0 2px rgba(255,196,0,.45), 0 0 16px rgba(245,179,1,.55),
+             2px 3px 0 rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
 }
 .ptile.lliure:active{transform:scale(.93)}
+/* Les de l'estrella, amb un marc rosa perquè no es confonguin amb la resta */
 .ptile.especial.lliure{
-  border-color:var(--accent-deep);
-  box-shadow:0 0 0 3px rgba(240,160,32,.45), 0 0 20px rgba(240,160,32,.6), 2px 3px 0 rgba(0,0,0,.3);
+  border-color:#ec4899;
+  box-shadow:0 0 0 3px rgba(236,72,153,.4), 0 0 22px rgba(236,72,153,.6), 2px 3px 0 rgba(0,0,0,.3);
 }
 body:not(.day) .ptile{border-color:rgba(255,255,255,.18)}
 body:not(.day) .ptile.tapada{border-color:rgba(255,255,255,.12);filter:brightness(.42) saturate(.5)}
-body:not(.day) .ptile.lliure{border-color:#4ade80;box-shadow:0 0 0 2px rgba(74,222,128,.3), 0 6px 16px rgba(0,0,0,.45)}
-body:not(.day) .ptile.especial.lliure{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,209,102,.4), 0 0 20px rgba(255,209,102,.5)}
+body:not(.day) .ptile.lliure{border-color:#ffc400;
+  box-shadow:0 0 0 2px rgba(255,196,0,.4), 0 0 18px rgba(255,196,0,.5), 0 6px 16px rgba(0,0,0,.45)}
+body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px rgba(244,114,182,.4), 0 0 20px rgba(244,114,182,.5)}
 .ptile .estrella{
   position:absolute;top:2px;right:2px;color:var(--accent-deep);
   filter:drop-shadow(0 1px 1px rgba(0,0,0,.5));
@@ -748,15 +759,19 @@ body:not(.day) .ptile.especial.lliure{border-color:var(--accent);box-shadow:0 0 
 /* ── proves de la piràmide ─────────────────────────────── */
 /* A la finestra de la prova, el que compta és la pregunta: el títol
    queda petit i discret, i l'enunciat es veu de lluny. */
+/* Prou ampla perquè la pregunta i totes les respostes hi càpiguen
+   sense haver de saltar de línia */
+#provaOverlay .modal{max-width:min(780px,100%)}
 #provaOverlay h2{font-size:clamp(15px,4vw,19px);font-weight:700;opacity:.7;margin-bottom:4px}
 #provaOverlay .modal-icon{font-size:34px}
 #provaPregunta{
   font-family:'Baloo 2';font-weight:800;
   font-size:clamp(24px,7.5vw,38px);line-height:1.2;color:var(--ink);
-  margin-bottom:16px;max-width:20ch;
+  margin-bottom:18px;max-width:30ch;
 }
+/* Totes les respostes a la mateixa fila mentre hi càpiguen */
 .prova-opcions{
-  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:4px 0 12px;max-width:100%;
+  display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:4px 0 14px;max-width:100%;
 }
 .prova-btn{
   min-width:96px;padding:20px 26px;border-radius:22px;cursor:pointer;
@@ -1570,7 +1585,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.80</span>
+      <span class="version" id="version">v3.90</span>
     </div>
   </footer>
 </div>
@@ -3606,8 +3621,7 @@ function treureProva(){
   const prova = generarProva();
   piramideProves++;
   $('provaPregunta').textContent = prova.pregunta;
-  const cauran = (Math.min(3 + nivellPiramide, 6)) * 2;
-  $('provaPeu').textContent = `Si t\'equivoques, et cauran ${cauran} cartes més a la piràmide.`;
+  $('provaPeu').textContent = '';   // res d'avisos: només la pregunta
 
   const caixa = $('provaOpcions');
   caixa.innerHTML = ''; caixa.style.pointerEvents = 'auto';
@@ -3634,7 +3648,7 @@ function respondreProva(boto, resposta, prova){
     [...$('provaOpcions').children]
       .find(b => String(b.textContent) === String(prova.bona))?.classList.add('correcta');
     piramideFallades++;
-    $('provaPeu').textContent = `Era ${prova.bona}. Et cauen més cartes a la piràmide.`;
+    $('provaPeu').textContent = `Era ${prova.bona}.`;
   }
 
   setTimeout(() => {
@@ -3686,8 +3700,24 @@ function afegirCastig(){
 /* Una piràmide de debò: cada capa perd una columna i una fila, i queda
    centrada sobre l'anterior. Com més capes, més cartes tapades i més cal
    pensar-s'hi, que és el que fa el joc interessant. */
+/* Quant espai hi ha per a la piràmide, ara mateix */
+function espaiPiramide(){
+  const wrap = piramideBoard ? piramideBoard.parentElement : null;
+  if (!wrap || wrap.clientWidth < 80){
+    return { w:window.innerWidth * 0.92, h:window.innerHeight * 0.5 };
+  }
+  const wcs = getComputedStyle(wrap);
+  return {
+    w: Math.max(120, wrap.clientWidth  - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight) - 12),
+    h: Math.max(120, wrap.clientHeight - parseFloat(wcs.paddingTop)  - parseFloat(wcs.paddingBottom) - 12)
+  };
+}
+
 function disposicioPiramide(total){
-  // Busquem la base que doni una piràmide alta i que hi càpiguen les cartes
+  /* La base es tria segons la forma de la pantalla: en un portàtil, ampla i
+     baixa; en un telèfon vertical, estreta i alta. Entre totes les que hi
+     caben, guanya la que fa les cartes més grosses. */
+  const espai = espaiPiramide();
   let millor = null;
   for (let cols = 4; cols <= 10; cols++){
     for (let files = 2; files <= 7; files++){
@@ -3697,13 +3727,29 @@ function disposicioPiramide(total){
         if (c < 1 || f < 1) break;
         suma += c * f; capes++;
       }
-      if (suma < total || capes < 3) continue;
+      if (suma < total) continue;
       const sobra = suma - total;
-      /* El sobrant es retalla de la punta, així que ha de ser petit: si no,
-         ens carregaríem les capes de dalt i tornaria a quedar tot pla.
-         Entre les que hi caben, la que tingui més capes. */
-      if (sobra > Math.max(4, Math.round(total * 0.12))) continue;
-      const punts = capes * 1000 - sobra;
+
+      /* El sobrant es retalla de la punta. Comptem quantes capes queden
+         realment dretes després de retallar: una piràmide que perd la punta
+         sencera torna a ser una llosa, i això no ho volem. */
+      const mides = [];
+      for (let k = 0; ; k++){
+        const c = cols - k, f = files - k;
+        if (c < 1 || f < 1) break;
+        mides.push(c * f);
+      }
+      let queda = sobra, capesEfectives = mides.length;
+      for (let k = mides.length - 1; k >= 0 && queda > 0; k--){
+        if (queda >= mides[k]){ queda -= mides[k]; capesEfectives--; }
+        else break;
+      }
+      if (capesEfectives < 3) continue;
+
+      // Com de grosses quedarien les cartes amb aquesta base
+      const mida = Math.min(espai.w / cols, espai.h / files);
+      // Mana la mida de la carta; les capes de més només desempaten
+      const punts = mida * (1 + capesEfectives * 0.05);
       if (!millor || punts > millor.punts) millor = { cols, files, capes, sobra, punts };
     }
   }
@@ -3865,7 +3911,7 @@ function ajustarPiramide(){
   const availH = Math.max(120, wrap.clientHeight - parseFloat(wcs.paddingTop)  - parseFloat(wcs.paddingBottom) - 12);
 
   // Sense sostre petit: les cartes creixen fins a omplir l'espai disponible
-  const mida = Math.max(26, Math.min(availW / (amplada / 2), availH / (alcada / 2), 170));
+  const mida = Math.max(26, Math.min(availW / (amplada / 2), availH / (alcada / 2)));
   const relleu = Math.max(2, mida * 0.06);
 
   piramideBoard.style.width  = (amplada / 2 * mida + capes * relleu) + 'px';
