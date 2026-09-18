@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.90
+    Version: 4.00
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,14 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.00
+    - De 36 a 239 dibuixos, repartits en 10 temes (menjar, viatges,
+      transports, natura i animals, casa, esports, música, escola, persones
+      i premis). Tots els noms comprovats contra el catàleg de Google
+    - Cada partida tria un tema, dos o tot barrejat, a l'atzar
+    - Botó nou a la barra per marcar un tema preferit: surt molt més sovint,
+      però de tant en tant també en surten d'altres
 
     CANVIS v3.90
     - "La piràmide": la base es tria segons la forma de la pantalla i guanya
@@ -122,7 +130,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <!-- Icones: afegits 'image' i 'brush' per al selector de gràfics 
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,anchor,arrow_back,arrow_forward,auto_awesome,bar_chart,bolt,brush,cake,calculate,camera,cancel,change_history,check_circle,close,cloud,coffee,cruelty_free,dark_mode,diamond,directions_car,emoji_events,extension,favorite,find_replace,flight,forest,grid_view,headphones,help,history,home,icecream,image,info,key,layers,link,light_mode,lightbulb,local_florist,location_on,lock,lunch_dining,music_note,palette,park,pedal_bike,pets,psychology,public,replay,rocket_launch,sailing,science,sports_basketball,sports_soccer,star,style,timer,undo,touch_app,umbrella,visibility,water_drop,watch&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,accessibility_new,agriculture,air,airport_shuttle,album,anchor,architecture,arrow_back,arrow_forward,attractions,auto_awesome,auto_stories,backpack,badge,bakery_dining,bar_chart,bathtub,beach_access,bed,biotech,blender,bolt,bookmark,breakfast_dining,brunch_dining,brush,bug_report,cabin,cake,calculate,camera,camping,cancel,carpenter,casino,castle,category,celebration,chair,change_history,check_circle,checkroom,child_care,church,cleaning_services,close,cloud,coffee,color_lens,commute,computer,construction,cookie,cruelty_free,curtains,dark_mode,diamond,diamond_shine,dinner_dining,directions_boat,directions_bus,directions_car,directions_railway,directions_run,directions_walk,door_front,downhill_skiing,draw,ecg_heart,eco,edit,egg,elderly,electric_scooter,emoji_emotions,emoji_events,emoji_food_beverage,engineering,explore,extension,face,family_restroom,fastfood,favorite,festival,find_replace,fire_truck,fireplace,fitness_center,flag,flight,flight_takeoff,flood,foggy,folder,forest,format_paint,front_hand,gesture,grass,grid_view,handshake,handyman,hardware,headphones,health_and_safety,hearing,help,hexagon,hiking,history,history_edu,holiday_village,home,hotel,houseboat,icecream,image,info,iron,kayaking,kebab_dining,key,keyboard,kitchen,label,landscape,layers,light,light_mode,lightbulb,link,liquor,local_bar,local_cafe,local_drink,local_fire_department,local_florist,local_laundry_service,local_pizza,local_shipping,local_taxi,location_on,lock,luggage,lunch_dining,map,medication,menu_book,mic,military_tech,mosque,mouse,movie,museum,music_note,nightlife,nightlight,nutrition,palette,park,pedal_bike,pentagon,pets,photo_camera,piano,plumbing,pool,pregnant_woman,print,psychology,public,queue_music,radio,rainy,ramen_dining,raven,recycling,replay,restaurant,rice_bowl,rocket_launch,rowing,sailing,school,science,scuba_diving,self_improvement,sentiment_satisfied,sentiment_very_satisfied,set_meal,shield,shopping_basket,shopping_cart,shower,shuffle,sign_language,skateboarding,smartphone,snowboarding,snowmobile,soap,solar_power,soup_kitchen,spa,speaker,sports_baseball,sports_basketball,sports_esports,sports_football,sports_golf,sports_handball,sports_hockey,sports_martial_arts,sports_soccer,sports_tennis,sports_volleyball,stairs,star,stars,style,subway,sunny,surfing,synagogue,table_restaurant,takeout_dining,tapas,temple_buddhist,terrain,theater_comedy,thumb_up,thunderstorm,timer,touch_app,tour,toys,traffic,train,tram,translate,travel_explore,two_wheeler,umbrella,undo,vaccines,verified,videocam,villa,visibility,volcano,volunteer_activism,watch,water_drop,waves,waving_hand,weekend,window,wine_bar,work,workspace_premium,yard&display=block" rel="stylesheet">
 -->
 <!-- Canvia la línia llarga de Material Symbols per aquesta: -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&display=block" rel="stylesheet">
@@ -756,6 +764,28 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 .chip-boto:active{transform:scale(.94)}
 .chip-boto:disabled{opacity:.45;cursor:default}
 
+/* ── tria de tema ──────────────────────────────────────── */
+.tema-graella{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;
+  width:100%;margin-bottom:16px;
+}
+.tema-opcio{
+  display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;
+  padding:12px 14px;border-radius:18px;
+  background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
+  color:var(--ink);font-family:'Fredoka';font-weight:600;font-size:16px;
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1),border-color .2s,background .2s;
+}
+.tema-opcio:active{transform:scale(.95)}
+.tema-opcio:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.tema-opcio .material-symbols-rounded{font-size:28px;color:var(--accent-deep)}
+.tema-opcio[aria-checked="true"]{
+  border-color:var(--accent-deep);
+  background:linear-gradient(160deg,var(--accent),var(--accent-deep));color:var(--accent-ink);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.6), 0 5px 0 rgba(0,0,0,.2);
+}
+.tema-opcio[aria-checked="true"] .material-symbols-rounded{color:var(--accent-ink)}
+
 /* ── proves de la piràmide ─────────────────────────────── */
 /* A la finestra de la prova, el que compta és la pregunta: el títol
    queda petit i discret, i l'enunciat es veu de lluny. */
@@ -1228,6 +1258,12 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
         <span class="spacer"></span>
 
         <!-- Nou botó toggle fotos / icones -->
+        <button class="pill" id="temaBtn" title="Temes dels dibuixos" aria-label="Triar el tema dels dibuixos"
+                aria-haspopup="dialog"
+                style="--glow:#fb923c;--tint:#f97316;--tint-deep:#c2410c">
+          <span class="material-symbols-rounded">category</span>
+        </button>
+
         <button class="pill" id="assetModeBtn" title="Mode d'imatges" aria-label="Alternar fotos i dibuixos"
                 style="--glow:#10b981;--tint:#059669;--tint-deep:#047857">
           <span class="material-symbols-rounded">brush</span>
@@ -1585,7 +1621,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.90</span>
+      <span class="version" id="version">v4.00</span>
     </div>
   </footer>
 </div>
@@ -1726,6 +1762,20 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
   </button>
 </div>
 
+<!-- Tria de tema -->
+<div id="temaOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="temaTitol" aria-hidden="true">
+  <div class="modal modal-info">
+    <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+    <span class="material-symbols-rounded modal-icon">category</span>
+    <h2 id="temaTitol">De què vols que siguin els dibuixos?</h2>
+    <p class="how" style="text-align:center">Cada partida tria un tema o dos a l'atzar. Si en marques un, sortirà molt més sovint, però de tant en tant també en sortiran d'altres.</p>
+    <div class="tema-graella" id="temaGraella" role="radiogroup" aria-labelledby="temaTitol"></div>
+    <button class="btn-big" data-close>Continuar</button>
+  </div>
+</div>
+
 <!-- Prova de la piràmide -->
 <div id="provaOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="provaTitol" aria-hidden="true">
   <div class="modal modal-info">
@@ -1817,25 +1867,273 @@ const welcomeOverlay = $('welcomeOverlay');
 /* ═══════════════════════════════════════════════════════
    DADES DEL JOC
    ═══════════════════════════════════════════════════════ */
+/* Les icones del joc, repartides per temes. Totes comprovades contra el
+   catàleg de Material Symbols; si n'afegeixes cap, posa-la també a la
+   llista "icon_names" de l'enllaç de la font o sortirà un quadre buit. */
 const POOL_ICONES = [
-  { uid:'pets', i:'pets', c:'#f59e0b', tipus:'icona' }, { uid:'local_florist', i:'local_florist', c:'#ec4899', tipus:'icona' },
-  { uid:'rocket_launch', i:'rocket_launch', c:'#8b5cf6', tipus:'icona' }, { uid:'directions_car', i:'directions_car', c:'#ef4444', tipus:'icona' },
-  { uid:'sports_soccer', i:'sports_soccer', c:'#0ea5e9', tipus:'icona' }, { uid:'music_note', i:'music_note', c:'#a855f7', tipus:'icona' },
-  { uid:'cake', i:'cake', c:'#f472b6', tipus:'icona' }, { uid:'coffee', i:'coffee', c:'#92400e', tipus:'icona' },
-  { uid:'icecream', i:'icecream', c:'#06b6d4', tipus:'icona' }, { uid:'lunch_dining', i:'lunch_dining', c:'#d97706', tipus:'icona' },
-  { uid:'flight', i:'flight', c:'#0369a1', tipus:'icona' }, { uid:'sailing', i:'sailing', c:'#0891b2', tipus:'icona' },
-  { uid:'pedal_bike', i:'pedal_bike', c:'#16a34a', tipus:'icona' }, { uid:'anchor', i:'anchor', c:'#1d4ed8', tipus:'icona' },
-  { uid:'umbrella', i:'umbrella', c:'#e11d48', tipus:'icona' }, { uid:'ac_unit', i:'ac_unit', c:'#38bdf8', tipus:'icona' },
-  { uid:'water_drop', i:'water_drop', c:'#0284c7', tipus:'icona' }, { uid:'bolt', i:'bolt', c:'#eab308', tipus:'icona' },
-  { uid:'cloud', i:'cloud', c:'#64748b', tipus:'icona' }, { uid:'forest', i:'forest', c:'#15803d', tipus:'icona' },
-  { uid:'park', i:'park', c:'#22c55e', tipus:'icona' }, { uid:'star', i:'star', c:'#f59e0b', tipus:'icona' },
-  { uid:'diamond', i:'diamond', c:'#06b6d4', tipus:'icona' }, { uid:'key', i:'key', c:'#a16207', tipus:'icona' },
-  { uid:'lock', i:'lock', c:'#7c3aed', tipus:'icona' }, { uid:'lightbulb', i:'lightbulb', c:'#facc15', tipus:'icona' },
-  { uid:'camera', i:'camera', c:'#334155', tipus:'icona' }, { uid:'headphones', i:'headphones', c:'#db2777', tipus:'icona' },
-  { uid:'watch', i:'watch', c:'#0f766e', tipus:'icona' }, { uid:'brush', i:'brush', c:'#c2410c', tipus:'icona' },
-  { uid:'palette', i:'palette', c:'#9333ea', tipus:'icona' }, { uid:'science', i:'science', c:'#059669', tipus:'icona' },
-  { uid:'public', i:'public', c:'#2563eb', tipus:'icona' }, { uid:'home', i:'home', c:'#b45309', tipus:'icona' },
-  { uid:'sports_basketball', i:'sports_basketball', c:'#ea580c', tipus:'icona' }, { uid:'cruelty_free', i:'cruelty_free', c:'#be123c', tipus:'icona' }
+  /* Menjar i beure */
+  { uid:'restaurant', i:'restaurant', c:'#ea580c', tema:'menjar', tipus:'icona' },
+  { uid:'lunch_dining', i:'lunch_dining', c:'#d97706', tema:'menjar', tipus:'icona' },
+  { uid:'dinner_dining', i:'dinner_dining', c:'#e11d48', tema:'menjar', tipus:'icona' },
+  { uid:'ramen_dining', i:'ramen_dining', c:'#92400e', tema:'menjar', tipus:'icona' },
+  { uid:'icecream', i:'icecream', c:'#16a34a', tema:'menjar', tipus:'icona' },
+  { uid:'cake', i:'cake', c:'#f472b6', tema:'menjar', tipus:'icona' },
+  { uid:'coffee', i:'coffee', c:'#ea580c', tema:'menjar', tipus:'icona' },
+  { uid:'emoji_food_beverage', i:'emoji_food_beverage', c:'#d97706', tema:'menjar', tipus:'icona' },
+  { uid:'local_pizza', i:'local_pizza', c:'#e11d48', tema:'menjar', tipus:'icona' },
+  { uid:'local_bar', i:'local_bar', c:'#92400e', tema:'menjar', tipus:'icona' },
+  { uid:'local_cafe', i:'local_cafe', c:'#16a34a', tema:'menjar', tipus:'icona' },
+  { uid:'wine_bar', i:'wine_bar', c:'#f472b6', tema:'menjar', tipus:'icona' },
+  { uid:'liquor', i:'liquor', c:'#ea580c', tema:'menjar', tipus:'icona' },
+  { uid:'bakery_dining', i:'bakery_dining', c:'#d97706', tema:'menjar', tipus:'icona' },
+  { uid:'breakfast_dining', i:'breakfast_dining', c:'#e11d48', tema:'menjar', tipus:'icona' },
+  { uid:'brunch_dining', i:'brunch_dining', c:'#92400e', tema:'menjar', tipus:'icona' },
+  { uid:'set_meal', i:'set_meal', c:'#16a34a', tema:'menjar', tipus:'icona' },
+  { uid:'rice_bowl', i:'rice_bowl', c:'#f472b6', tema:'menjar', tipus:'icona' },
+  { uid:'kebab_dining', i:'kebab_dining', c:'#ea580c', tema:'menjar', tipus:'icona' },
+  { uid:'soup_kitchen', i:'soup_kitchen', c:'#d97706', tema:'menjar', tipus:'icona' },
+  { uid:'tapas', i:'tapas', c:'#e11d48', tema:'menjar', tipus:'icona' },
+  { uid:'nutrition', i:'nutrition', c:'#92400e', tema:'menjar', tipus:'icona' },
+  { uid:'blender', i:'blender', c:'#16a34a', tema:'menjar', tipus:'icona' },
+  { uid:'cookie', i:'cookie', c:'#f472b6', tema:'menjar', tipus:'icona' },
+  { uid:'fastfood', i:'fastfood', c:'#ea580c', tema:'menjar', tipus:'icona' },
+  { uid:'takeout_dining', i:'takeout_dining', c:'#d97706', tema:'menjar', tipus:'icona' },
+  { uid:'egg', i:'egg', c:'#e11d48', tema:'menjar', tipus:'icona' },
+  { uid:'local_drink', i:'local_drink', c:'#92400e', tema:'menjar', tipus:'icona' },
+  /* Viatges i llocs */
+  { uid:'travel_explore', i:'travel_explore', c:'#0ea5e9', tema:'viatges', tipus:'icona' },
+  { uid:'luggage', i:'luggage', c:'#0369a1', tema:'viatges', tipus:'icona' },
+  { uid:'flight_takeoff', i:'flight_takeoff', c:'#8b5cf6', tema:'viatges', tipus:'icona' },
+  { uid:'beach_access', i:'beach_access', c:'#16a34a', tema:'viatges', tipus:'icona' },
+  { uid:'hotel', i:'hotel', c:'#f59e0b', tema:'viatges', tipus:'icona' },
+  { uid:'museum', i:'museum', c:'#0ea5e9', tema:'viatges', tipus:'icona' },
+  { uid:'castle', i:'castle', c:'#0369a1', tema:'viatges', tipus:'icona' },
+  { uid:'church', i:'church', c:'#8b5cf6', tema:'viatges', tipus:'icona' },
+  { uid:'mosque', i:'mosque', c:'#16a34a', tema:'viatges', tipus:'icona' },
+  { uid:'synagogue', i:'synagogue', c:'#f59e0b', tema:'viatges', tipus:'icona' },
+  { uid:'temple_buddhist', i:'temple_buddhist', c:'#0ea5e9', tema:'viatges', tipus:'icona' },
+  { uid:'festival', i:'festival', c:'#0369a1', tema:'viatges', tipus:'icona' },
+  { uid:'attractions', i:'attractions', c:'#8b5cf6', tema:'viatges', tipus:'icona' },
+  { uid:'landscape', i:'landscape', c:'#16a34a', tema:'viatges', tipus:'icona' },
+  { uid:'terrain', i:'terrain', c:'#f59e0b', tema:'viatges', tipus:'icona' },
+  { uid:'map', i:'map', c:'#0ea5e9', tema:'viatges', tipus:'icona' },
+  { uid:'explore', i:'explore', c:'#0369a1', tema:'viatges', tipus:'icona' },
+  { uid:'public', i:'public', c:'#8b5cf6', tema:'viatges', tipus:'icona' },
+  { uid:'location_on', i:'location_on', c:'#16a34a', tema:'viatges', tipus:'icona' },
+  { uid:'tour', i:'tour', c:'#f59e0b', tema:'viatges', tipus:'icona' },
+  { uid:'holiday_village', i:'holiday_village', c:'#0ea5e9', tema:'viatges', tipus:'icona' },
+  { uid:'cabin', i:'cabin', c:'#0369a1', tema:'viatges', tipus:'icona' },
+  { uid:'houseboat', i:'houseboat', c:'#8b5cf6', tema:'viatges', tipus:'icona' },
+  { uid:'villa', i:'villa', c:'#16a34a', tema:'viatges', tipus:'icona' },
+  { uid:'camping', i:'camping', c:'#f59e0b', tema:'viatges', tipus:'icona' },
+  { uid:'hiking', i:'hiking', c:'#0ea5e9', tema:'viatges', tipus:'icona' },
+  /* Transports */
+  { uid:'directions_car', i:'directions_car', c:'#ef4444', tema:'transports', tipus:'icona' },
+  { uid:'flight', i:'flight', c:'#1d4ed8', tema:'transports', tipus:'icona' },
+  { uid:'sailing', i:'sailing', c:'#0891b2', tema:'transports', tipus:'icona' },
+  { uid:'pedal_bike', i:'pedal_bike', c:'#16a34a', tema:'transports', tipus:'icona' },
+  { uid:'directions_bus', i:'directions_bus', c:'#f59e0b', tema:'transports', tipus:'icona' },
+  { uid:'directions_boat', i:'directions_boat', c:'#7c3aed', tema:'transports', tipus:'icona' },
+  { uid:'directions_railway', i:'directions_railway', c:'#ef4444', tema:'transports', tipus:'icona' },
+  { uid:'two_wheeler', i:'two_wheeler', c:'#1d4ed8', tema:'transports', tipus:'icona' },
+  { uid:'local_taxi', i:'local_taxi', c:'#0891b2', tema:'transports', tipus:'icona' },
+  { uid:'local_shipping', i:'local_shipping', c:'#16a34a', tema:'transports', tipus:'icona' },
+  { uid:'rocket_launch', i:'rocket_launch', c:'#f59e0b', tema:'transports', tipus:'icona' },
+  { uid:'anchor', i:'anchor', c:'#7c3aed', tema:'transports', tipus:'icona' },
+  { uid:'subway', i:'subway', c:'#ef4444', tema:'transports', tipus:'icona' },
+  { uid:'tram', i:'tram', c:'#1d4ed8', tema:'transports', tipus:'icona' },
+  { uid:'agriculture', i:'agriculture', c:'#0891b2', tema:'transports', tipus:'icona' },
+  { uid:'electric_scooter', i:'electric_scooter', c:'#16a34a', tema:'transports', tipus:'icona' },
+  { uid:'airport_shuttle', i:'airport_shuttle', c:'#f59e0b', tema:'transports', tipus:'icona' },
+  { uid:'fire_truck', i:'fire_truck', c:'#7c3aed', tema:'transports', tipus:'icona' },
+  { uid:'snowmobile', i:'snowmobile', c:'#ef4444', tema:'transports', tipus:'icona' },
+  { uid:'commute', i:'commute', c:'#1d4ed8', tema:'transports', tipus:'icona' },
+  { uid:'traffic', i:'traffic', c:'#0891b2', tema:'transports', tipus:'icona' },
+  { uid:'train', i:'train', c:'#16a34a', tema:'transports', tipus:'icona' },
+  /* Natura i animals */
+  { uid:'pets', i:'pets', c:'#16a34a', tema:'natura', tipus:'icona' },
+  { uid:'cruelty_free', i:'cruelty_free', c:'#0284c7', tema:'natura', tipus:'icona' },
+  { uid:'bug_report', i:'bug_report', c:'#eab308', tema:'natura', tipus:'icona' },
+  { uid:'raven', i:'raven', c:'#15803d', tema:'natura', tipus:'icona' },
+  { uid:'local_florist', i:'local_florist', c:'#06b6d4', tema:'natura', tipus:'icona' },
+  { uid:'spa', i:'spa', c:'#be123c', tema:'natura', tipus:'icona' },
+  { uid:'park', i:'park', c:'#16a34a', tema:'natura', tipus:'icona' },
+  { uid:'forest', i:'forest', c:'#0284c7', tema:'natura', tipus:'icona' },
+  { uid:'grass', i:'grass', c:'#eab308', tema:'natura', tipus:'icona' },
+  { uid:'eco', i:'eco', c:'#15803d', tema:'natura', tipus:'icona' },
+  { uid:'water_drop', i:'water_drop', c:'#06b6d4', tema:'natura', tipus:'icona' },
+  { uid:'cloud', i:'cloud', c:'#be123c', tema:'natura', tipus:'icona' },
+  { uid:'ac_unit', i:'ac_unit', c:'#16a34a', tema:'natura', tipus:'icona' },
+  { uid:'bolt', i:'bolt', c:'#0284c7', tema:'natura', tipus:'icona' },
+  { uid:'sunny', i:'sunny', c:'#eab308', tema:'natura', tipus:'icona' },
+  { uid:'nightlight', i:'nightlight', c:'#15803d', tema:'natura', tipus:'icona' },
+  { uid:'thunderstorm', i:'thunderstorm', c:'#06b6d4', tema:'natura', tipus:'icona' },
+  { uid:'rainy', i:'rainy', c:'#be123c', tema:'natura', tipus:'icona' },
+  { uid:'foggy', i:'foggy', c:'#16a34a', tema:'natura', tipus:'icona' },
+  { uid:'air', i:'air', c:'#0284c7', tema:'natura', tipus:'icona' },
+  { uid:'waves', i:'waves', c:'#eab308', tema:'natura', tipus:'icona' },
+  { uid:'volcano', i:'volcano', c:'#15803d', tema:'natura', tipus:'icona' },
+  { uid:'umbrella', i:'umbrella', c:'#06b6d4', tema:'natura', tipus:'icona' },
+  { uid:'flood', i:'flood', c:'#be123c', tema:'natura', tipus:'icona' },
+  { uid:'solar_power', i:'solar_power', c:'#16a34a', tema:'natura', tipus:'icona' },
+  { uid:'recycling', i:'recycling', c:'#0284c7', tema:'natura', tipus:'icona' },
+  { uid:'yard', i:'yard', c:'#eab308', tema:'natura', tipus:'icona' },
+  /* Casa i objectes */
+  { uid:'home', i:'home', c:'#b45309', tema:'casa', tipus:'icona' },
+  { uid:'key', i:'key', c:'#7c3aed', tema:'casa', tipus:'icona' },
+  { uid:'lock', i:'lock', c:'#0f766e', tema:'casa', tipus:'icona' },
+  { uid:'lightbulb', i:'lightbulb', c:'#e11d48', tema:'casa', tipus:'icona' },
+  { uid:'chair', i:'chair', c:'#2563eb', tema:'casa', tipus:'icona' },
+  { uid:'bed', i:'bed', c:'#a16207', tema:'casa', tipus:'icona' },
+  { uid:'weekend', i:'weekend', c:'#b45309', tema:'casa', tipus:'icona' },
+  { uid:'kitchen', i:'kitchen', c:'#7c3aed', tema:'casa', tipus:'icona' },
+  { uid:'bathtub', i:'bathtub', c:'#0f766e', tema:'casa', tipus:'icona' },
+  { uid:'shower', i:'shower', c:'#e11d48', tema:'casa', tipus:'icona' },
+  { uid:'door_front', i:'door_front', c:'#2563eb', tema:'casa', tipus:'icona' },
+  { uid:'window', i:'window', c:'#a16207', tema:'casa', tipus:'icona' },
+  { uid:'stairs', i:'stairs', c:'#b45309', tema:'casa', tipus:'icona' },
+  { uid:'curtains', i:'curtains', c:'#7c3aed', tema:'casa', tipus:'icona' },
+  { uid:'light', i:'light', c:'#0f766e', tema:'casa', tipus:'icona' },
+  { uid:'iron', i:'iron', c:'#e11d48', tema:'casa', tipus:'icona' },
+  { uid:'local_laundry_service', i:'local_laundry_service', c:'#2563eb', tema:'casa', tipus:'icona' },
+  { uid:'cleaning_services', i:'cleaning_services', c:'#a16207', tema:'casa', tipus:'icona' },
+  { uid:'fireplace', i:'fireplace', c:'#b45309', tema:'casa', tipus:'icona' },
+  { uid:'table_restaurant', i:'table_restaurant', c:'#7c3aed', tema:'casa', tipus:'icona' },
+  { uid:'soap', i:'soap', c:'#0f766e', tema:'casa', tipus:'icona' },
+  { uid:'checkroom', i:'checkroom', c:'#e11d48', tema:'casa', tipus:'icona' },
+  { uid:'shopping_basket', i:'shopping_basket', c:'#2563eb', tema:'casa', tipus:'icona' },
+  { uid:'shopping_cart', i:'shopping_cart', c:'#a16207', tema:'casa', tipus:'icona' },
+  { uid:'watch', i:'watch', c:'#b45309', tema:'casa', tipus:'icona' },
+  { uid:'diamond', i:'diamond', c:'#7c3aed', tema:'casa', tipus:'icona' },
+  { uid:'handyman', i:'handyman', c:'#0f766e', tema:'casa', tipus:'icona' },
+  { uid:'construction', i:'construction', c:'#e11d48', tema:'casa', tipus:'icona' },
+  { uid:'plumbing', i:'plumbing', c:'#2563eb', tema:'casa', tipus:'icona' },
+  { uid:'hardware', i:'hardware', c:'#a16207', tema:'casa', tipus:'icona' },
+  { uid:'carpenter', i:'carpenter', c:'#b45309', tema:'casa', tipus:'icona' },
+  /* Esport i joc */
+  { uid:'sports_soccer', i:'sports_soccer', c:'#ea580c', tema:'esports', tipus:'icona' },
+  { uid:'sports_basketball', i:'sports_basketball', c:'#0ea5e9', tema:'esports', tipus:'icona' },
+  { uid:'sports_tennis', i:'sports_tennis', c:'#16a34a', tema:'esports', tipus:'icona' },
+  { uid:'sports_baseball', i:'sports_baseball', c:'#e11d48', tema:'esports', tipus:'icona' },
+  { uid:'sports_volleyball', i:'sports_volleyball', c:'#7c3aed', tema:'esports', tipus:'icona' },
+  { uid:'sports_football', i:'sports_football', c:'#eab308', tema:'esports', tipus:'icona' },
+  { uid:'sports_golf', i:'sports_golf', c:'#ea580c', tema:'esports', tipus:'icona' },
+  { uid:'sports_handball', i:'sports_handball', c:'#0ea5e9', tema:'esports', tipus:'icona' },
+  { uid:'sports_hockey', i:'sports_hockey', c:'#16a34a', tema:'esports', tipus:'icona' },
+  { uid:'sports_martial_arts', i:'sports_martial_arts', c:'#e11d48', tema:'esports', tipus:'icona' },
+  { uid:'skateboarding', i:'skateboarding', c:'#7c3aed', tema:'esports', tipus:'icona' },
+  { uid:'snowboarding', i:'snowboarding', c:'#eab308', tema:'esports', tipus:'icona' },
+  { uid:'surfing', i:'surfing', c:'#ea580c', tema:'esports', tipus:'icona' },
+  { uid:'kayaking', i:'kayaking', c:'#0ea5e9', tema:'esports', tipus:'icona' },
+  { uid:'scuba_diving', i:'scuba_diving', c:'#16a34a', tema:'esports', tipus:'icona' },
+  { uid:'pool', i:'pool', c:'#e11d48', tema:'esports', tipus:'icona' },
+  { uid:'fitness_center', i:'fitness_center', c:'#7c3aed', tema:'esports', tipus:'icona' },
+  { uid:'self_improvement', i:'self_improvement', c:'#eab308', tema:'esports', tipus:'icona' },
+  { uid:'casino', i:'casino', c:'#ea580c', tema:'esports', tipus:'icona' },
+  { uid:'extension', i:'extension', c:'#0ea5e9', tema:'esports', tipus:'icona' },
+  { uid:'toys', i:'toys', c:'#16a34a', tema:'esports', tipus:'icona' },
+  { uid:'sports_esports', i:'sports_esports', c:'#e11d48', tema:'esports', tipus:'icona' },
+  { uid:'downhill_skiing', i:'downhill_skiing', c:'#7c3aed', tema:'esports', tipus:'icona' },
+  { uid:'rowing', i:'rowing', c:'#eab308', tema:'esports', tipus:'icona' },
+  /* Música i art */
+  { uid:'music_note', i:'music_note', c:'#a855f7', tema:'musica', tipus:'icona' },
+  { uid:'headphones', i:'headphones', c:'#db2777', tema:'musica', tipus:'icona' },
+  { uid:'piano', i:'piano', c:'#9333ea', tema:'musica', tipus:'icona' },
+  { uid:'mic', i:'mic', c:'#c2410c', tema:'musica', tipus:'icona' },
+  { uid:'album', i:'album', c:'#0ea5e9', tema:'musica', tipus:'icona' },
+  { uid:'radio', i:'radio', c:'#f59e0b', tema:'musica', tipus:'icona' },
+  { uid:'speaker', i:'speaker', c:'#a855f7', tema:'musica', tipus:'icona' },
+  { uid:'queue_music', i:'queue_music', c:'#db2777', tema:'musica', tipus:'icona' },
+  { uid:'nightlife', i:'nightlife', c:'#9333ea', tema:'musica', tipus:'icona' },
+  { uid:'palette', i:'palette', c:'#c2410c', tema:'musica', tipus:'icona' },
+  { uid:'brush', i:'brush', c:'#0ea5e9', tema:'musica', tipus:'icona' },
+  { uid:'draw', i:'draw', c:'#f59e0b', tema:'musica', tipus:'icona' },
+  { uid:'format_paint', i:'format_paint', c:'#a855f7', tema:'musica', tipus:'icona' },
+  { uid:'theater_comedy', i:'theater_comedy', c:'#db2777', tema:'musica', tipus:'icona' },
+  { uid:'photo_camera', i:'photo_camera', c:'#9333ea', tema:'musica', tipus:'icona' },
+  { uid:'videocam', i:'videocam', c:'#c2410c', tema:'musica', tipus:'icona' },
+  { uid:'movie', i:'movie', c:'#0ea5e9', tema:'musica', tipus:'icona' },
+  { uid:'auto_awesome', i:'auto_awesome', c:'#f59e0b', tema:'musica', tipus:'icona' },
+  { uid:'gesture', i:'gesture', c:'#a855f7', tema:'musica', tipus:'icona' },
+  { uid:'color_lens', i:'color_lens', c:'#db2777', tema:'musica', tipus:'icona' },
+  /* Feina i escola */
+  { uid:'school', i:'school', c:'#059669', tema:'escola', tipus:'icona' },
+  { uid:'menu_book', i:'menu_book', c:'#2563eb', tema:'escola', tipus:'icona' },
+  { uid:'auto_stories', i:'auto_stories', c:'#c2410c', tema:'escola', tipus:'icona' },
+  { uid:'edit', i:'edit', c:'#7c3aed', tema:'escola', tipus:'icona' },
+  { uid:'science', i:'science', c:'#334155', tema:'escola', tipus:'icona' },
+  { uid:'calculate', i:'calculate', c:'#e11d48', tema:'escola', tipus:'icona' },
+  { uid:'biotech', i:'biotech', c:'#059669', tema:'escola', tipus:'icona' },
+  { uid:'architecture', i:'architecture', c:'#2563eb', tema:'escola', tipus:'icona' },
+  { uid:'engineering', i:'engineering', c:'#c2410c', tema:'escola', tipus:'icona' },
+  { uid:'psychology', i:'psychology', c:'#7c3aed', tema:'escola', tipus:'icona' },
+  { uid:'translate', i:'translate', c:'#334155', tema:'escola', tipus:'icona' },
+  { uid:'history_edu', i:'history_edu', c:'#e11d48', tema:'escola', tipus:'icona' },
+  { uid:'backpack', i:'backpack', c:'#059669', tema:'escola', tipus:'icona' },
+  { uid:'badge', i:'badge', c:'#2563eb', tema:'escola', tipus:'icona' },
+  { uid:'work', i:'work', c:'#c2410c', tema:'escola', tipus:'icona' },
+  { uid:'folder', i:'folder', c:'#7c3aed', tema:'escola', tipus:'icona' },
+  { uid:'print', i:'print', c:'#334155', tema:'escola', tipus:'icona' },
+  { uid:'computer', i:'computer', c:'#e11d48', tema:'escola', tipus:'icona' },
+  { uid:'keyboard', i:'keyboard', c:'#059669', tema:'escola', tipus:'icona' },
+  { uid:'mouse', i:'mouse', c:'#2563eb', tema:'escola', tipus:'icona' },
+  { uid:'smartphone', i:'smartphone', c:'#c2410c', tema:'escola', tipus:'icona' },
+  /* Persones i cos */
+  { uid:'face', i:'face', c:'#e11d48', tema:'persones', tipus:'icona' },
+  { uid:'emoji_emotions', i:'emoji_emotions', c:'#f59e0b', tema:'persones', tipus:'icona' },
+  { uid:'sentiment_satisfied', i:'sentiment_satisfied', c:'#0ea5e9', tema:'persones', tipus:'icona' },
+  { uid:'sentiment_very_satisfied', i:'sentiment_very_satisfied', c:'#16a34a', tema:'persones', tipus:'icona' },
+  { uid:'favorite', i:'favorite', c:'#8b5cf6', tema:'persones', tipus:'icona' },
+  { uid:'volunteer_activism', i:'volunteer_activism', c:'#e11d48', tema:'persones', tipus:'icona' },
+  { uid:'handshake', i:'handshake', c:'#f59e0b', tema:'persones', tipus:'icona' },
+  { uid:'waving_hand', i:'waving_hand', c:'#0ea5e9', tema:'persones', tipus:'icona' },
+  { uid:'front_hand', i:'front_hand', c:'#16a34a', tema:'persones', tipus:'icona' },
+  { uid:'thumb_up', i:'thumb_up', c:'#8b5cf6', tema:'persones', tipus:'icona' },
+  { uid:'visibility', i:'visibility', c:'#e11d48', tema:'persones', tipus:'icona' },
+  { uid:'hearing', i:'hearing', c:'#f59e0b', tema:'persones', tipus:'icona' },
+  { uid:'directions_walk', i:'directions_walk', c:'#0ea5e9', tema:'persones', tipus:'icona' },
+  { uid:'directions_run', i:'directions_run', c:'#16a34a', tema:'persones', tipus:'icona' },
+  { uid:'accessibility_new', i:'accessibility_new', c:'#8b5cf6', tema:'persones', tipus:'icona' },
+  { uid:'elderly', i:'elderly', c:'#e11d48', tema:'persones', tipus:'icona' },
+  { uid:'child_care', i:'child_care', c:'#f59e0b', tema:'persones', tipus:'icona' },
+  { uid:'family_restroom', i:'family_restroom', c:'#0ea5e9', tema:'persones', tipus:'icona' },
+  { uid:'pregnant_woman', i:'pregnant_woman', c:'#16a34a', tema:'persones', tipus:'icona' },
+  { uid:'sign_language', i:'sign_language', c:'#8b5cf6', tema:'persones', tipus:'icona' },
+  { uid:'health_and_safety', i:'health_and_safety', c:'#e11d48', tema:'persones', tipus:'icona' },
+  { uid:'medication', i:'medication', c:'#f59e0b', tema:'persones', tipus:'icona' },
+  { uid:'vaccines', i:'vaccines', c:'#0ea5e9', tema:'persones', tipus:'icona' },
+  { uid:'ecg_heart', i:'ecg_heart', c:'#16a34a', tema:'persones', tipus:'icona' },
+  /* Premis i símbols */
+  { uid:'emoji_events', i:'emoji_events', c:'#f59e0b', tema:'premis', tipus:'icona' },
+  { uid:'military_tech', i:'military_tech', c:'#e11d48', tema:'premis', tipus:'icona' },
+  { uid:'workspace_premium', i:'workspace_premium', c:'#06b6d4', tema:'premis', tipus:'icona' },
+  { uid:'verified', i:'verified', c:'#8b5cf6', tema:'premis', tipus:'icona' },
+  { uid:'shield', i:'shield', c:'#16a34a', tema:'premis', tipus:'icona' },
+  { uid:'star', i:'star', c:'#2563eb', tema:'premis', tipus:'icona' },
+  { uid:'flag', i:'flag', c:'#f59e0b', tema:'premis', tipus:'icona' },
+  { uid:'bookmark', i:'bookmark', c:'#e11d48', tema:'premis', tipus:'icona' },
+  { uid:'label', i:'label', c:'#06b6d4', tema:'premis', tipus:'icona' },
+  { uid:'celebration', i:'celebration', c:'#8b5cf6', tema:'premis', tipus:'icona' },
+  { uid:'change_history', i:'change_history', c:'#16a34a', tema:'premis', tipus:'icona' },
+  { uid:'hexagon', i:'hexagon', c:'#2563eb', tema:'premis', tipus:'icona' },
+  { uid:'pentagon', i:'pentagon', c:'#f59e0b', tema:'premis', tipus:'icona' },
+  { uid:'local_fire_department', i:'local_fire_department', c:'#e11d48', tema:'premis', tipus:'icona' },
+  { uid:'stars', i:'stars', c:'#06b6d4', tema:'premis', tipus:'icona' },
+  { uid:'diamond_shine', i:'diamond_shine', c:'#8b5cf6', tema:'premis', tipus:'icona' }
+];
+
+/* Els temes, per a la finestra de preferència i per triar-ne un a cada partida */
+const TEMES = [
+  { clau:'menjar', nom:'Menjar i beure', icona:'restaurant' },
+  { clau:'viatges', nom:'Viatges i llocs', icona:'travel_explore' },
+  { clau:'transports', nom:'Transports', icona:'directions_car' },
+  { clau:'natura', nom:'Natura i animals', icona:'eco' },
+  { clau:'casa', nom:'Casa i objectes', icona:'home' },
+  { clau:'esports', nom:'Esport i joc', icona:'sports_soccer' },
+  { clau:'musica', nom:'Música i art', icona:'music_note' },
+  { clau:'escola', nom:'Feina i escola', icona:'school' },
+  { clau:'persones', nom:'Persones i cos', icona:'face' },
+  { clau:'premis', nom:'Premis i símbols', icona:'emoji_events' }
 ];
 
 let POOL_FOTOS = []; // S'omplirà de forma asíncrona validant la carpeta
@@ -1900,6 +2198,9 @@ const AJUDA = {
 let joc = 'home';
 let efectesActius = localStorage.getItem('efectes') !== 'false';
 let modeGrafic = localStorage.getItem('modeGrafic'); // 'icona' o 'foto'
+/* Tema preferit: 'auto' vol dir que cada partida el tria a l'atzar */
+let temaPreferit = localStorage.getItem('temaPreferit') || 'auto';
+let temesActius = null;   // null = totes les icones
 
 let nivellParelles  = parseInt(localStorage.getItem('nivellParelles')||1,10);
 let nivellEscena    = parseInt(localStorage.getItem('nivellEscena')||1,10);
@@ -2003,6 +2304,43 @@ async function escanejarFotosDirectori(forcar = false) {
   return POOL_FOTOS;
 }
 
+/* Quins temes toquen en aquesta partida.
+   Sense preferència: la meitat de vegades un sol tema, un terç dues, i la
+   resta tot barrejat. Amb preferència: gairebé sempre el tema triat, sol o
+   acompanyat, però de tant en tant en surten d'altres perquè no cansi. */
+function triarTemaPartida(){
+  const claus = TEMES.map(t => t.clau);
+  const sort = Math.random();
+
+  if (temaPreferit !== 'auto' && claus.includes(temaPreferit)){
+    if (sort < 0.6) temesActius = [temaPreferit];
+    else if (sort < 0.85){
+      const altre = barrejar(claus.filter(c => c !== temaPreferit))[0];
+      temesActius = [temaPreferit, altre];
+    } else if (sort < 0.95) temesActius = barrejar(claus).slice(0, 2);
+    else temesActius = null;
+    return;
+  }
+
+  if (sort < 0.45) temesActius = [barrejar(claus)[0]];
+  else if (sort < 0.8) temesActius = barrejar(claus).slice(0, 2);
+  else temesActius = null;
+}
+
+/* Les icones dels temes actius; si no n'hi ha prou per al nivell,
+   s'hi van afegint temes fins que n'hi hagi */
+function iconesDelsTemes(necessaries){
+  if (!temesActius) return POOL_ICONES;
+  const tria = [...temesActius];
+  let llista = POOL_ICONES.filter(o => tria.includes(o.tema));
+  const resta = barrejar(TEMES.map(t => t.clau).filter(c => !tria.includes(c)));
+  while (llista.length < necessaries && resta.length){
+    tria.push(resta.shift());
+    llista = POOL_ICONES.filter(o => tria.includes(o.tema));
+  }
+  return llista.length >= necessaries ? llista : POOL_ICONES;
+}
+
 function getActivePool(necessaries) {
   if (modeGrafic === 'foto') {
     if (POOL_FOTOS.length >= necessaries) {
@@ -2010,10 +2348,10 @@ function getActivePool(necessaries) {
     } else {
       // Si la carpeta està buida o té poques fotos pel nivell actual, força l'ús d'icones temporalment.
       log('No hi ha prou fotos pel nivell. Fent servir icones...', 3500);
-      return POOL_ICONES;
+      return iconesDelsTemes(necessaries);
     }
   }
-  return POOL_ICONES;
+  return iconesDelsTemes(necessaries);
 }
 
 function renderContent(item) {
@@ -2238,6 +2576,38 @@ async function tancarBenvinguda(mode) {
   else if (joc === 'onera') iniciarOnera();
 }
     
+/* ── La finestra de temes ── */
+function pintarTemes(){
+  const graella = $('temaGraella');
+  graella.innerHTML = '';
+
+  const opcions = [{ clau:'auto', nom:'Tot barrejat', icona:'shuffle' }, ...TEMES];
+  opcions.forEach(op => {
+    const boto = document.createElement('button');
+    boto.type = 'button';
+    boto.className = 'tema-opcio';
+    boto.setAttribute('role', 'radio');
+    boto.setAttribute('aria-checked', op.clau === temaPreferit ? 'true' : 'false');
+    boto.innerHTML = `<span class="material-symbols-rounded">${op.icona}</span><span>${op.nom}</span>`;
+    boto.addEventListener('click', () => {
+      temaPreferit = op.clau;
+      localStorage.setItem('temaPreferit', temaPreferit);
+      pintarTemes();
+      actualitzarBotoTema();
+    });
+    graella.appendChild(boto);
+  });
+}
+
+function actualitzarBotoTema(){
+  const tema = TEMES.find(t => t.clau === temaPreferit);
+  setIcon($('temaBtn'), tema ? tema.icona : 'category');
+  $('temaBtn').title = tema ? `Tema: ${tema.nom.toLowerCase()}` : 'Temes dels dibuixos';
+  $('temaBtn').setAttribute('aria-label', $('temaBtn').title);
+}
+
+$('temaBtn').addEventListener('click', () => { pintarTemes(); obrirModal($('temaOverlay')); });
+
 /* ═══════════════════════════════════════════════════════
    COMPTE ENRERE I NAVEGACIÓ
    ═══════════════════════════════════════════════════════ */
@@ -2283,6 +2653,7 @@ const PANTALLES = {
 };
 
 function mostrarPantalla(nom){
+  if (nom !== 'home' && nom !== joc) triarTemaPartida();
   joc = nom;
   Object.entries(PANTALLES).forEach(([clau, id]) => {
     const el = $(id);
@@ -4317,6 +4688,8 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden){ if (tickTimer){ aturatPerModal = true; pararRellotge(); } }
   else if (aturatPerModal && !modalObert && tempsRestant > 0){ aturatPerModal = false; arrencarRellotge(); }
 });
+
+actualitzarBotoTema();
 
 if (modeGrafic) {
   aplicarModeGraficSelector();
