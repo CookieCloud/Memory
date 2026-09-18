@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 3.70
+    Version: 3.80
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,18 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v3.80
+    - Tot més gran i més llegible: missatges, botons, text de les finestres
+      i, sobretot, l'enunciat de les preguntes (ara més gran que el títol)
+    - Les cartes creixen fins a omplir la pantalla (piràmide i llista
+      d'opcions de "Què hi havia?", que ja no necessita desplaçament)
+    - "La piràmide": marc fi i viu a les cartes que es poden agafar, apagat
+      a les tapades, en mode clar i fosc
+    - "La piràmide": el càstig passa de dues cartes a 8–12 segons el nivell,
+      escampades per llocs diferents
+    - Les preguntones esperen que la jugadora s'aturi un segon i mig; si no
+      s'atura mai, surten al cap de mig minut
 
     CANVIS v3.70
     - "La piràmide": corregit el bloqueig després de fallar una preguntona
@@ -620,19 +632,34 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
    Les cartes se situen amb coordenades pròpies (mitges caselles), de manera
    que cada capa queda mig quadre desplaçada i es veu el relleu. */
 .piramide{position:relative;margin:0 auto}
+/* Cada carta porta un marc fi, com la carcassa d'un telèfon: encès i
+   ben viu quan la pots agafar, apagat quan encara està tapada. */
 .ptile{
-  position:absolute;border-radius:12px;display:grid;place-items:center;overflow:hidden;
+  position:absolute;display:grid;place-items:center;overflow:hidden;
+  border-radius:calc(var(--pw,60px) * .18);
+  border:3px solid rgba(130,130,150,.45);
   background:var(--card-face);
-  box-shadow:inset 0 0 0 2px var(--card-ring), 2px 3px 0 rgba(0,0,0,.35), 0 6px 14px rgba(0,0,0,.35);
-  transition:transform .18s cubic-bezier(.34,1.56,.64,1), opacity .3s, box-shadow .2s;
+  box-shadow:2px 3px 0 rgba(0,0,0,.3), 0 6px 14px rgba(0,0,0,.35);
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1), opacity .3s, box-shadow .2s, border-color .2s;
 }
 .ptile .material-symbols-rounded{font-size:calc(var(--pw,60px) * .56)}
 .ptile .foto-asset{width:100%;height:100%;object-fit:cover}
-/* Les tapades es veuen enfosquides i no responen */
-.ptile.tapada{filter:brightness(.55) saturate(.7);cursor:default}
-.ptile.lliure{cursor:pointer}
+/* Tapada: marc apagat i la imatge enfosquida */
+.ptile.tapada{filter:brightness(.5) saturate(.55);cursor:default;border-color:rgba(90,90,110,.5)}
+/* Lliure: marc verd brillant, es veu d'una ullada quines pots tocar */
+.ptile.lliure{
+  cursor:pointer;border-color:#16a34a;
+  box-shadow:0 0 0 2px rgba(34,197,94,.35), 2px 3px 0 rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
+}
 .ptile.lliure:active{transform:scale(.93)}
-.ptile.especial{box-shadow:inset 0 0 0 3px var(--accent-deep), 2px 3px 0 rgba(0,0,0,.35), 0 0 18px rgba(240,160,32,.55)}
+.ptile.especial.lliure{
+  border-color:var(--accent-deep);
+  box-shadow:0 0 0 3px rgba(240,160,32,.45), 0 0 20px rgba(240,160,32,.6), 2px 3px 0 rgba(0,0,0,.3);
+}
+body:not(.day) .ptile{border-color:rgba(255,255,255,.18)}
+body:not(.day) .ptile.tapada{border-color:rgba(255,255,255,.12);filter:brightness(.42) saturate(.5)}
+body:not(.day) .ptile.lliure{border-color:#4ade80;box-shadow:0 0 0 2px rgba(74,222,128,.3), 0 6px 16px rgba(0,0,0,.45)}
+body:not(.day) .ptile.especial.lliure{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,209,102,.4), 0 0 20px rgba(255,209,102,.5)}
 .ptile .estrella{
   position:absolute;top:2px;right:2px;color:var(--accent-deep);
   filter:drop-shadow(0 1px 1px rgba(0,0,0,.5));
@@ -719,14 +746,28 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .chip-boto:disabled{opacity:.45;cursor:default}
 
 /* ── proves de la piràmide ─────────────────────────────── */
+/* A la finestra de la prova, el que compta és la pregunta: el títol
+   queda petit i discret, i l'enunciat es veu de lluny. */
+#provaOverlay h2{font-size:clamp(15px,4vw,19px);font-weight:700;opacity:.7;margin-bottom:4px}
+#provaOverlay .modal-icon{font-size:34px}
+#provaPregunta{
+  font-family:'Baloo 2';font-weight:800;
+  font-size:clamp(24px,7.5vw,38px);line-height:1.2;color:var(--ink);
+  margin-bottom:16px;max-width:20ch;
+}
 .prova-opcions{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:4px 0 10px;max-width:100%;
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:4px 0 12px;max-width:100%;
 }
 .prova-btn{
-  min-width:74px;padding:14px 20px;border-radius:18px;cursor:pointer;
-  background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
-  color:var(--ink);font-family:'Baloo 2';font-weight:800;font-size:clamp(18px,5vw,26px);
+  min-width:96px;padding:20px 26px;border-radius:22px;cursor:pointer;
+  background:linear-gradient(160deg,#ffffff,#ffe9c2);
+  border:3px solid var(--accent-deep);
+  box-shadow:0 5px 0 rgba(0,0,0,.2), 0 8px 16px rgba(0,0,0,.25);
+  color:#4a2600;font-family:'Baloo 2';font-weight:800;font-size:clamp(26px,8vw,38px);
   transition:transform .12s cubic-bezier(.34,1.56,.64,1);
+}
+body:not(.day) .prova-btn{
+  background:linear-gradient(160deg,#3a2c63,#251d42);color:#fff;border-color:var(--accent);
 }
 .prova-btn:active{transform:scale(.93)}
 .prova-btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
@@ -751,9 +792,9 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 /* Tots els números en una sola fila: s'estrenyen si cal, però no baixen */
 .num-opcions{display:flex;flex-wrap:nowrap;gap:8px;justify-content:center;max-width:100%}
 .num-btn{
-  min-width:0;flex:0 1 auto;padding:10px clamp(10px,3vw,20px);border-radius:16px;cursor:pointer;
+  min-width:0;flex:0 1 auto;padding:16px clamp(12px,3.4vw,24px);border-radius:18px;cursor:pointer;
   background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
-  color:var(--ink);font-family:'Baloo 2';font-weight:800;font-size:clamp(18px,4.6vw,28px);
+  color:var(--ink);font-family:'Baloo 2';font-weight:800;font-size:clamp(24px,6.5vw,36px);
   transition:transform .12s cubic-bezier(.34,1.56,.64,1);
 }
 .num-btn:active{transform:scale(.93)}
@@ -922,11 +963,13 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 .tile.erronia{border:3px solid #b91c1c;box-shadow:inset 0 0 10px rgba(185,28,28,.3),0 0 15px rgba(251,113,133,.6);}
 
 /* Opcions seleccionables */
+/* La mida de les caselles la calcula el JS perquè hi càpiguen totes sense
+   haver de desplaçar res: s'aprofita tota l'amplada i tota l'alçada. */
 .opcions{
-  flex:1;min-height:0;overflow-y:auto;padding:12px 12px 2px;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:14px;
-  justify-content:center;align-content:start;
-  width:100%;max-width:550px;margin:0 auto;
+  flex:1;min-height:0;overflow:hidden;padding:10px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:12px;
+  justify-content:center;align-content:center;
+  width:100%;margin:0 auto;
 }
 .opt-tile{
   position:relative;aspect-ratio:1/1;border:none;cursor:pointer;border-radius:18px;
@@ -934,7 +977,7 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
   border:2px solid var(--chip-border);color:var(--ink);
   transition:transform .13s cubic-bezier(.34,1.56,.64,1),background .2s,border-color .2s;
 }
-.opt-tile .material-symbols-rounded{font-size:42px}
+.opt-tile .material-symbols-rounded{font-size:calc(var(--ow,85px) * .54)}
 /* Fem les fotos de la selecció molt més grans i reduïm el marge */
 .opt-tile .foto-asset {
   width: 95%;
@@ -943,7 +986,7 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
   object-fit: cover;
 }
 .opt-tile .material-symbols-rounded {
-  font-size: 50px;
+  font-size: calc(var(--ow,85px) * .54);
 }
 .opt-tile:active{transform:scale(.94)}
 .opt-tile:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
@@ -981,8 +1024,8 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 .opt-tile.erronia .marca{background:#b91c1c}
 .opcions.bloquejada .opt-tile{cursor:default}
 /* En repassar el resultat ja no cal encabir-ho tot: es veuen més grans */
-.opcions.revisant{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
-.opcions.revisant .opt-tile .material-symbols-rounded{font-size:46px}
+/* En revisar, les caselles es tornen a calcular i queden encara més grans */
+.opcions.revisant{gap:14px}
 .acciona{display:flex;justify-content:center;padding:6px 0 2px}
 
 /* Objectiu gegant */
@@ -994,10 +1037,12 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 }
 
 .log{
-  position:absolute;left:50%;bottom:6px;z-index:10;
-  transform:translate(-50%,15px); max-width:calc(100% - 16px);padding:8px 20px;
-  font-size:16px;font-weight:600;color:var(--log-text);text-align:center;
-  background:var(--log-bg); border-radius:99px; box-shadow:0 4px 12px rgba(0,0,0,.25);
+  position:absolute;left:50%;bottom:0;z-index:10;
+  transform:translate(-50%,18px); max-width:calc(100% - 12px);padding:12px 26px;
+  font-size:clamp(17px,4.6vw,24px);font-weight:700;color:var(--log-text);text-align:center;
+  line-height:1.25;
+  background:var(--log-bg); border-radius:99px;
+  box-shadow:0 6px 18px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.25);
   pointer-events:none;opacity:0;transition:opacity .45s ease, transform .45s ease;
 }
 .log.show{opacity:1;transform:translate(-50%,0)}
@@ -1041,21 +1086,22 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
   font-size:46px;color:var(--accent);margin-bottom:2px;
   filter:drop-shadow(0 3px 0 var(--accent-deep)) drop-shadow(0 6px 12px rgba(0,0,0,.35));
 }
-.modal .credit{font-size:16px;line-height:1.4;margin-bottom:10px;max-width:36ch}
-.modal .how{font-size:14px;line-height:1.45;color:var(--ink-soft);margin-bottom:12px;max-width:36ch;text-align:left}
+.modal .credit{font-size:clamp(17px,4.6vw,22px);line-height:1.4;margin-bottom:12px;max-width:34ch}
+.modal .how{font-size:clamp(15px,4.2vw,18px);line-height:1.5;color:var(--ink);opacity:.85;margin-bottom:14px;max-width:34ch;text-align:left}
 .modal .how li{margin-left:18px;margin-bottom:4px}
 .modal-actions{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
 .btn-big{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:14px 28px;border:none;border-radius:99px;cursor:pointer;
-  font-family:'Fredoka';font-weight:600;font-size:16px;color:var(--accent-ink);
+  display:inline-flex;align-items:center;gap:10px;
+  padding:18px 36px;border:none;border-radius:99px;cursor:pointer;
+  font-family:'Fredoka';font-weight:700;font-size:clamp(18px,5vw,23px);color:var(--accent-ink);
   background:linear-gradient(160deg,var(--accent),var(--accent-deep));
   box-shadow:inset 0 2px 0 rgba(255,255,255,.7), 0 5px 0 rgba(0,0,0,.3), 0 10px 20px rgba(0,0,0,.4);
   transition:transform .13s cubic-bezier(.34,1.56,.64,1),box-shadow .13s;
 }
+.btn-big .material-symbols-rounded{font-size:calc(1em + 6px)}
 .btn-big:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 1px 0 rgba(0,0,0,.3),0 3px 8px rgba(0,0,0,.4)}
 .btn-soft{
-  display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:99px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:9px;padding:16px 28px;border-radius:99px;cursor:pointer;
   font-family:'Fredoka';font-weight:600;font-size:15px;color:var(--ink);
   background:transparent;border:2px solid var(--ink-soft);
   transition:transform .13s cubic-bezier(.34,1.56,.64,1),background .2s;
@@ -1524,7 +1570,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v3.70</span>
+      <span class="version" id="version">v3.80</span>
     </div>
   </footer>
 </div>
@@ -2210,6 +2256,7 @@ function aturarTot(){
   clearTimeout(comptaTimer); comptaTimer = null;
   clearTimeout(nbackTimer); nbackTimer = null;
   clearTimeout(demoTimer); demoTimer = null;
+  clearTimeout(provaIdle); provaIdle = null; provaPendent = false;
   alAcabarElTemps = null; aturatPerModal = false;
 }
 
@@ -2353,6 +2400,7 @@ function passarATriar(){
     boto.addEventListener('click', () => triarObjecteEscena(boto, o.uid));
     optionsBoard.appendChild(boto);
   });
+  requestAnimationFrame(encaixarOpcions);
   iniciarCompte(nivell.respondre, () => comprovarEscena(true));
 }
 
@@ -2375,6 +2423,7 @@ checkBtn.addEventListener('click', () => comprovarEscena(false));
 function comprovarEscena(perTemps){
   if (faseEscena !== 'triar') return;
   aturarTot(); faseEscena = 'revisat'; optionsBoard.classList.add('bloquejada', 'revisant'); checkBtn.disabled = true;
+  requestAnimationFrame(encaixarOpcions);
 
   const correctes = objectesEscena.map(o => o.uid);
   let encerts = 0, errorsMarcats = 0, errorsOblidats = 0;
@@ -3476,6 +3525,7 @@ function acabarBlanca(guanyat, motiu){
    ═══════════════════════════════════════════════════════ */
 let piramideCartes = [], piramideSafataLlista = [], piramideRestants = 0, piramideFet = false;
 let piramideCompteEnrere = 0, piramideProves = 0, piramideFallades = 0;
+let provaPendent = false, provaIdle = null, provaEsperaDes = 0;
 
 const piramideBoard = $('piramideBoard');
 
@@ -3556,7 +3606,8 @@ function treureProva(){
   const prova = generarProva();
   piramideProves++;
   $('provaPregunta').textContent = prova.pregunta;
-  $('provaPeu').textContent = 'Si t\'equivoques, et cauran dues cartes més a la piràmide.';
+  const cauran = (Math.min(3 + nivellPiramide, 6)) * 2;
+  $('provaPeu').textContent = `Si t\'equivoques, et cauran ${cauran} cartes més a la piràmide.`;
 
   const caixa = $('provaOpcions');
   caixa.innerHTML = ''; caixa.style.pointerEvents = 'auto';
@@ -3583,39 +3634,50 @@ function respondreProva(boto, resposta, prova){
     [...$('provaOpcions').children]
       .find(b => String(b.textContent) === String(prova.bona))?.classList.add('correcta');
     piramideFallades++;
-    $('provaPeu').textContent = `Era ${prova.bona}. Et cauen dues cartes més.`;
+    $('provaPeu').textContent = `Era ${prova.bona}. Et cauen més cartes a la piràmide.`;
   }
 
   setTimeout(() => {
     tancarModal($('provaOverlay'));
+    provaPendent = false; provaEsperaDes = 0;
     programarProva();
     if (!bo) afegirCastig();
   }, bo ? 900 : 2200);
 }
 
-/* Càstig: una parella nova cau a sobre de la piràmide */
+/* Càstig: cauen unes quantes parelles noves damunt de la piràmide.
+   Com més alt és el nivell, més en cauen, i s'escampen per llocs diferents
+   perquè no quedin totes apilades al mateix racó. */
 function afegirCastig(){
   const vives = piramideCartes.filter(c => !c.fora);
   if (!vives.length) return;
 
   const capaNova = Math.max(...vives.map(c => c.l)) + 1;
   const pool = getActivePool(1);
-  const simbol = pool[Math.floor(Math.random() * pool.length)];
+  const quantesParelles = Math.min(3 + nivellPiramide, Math.max(3, Math.floor(vives.length / 2)));
 
-  /* Les dues cartes cauen apilades, l'una damunt de l'altra: així no te les
-     pots treure totes dues de cop i el càstig es nota de debò. */
-  const sota = barrejar(vives)[0];
-  const noves = [
-    { l:capaNova,     x:sota.x, y:sota.y, uid:simbol.uid, item:simbol, especial:false, fora:false, el:null },
-    { l:capaNova + 1, x:sota.x, y:sota.y, uid:simbol.uid, item:simbol, especial:false, fora:false, el:null }
-  ];
+  const bases = barrejar(vives);
+  const noves = [];
+  for (let p = 0; p < quantesParelles; p++){
+    const simbol = pool[Math.floor(Math.random() * pool.length)];
+    // Cada carta de la parella, damunt d'una carta diferent de la piràmide
+    const a = bases[(p * 2) % bases.length];
+    const b = bases[(p * 2 + 1) % bases.length];
+    const apilada = p === 0;     // la primera parella sí que cau una sobre l'altra
+    noves.push(
+      { l:capaNova + (apilada ? 1 : 0), x:a.x, y:a.y,
+        uid:simbol.uid, item:simbol, especial:false, fora:false, el:null },
+      { l:capaNova, x:apilada ? a.x : b.x, y:apilada ? a.y : b.y,
+        uid:simbol.uid, item:simbol, especial:false, fora:false, el:null }
+    );
+  }
 
   piramideCartes.push(...noves);
-  piramideRestants += 2;
+  piramideRestants += noves.length;
   $('piramideRestants').textContent = piramideRestants;
   pintarPiramide();
   noves.forEach(c => c.el && c.el.classList.add('castig'));
-  log('Dues cartes més!', 2600);
+  log(`${noves.length} cartes més!`, 3000);
 }
 
 /* Reparteix les posicions en capes: cada capa, una mica més petita i
@@ -3802,7 +3864,8 @@ function ajustarPiramide(){
   const availW = Math.max(120, wrap.clientWidth  - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight) - 12);
   const availH = Math.max(120, wrap.clientHeight - parseFloat(wcs.paddingTop)  - parseFloat(wcs.paddingBottom) - 12);
 
-  const mida = Math.max(26, Math.min(availW / (amplada / 2), availH / (alcada / 2), 92));
+  // Sense sostre petit: les cartes creixen fins a omplir l'espai disponible
+  const mida = Math.max(26, Math.min(availW / (amplada / 2), availH / (alcada / 2), 170));
   const relleu = Math.max(2, mida * 0.06);
 
   piramideBoard.style.width  = (amplada / 2 * mida + capes * relleu) + 'px';
@@ -3883,11 +3946,28 @@ function agafarCarta(carta){
     return;
   }
 
-  // Cada poques cartes, una preguntona
-  if (piramideCompteEnrere <= 0 && piramideRestants > 4){
-    piramideCompteEnrere = 99;   // evitem que en surtin dues de seguides
-    setTimeout(treureProva, 420);
+  // Cada poques cartes toca preguntona, però no s'engega a mitja jugada:
+  // espera que passi un moment sense tocar res (vegeu revisarProva)
+  if (piramideCompteEnrere <= 0 && piramideRestants > 4 && !provaPendent){
+    provaPendent = true;
+    provaEsperaDes = Date.now();
   }
+  revisarProva();
+}
+
+/* La prova surt quan la jugadora fa un segon i mig que no toca res.
+   Si va molt seguida i no s'atura mai, al cap de mig minut surt igualment. */
+function revisarProva(){
+  clearTimeout(provaIdle);
+  if (!provaPendent || piramideFet) return;
+
+  const faEstona = Date.now() - provaEsperaDes > 30000;
+  provaIdle = setTimeout(() => {
+    if (!provaPendent || piramideFet || modalObert) return;
+    provaPendent = false;
+    piramideCompteEnrere = 99;
+    treureProva();
+  }, faEstona ? 300 : 1600);
 }
 
 /* Carta amb estrella: busca a la piràmide la bessona de cada carta que
@@ -4038,7 +4118,37 @@ function encaixar(board, total, proporcio, maxCols, minCols = 1){
   board.dataset.cols = millor.cols; // Memoritzem la decisió
 }
 
+/* Calcula quantes columnes i quina mida fan que hi càpiguen totes les
+   opcions dins de la caixa, sense desplaçament */
+function encaixarOpcions(){
+  const caixa = optionsBoard;
+  const n = caixa.children.length;
+  if (!n || caixa.hidden) return;
+
+  const cs = getComputedStyle(caixa);
+  const availW = caixa.clientWidth  - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const availH = caixa.clientHeight - parseFloat(cs.paddingTop)  - parseFloat(cs.paddingBottom);
+  if (availW < 40 || availH < 40) return;
+
+  const gap = 12;
+  let millor = { area:0, cols:1, mida:50 };
+  for (let cols = 1; cols <= n; cols++){
+    const files = Math.ceil(n / cols);
+    const w = (availW - gap * (cols - 1)) / cols;
+    const hh = (availH - gap * (files - 1)) / files;
+    const mida = Math.min(w, hh);
+    if (mida < 34) continue;
+    const area = mida * mida * n;
+    if (area > millor.area) millor = { area, cols, mida };
+  }
+
+  const mida = Math.floor(Math.min(millor.mida, 170));
+  caixa.style.setProperty('--ow', mida + 'px');
+  caixa.style.gridTemplateColumns = `repeat(${millor.cols}, ${mida}px)`;
+}
+
 function ajustarTauler(){
+  if (joc === 'escena' && !optionsBoard.hidden) encaixarOpcions();
   if (joc === 'parelles' && cartes.length) encaixar(cardsBoard, cartes.length, 1, getGridCols(cartes.length));
   if (joc === 'escena' && faseEscena === 'mirar' && sceneBoard.children.length) encaixar(sceneBoard, sceneBoard.children.length, 1, getGridCols(sceneBoard.children.length));
   if (joc === 'sequencia' && seqBoard.children.length) encaixar(seqBoard, seqBoard.children.length, 1, getGridCols(seqBoard.children.length));
