@@ -10,9 +10,16 @@
 
    Si no canvies VERSIO, el web continuarà servint la còpia desada i la gent
    no veurà els canvis. És l'únic que has de recordar de fer.
+
+   LA MÚSICA
+   Els fitxers de so (.mp3) es desen en una memòria a part, CACHE_SO, que
+   NO s'esborra en canviar de versió: si no, cada actualització tornaria a
+   baixar uns quants megues. Per canviar la música, puja-la amb un nom nou
+   (per exemple musica-record-2.mp3) i canvia MUSICA_URL a l'index.html.
    ═══════════════════════════════════════════════════════ */
-const VERSIO = '4.00';
-const CACHE  = 'memoria-v' + VERSIO;
+const VERSIO   = '4.20';
+const CACHE    = 'memoria-v' + VERSIO;
+const CACHE_SO = 'memoria-so';
 
 /* Fitxers propis que es desen en instal·lar. Si en falta algun no passa res:
    es desen un a un perquè un error no faci caure tota la instal·lació. */
@@ -39,7 +46,9 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(claus => Promise.all(claus.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(claus => Promise.all(claus
+        .filter(k => k !== CACHE && k !== CACHE_SO)     // la música es conserva
+        .map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -53,8 +62,25 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
 
+  // Peticions parcials (les que fa un reproductor d'àudio o vídeo): les
+  // deixem passar tal qual, perquè una resposta sencera de la memòria les
+  // confondria i alguns navegadors deixarien de sonar
+  if (req.headers.has('range')) return;
+
   const url = new URL(req.url);
   const propi = url.origin === location.origin;
+
+  /* Música i sons: de la memòria de so, i si no hi són, de la xarxa */
+  if (propi && url.pathname.endsWith('.mp3')){
+    e.respondWith(
+      caches.open(CACHE_SO).then(c => c.match(req).then(hit => hit ||
+        fetch(req).then(resp => {
+          if (resp.status === 200) c.put(req, resp.clone());
+          return resp;
+        })))
+    );
+    return;
+  }
 
   /* L'HTML i la llista de fotos: primer la xarxa. Així els canvis arriben de
      seguida i, si no hi ha connexió, se serveix la còpia desada. */

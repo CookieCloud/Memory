@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.00
+    Version: 4.20
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,21 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.20
+    - Música de fons original, "Record" (4 min 27 s, fitxer
+      musica-record.mp3). Dues còpies es passen el relleu i la música no
+      s'atura mai; en segon pla fa silenci
+    - El botó de la purpurina passa a ser "So i efectes": una finestra amb
+      tres interruptors (música de fons, sons del joc i purpurina)
+    - La preferència de "sons del joc" ja es desa; els sons arribaran aviat
+
+    CANVIS v4.10
+    - Dins d'una mateixa partida ja no surten dos dibuixos que es confonguin
+      (dues paletes, dos pinzells, dues pilotes...): hi ha 40 grups de
+      dibuixos semblants i només en surt un de cada grup
+    - "Compta-les": nivell nou "Súper ràpid!" (40 imatges a 0,42 s)
+    - Els missatges de sota ja no queden amagats sota les cartes
 
     CANVIS v4.00
     - De 36 a 239 dibuixos, repartits en 10 temes (menjar, viatges,
@@ -130,7 +145,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <!-- Icones: afegits 'image' i 'brush' per al selector de gràfics 
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,accessibility_new,agriculture,air,airport_shuttle,album,anchor,architecture,arrow_back,arrow_forward,attractions,auto_awesome,auto_stories,backpack,badge,bakery_dining,bar_chart,bathtub,beach_access,bed,biotech,blender,bolt,bookmark,breakfast_dining,brunch_dining,brush,bug_report,cabin,cake,calculate,camera,camping,cancel,carpenter,casino,castle,category,celebration,chair,change_history,check_circle,checkroom,child_care,church,cleaning_services,close,cloud,coffee,color_lens,commute,computer,construction,cookie,cruelty_free,curtains,dark_mode,diamond,diamond_shine,dinner_dining,directions_boat,directions_bus,directions_car,directions_railway,directions_run,directions_walk,door_front,downhill_skiing,draw,ecg_heart,eco,edit,egg,elderly,electric_scooter,emoji_emotions,emoji_events,emoji_food_beverage,engineering,explore,extension,face,family_restroom,fastfood,favorite,festival,find_replace,fire_truck,fireplace,fitness_center,flag,flight,flight_takeoff,flood,foggy,folder,forest,format_paint,front_hand,gesture,grass,grid_view,handshake,handyman,hardware,headphones,health_and_safety,hearing,help,hexagon,hiking,history,history_edu,holiday_village,home,hotel,houseboat,icecream,image,info,iron,kayaking,kebab_dining,key,keyboard,kitchen,label,landscape,layers,light,light_mode,lightbulb,link,liquor,local_bar,local_cafe,local_drink,local_fire_department,local_florist,local_laundry_service,local_pizza,local_shipping,local_taxi,location_on,lock,luggage,lunch_dining,map,medication,menu_book,mic,military_tech,mosque,mouse,movie,museum,music_note,nightlife,nightlight,nutrition,palette,park,pedal_bike,pentagon,pets,photo_camera,piano,plumbing,pool,pregnant_woman,print,psychology,public,queue_music,radio,rainy,ramen_dining,raven,recycling,replay,restaurant,rice_bowl,rocket_launch,rowing,sailing,school,science,scuba_diving,self_improvement,sentiment_satisfied,sentiment_very_satisfied,set_meal,shield,shopping_basket,shopping_cart,shower,shuffle,sign_language,skateboarding,smartphone,snowboarding,snowmobile,soap,solar_power,soup_kitchen,spa,speaker,sports_baseball,sports_basketball,sports_esports,sports_football,sports_golf,sports_handball,sports_hockey,sports_martial_arts,sports_soccer,sports_tennis,sports_volleyball,stairs,star,stars,style,subway,sunny,surfing,synagogue,table_restaurant,takeout_dining,tapas,temple_buddhist,terrain,theater_comedy,thumb_up,thunderstorm,timer,touch_app,tour,toys,traffic,train,tram,translate,travel_explore,two_wheeler,umbrella,undo,vaccines,verified,videocam,villa,visibility,volcano,volunteer_activism,watch,water_drop,waves,waving_hand,weekend,window,wine_bar,work,workspace_premium,yard&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,accessibility_new,agriculture,air,airport_shuttle,album,anchor,architecture,arrow_back,arrow_forward,attractions,auto_awesome,auto_stories,backpack,badge,bakery_dining,bar_chart,bathtub,beach_access,bed,biotech,blender,bolt,bookmark,breakfast_dining,brunch_dining,brush,bug_report,cabin,cake,calculate,camera,camping,cancel,carpenter,casino,castle,category,celebration,chair,change_history,check_circle,checkroom,child_care,church,cleaning_services,close,cloud,coffee,color_lens,commute,computer,construction,cookie,cruelty_free,curtains,dark_mode,diamond,diamond_shine,dinner_dining,directions_boat,directions_bus,directions_car,directions_railway,directions_run,directions_walk,door_front,downhill_skiing,draw,ecg_heart,eco,edit,egg,elderly,electric_scooter,emoji_emotions,emoji_events,emoji_food_beverage,engineering,explore,extension,face,family_restroom,fastfood,favorite,festival,find_replace,fire_truck,fireplace,fitness_center,flag,flight,flight_takeoff,flood,foggy,folder,forest,format_paint,front_hand,gesture,grass,grid_view,handshake,handyman,hardware,headphones,health_and_safety,hearing,help,hexagon,hiking,history,history_edu,holiday_village,home,hotel,houseboat,icecream,image,info,iron,kayaking,kebab_dining,key,keyboard,kitchen,label,landscape,layers,light,light_mode,lightbulb,link,liquor,local_bar,local_cafe,local_drink,local_fire_department,local_florist,local_laundry_service,local_pizza,local_shipping,local_taxi,location_on,lock,luggage,lunch_dining,map,medication,menu_book,mic,military_tech,mosque,mouse,movie,museum,music_note,music_off,nightlife,nightlight,nutrition,palette,park,pedal_bike,pentagon,pets,photo_camera,piano,plumbing,pool,pregnant_woman,print,psychology,public,queue_music,radio,rainy,ramen_dining,raven,recycling,replay,restaurant,rice_bowl,rocket_launch,rowing,sailing,school,science,scuba_diving,self_improvement,sentiment_satisfied,sentiment_very_satisfied,set_meal,shield,shopping_basket,shopping_cart,shower,shuffle,sign_language,skateboarding,smartphone,snowboarding,snowmobile,soap,solar_power,soup_kitchen,spa,speaker,sports_baseball,sports_basketball,sports_esports,sports_football,sports_golf,sports_handball,sports_hockey,sports_martial_arts,sports_soccer,sports_tennis,sports_volleyball,stairs,star,stars,style,subway,sunny,surfing,synagogue,table_restaurant,takeout_dining,tapas,temple_buddhist,terrain,theater_comedy,thumb_up,thunderstorm,timer,touch_app,tour,toys,traffic,train,tram,translate,travel_explore,two_wheeler,umbrella,undo,vaccines,verified,videocam,villa,visibility,volcano,volume_off,volume_up,volunteer_activism,watch,water_drop,waves,waving_hand,weekend,window,wine_bar,work,workspace_premium,yard&display=block" rel="stylesheet">
 -->
 <!-- Canvia la línia llarga de Material Symbols per aquesta: -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&display=block" rel="stylesheet">
@@ -627,6 +642,12 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   to{transform:translateX(-150%) rotate(-9deg) scale(.72);opacity:0}
 }
 .roda .entra{animation:rodaEntra .45s cubic-bezier(.25,.9,.35,1) both}
+/* Súper ràpid: entrada més curta i un contorn encès, perquè es noti el ritme */
+.roda .entra.veloc{
+  animation-duration:.22s;
+  box-shadow:inset 0 0 0 3px var(--accent-deep), 0 0 26px rgba(240,160,32,.6),
+             0 12px 28px rgba(0,0,0,.3);
+}
 .roda .surt{animation:rodaSurt .45s cubic-bezier(.4,.1,.75,.4) both}
 @media (prefers-reduced-motion:reduce){
   .roda .entra,.roda .surt{animation-duration:.01s}
@@ -763,6 +784,39 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 .chip-boto{border:1px solid var(--chip-border);cursor:pointer;font-family:'Fredoka'}
 .chip-boto:active{transform:scale(.94)}
 .chip-boto:disabled{opacity:.45;cursor:default}
+
+/* ── So i efectes: interruptors grossos, fàcils de tocar ── */
+.so-llista{display:flex;flex-direction:column;gap:12px;width:100%;margin-bottom:18px}
+.so-opcio{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+  padding:14px 16px;border-radius:22px;font-family:'Fredoka';color:var(--ink);
+  background:var(--chip-bg);border:2px solid var(--chip-border);box-shadow:var(--chip-shadow);
+  transition:transform .13s cubic-bezier(.34,1.56,.64,1),border-color .2s;
+}
+.so-opcio:active{transform:scale(.97)}
+.so-opcio:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.so-opcio .ico{
+  flex:0 0 auto;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;background:var(--tint);transition:filter .2s,opacity .2s;
+}
+.so-opcio .ico .material-symbols-rounded{font-size:30px}
+.so-opcio .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.so-opcio b{font-family:'Baloo 2';font-weight:700;font-size:clamp(18px,4.8vw,22px);line-height:1.15}
+.so-opcio small{font-size:clamp(13px,3.7vw,15px);line-height:1.3;color:var(--ink-soft)}
+/* L'interruptor: verd i amb la bola a la dreta quan està encès */
+.interruptor{
+  flex:0 0 auto;position:relative;width:64px;height:38px;border-radius:99px;
+  background:rgba(120,120,140,.4);transition:background .2s;
+}
+.interruptor::after{
+  content:'';position:absolute;top:4px;left:4px;width:30px;height:30px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.3);
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1);
+}
+.so-opcio[aria-checked="true"]{border-color:var(--tint)}
+.so-opcio[aria-checked="true"] .interruptor{background:#16a34a}
+.so-opcio[aria-checked="true"] .interruptor::after{transform:translateX(26px)}
+.so-opcio[aria-checked="false"] .ico{filter:grayscale(1);opacity:.5}
 
 /* ── tria de tema ──────────────────────────────────────── */
 .tema-graella{
@@ -1081,8 +1135,10 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
   margin-bottom:12px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
 }
 
+/* z-index alt: a la piràmide les cartes s'apilen amb z-index propi i,
+   si no, el missatge quedava mig amagat sota les cartes de baix. */
 .log{
-  position:absolute;left:50%;bottom:0;z-index:10;
+  position:absolute;left:50%;bottom:0;z-index:2000;
   transform:translate(-50%,18px); max-width:calc(100% - 12px);padding:12px 26px;
   font-size:clamp(17px,4.6vw,24px);font-weight:700;color:var(--log-text);text-align:center;
   line-height:1.25;
@@ -1269,9 +1325,11 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
           <span class="material-symbols-rounded">brush</span>
         </button>
 
-        <button class="pill" id="soundBtn" title="Efectes de celebració" aria-label="Efectes de celebració"
-                style="--glow:#a78bfa;--tint:#a855f7;--tint-deep:#7e22ce">
-          <span class="material-symbols-rounded">auto_awesome</span>
+        <!-- So i efectes: música de fons, sons del joc i purpurina -->
+        <button class="pill" id="soBtn" title="So i efectes" aria-label="So i efectes"
+                aria-haspopup="dialog"
+                style="--glow:#2dd4bf;--tint:#14b8a6;--tint-deep:#0f766e">
+          <span class="material-symbols-rounded">music_note</span>
         </button>
         <button class="pill" id="themeToggle" title="Mode clar o fosc" aria-label="Mode clar o fosc"
                 style="--glow:#fde047;--tint:#ef4444;--tint-deep:#b91c1c">
@@ -1621,7 +1679,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.00</span>
+      <span class="version" id="version">v4.20</span>
     </div>
   </footer>
 </div>
@@ -1762,6 +1820,35 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
   </button>
 </div>
 
+<!-- So i efectes -->
+<div id="soOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="soTitol" aria-hidden="true">
+  <div class="modal modal-info">
+    <button class="modal-close" data-close title="Tancar" aria-label="Tancar">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+    <span class="material-symbols-rounded modal-icon">music_note</span>
+    <h2 id="soTitol">So i efectes</h2>
+    <div class="so-llista">
+      <button type="button" class="so-opcio" id="soMusica" role="switch" aria-checked="true" style="--tint:#14b8a6">
+        <span class="ico"><span class="material-symbols-rounded">music_note</span></span>
+        <span class="txt"><b>Música de fons</b><small>Una melodia suau mentre jugues</small></span>
+        <span class="interruptor" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="so-opcio" id="soSons" role="switch" aria-checked="true" style="--tint:#f59e0b">
+        <span class="ico"><span class="material-symbols-rounded">volume_up</span></span>
+        <span class="txt"><b>Sons del joc</b><small>En tocar una carta, en encertar, en fallar i en acabar</small></span>
+        <span class="interruptor" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="so-opcio" id="soPurpurina" role="switch" aria-checked="true" style="--tint:#a855f7">
+        <span class="ico"><span class="material-symbols-rounded">auto_awesome</span></span>
+        <span class="txt"><b>Purpurina</b><small>Espurnes de colors quan encertes</small></span>
+        <span class="interruptor" aria-hidden="true"></span>
+      </button>
+    </div>
+    <button class="btn-big" data-close>Continuar</button>
+  </div>
+</div>
+
 <!-- Tria de tema -->
 <div id="temaOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="temaTitol" aria-hidden="true">
   <div class="modal modal-info">
@@ -1829,7 +1916,7 @@ const $ = id => document.getElementById(id);
 
 const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 const themeToggle    = $('themeToggle');
-const soundBtn       = $('soundBtn');
+const soBtn          = $('soBtn');
 const infoBtn        = $('infoBtn');
 const helpBtn        = $('helpBtn');
 const backBtn        = $('backBtn');
@@ -2145,7 +2232,7 @@ const NIVELLS_CANVI = [ { objectes:4, mirar:6, respondre:20, text:'4 objectes' }
 const NIVELLS_ONERA = [ { objectes:4, mirar:6, respondre:15, text:'4 objectes' }, { objectes:6, mirar:8, respondre:15, text:'6 objectes' }, { objectes:8, mirar:10, respondre:15, text:'8 objectes' }, { objectes:10, mirar:12, respondre:15, text:'10 objectes' } ];
 
 const NIVELLS_ASSOC = [ { parelles:3, mirar:12, respondre:45, text:'3 parelles' }, { parelles:4, mirar:15, respondre:55, text:'4 parelles' }, { parelles:5, mirar:18, respondre:65, text:'5 parelles' }, { parelles:6, mirar:22, respondre:80, text:'6 parelles' } ];
-const NIVELLS_COMPTA = [ { mostres:12, velocitat:1000, variants:3, text:'12 imatges' }, { mostres:18, velocitat:900, variants:4, text:'18 imatges' }, { mostres:24, velocitat:800, variants:5, text:'24 imatges' }, { mostres:32, velocitat:700, variants:6, text:'32 imatges' } ];
+const NIVELLS_COMPTA = [ { mostres:12, velocitat:1000, variants:3, text:'12 imatges' }, { mostres:18, velocitat:900, variants:4, text:'18 imatges' }, { mostres:24, velocitat:800, variants:5, text:'24 imatges' }, { mostres:32, velocitat:700, variants:6, text:'32 imatges' }, { mostres:40, velocitat:420, variants:6, text:'Súper ràpid!' } ];
 const NIVELLS_NBACK = [ { n:1, mostres:14, velocitat:3000, variants:4, text:'Per començar' }, { n:1, mostres:18, velocitat:1900, variants:5, text:'Més ràpid' }, { n:2, mostres:20, velocitat:2600, variants:5, text:'Costa més' }, { n:3, mostres:22, velocitat:2900, variants:6, text:'Per a experts' } ];
 
 const NIVELLS_PIRAMIDE = [
@@ -2334,11 +2421,91 @@ function iconesDelsTemes(necessaries){
   const tria = [...temesActius];
   let llista = POOL_ICONES.filter(o => tria.includes(o.tema));
   const resta = barrejar(TEMES.map(t => t.clau).filter(c => !tria.includes(c)));
-  while (llista.length < necessaries && resta.length){
+
+  /* No n'hi ha prou que hi hagi prou dibuixos: n'hi ha d'haver prou de
+     DIFERENTS. Un tema sol (posem "menjar") té moltes icones de plats que
+     s'assemblen entre elles, així que s'hi van afegint temes fins que hi ha
+     prou grups diferents per no haver de repetir cap semblança. */
+  const grupsDe = ll => new Set(ll.map(grupDe)).size;
+  while (grupsDe(llista) < necessaries && resta.length){
     tria.push(resta.shift());
     llista = POOL_ICONES.filter(o => tria.includes(o.tema));
   }
   return llista.length >= necessaries ? llista : POOL_ICONES;
+}
+
+/* Dibuixos que s'assemblen massa entre ells. Dins d'una mateixa partida
+   només en pot sortir un de cada grup: dues paletes de colors o dos
+   pinzells, encara que siguin icones diferents, es confonen a la vista. */
+const GRUPS_SEMBLANTS = [
+  ['brush','draw','format_paint','gesture'],
+  ['palette','color_lens'],
+  ['face','emoji_emotions','sentiment_satisfied','sentiment_very_satisfied','theater_comedy'],
+  ['front_hand','waving_hand','thumb_up','sign_language','handshake','volunteer_activism'],
+  ['directions_walk','directions_run','hiking','accessibility_new','elderly','self_improvement'],
+  ['flight','flight_takeoff','airport_shuttle'],
+  ['home','cabin','villa','holiday_village','houseboat','fireplace'],
+  ['church','mosque','synagogue','temple_buddhist','castle','museum'],
+  ['sports_soccer','sports_volleyball','sports_baseball','sports_basketball','sports_handball'],
+  ['flag','bookmark','label'],
+  ['star','stars','workspace_premium','verified','military_tech','emoji_events','local_fire_department'],
+  ['coffee','local_cafe','emoji_food_beverage'],
+  ['restaurant','dinner_dining','set_meal','rice_bowl','ramen_dining','soup_kitchen','tapas'],
+  ['local_bar','wine_bar','liquor','local_drink'],
+  ['bakery_dining','breakfast_dining','brunch_dining','cookie','fastfood','takeout_dining','lunch_dining','kebab_dining'],
+  ['cloud','foggy','rainy','thunderstorm','air','waves'],
+  ['water_drop','flood','pool','shower','bathtub'],
+  ['directions_railway','subway','tram','train','commute'],
+  ['directions_car','local_taxi','directions_bus','local_shipping','fire_truck','traffic'],
+  ['two_wheeler','electric_scooter','pedal_bike','snowmobile','skateboarding'],
+  ['sailing','directions_boat','rowing','kayaking','surfing','scuba_diving'],
+  ['menu_book','auto_stories','history_edu','school'],
+  ['computer','keyboard','smartphone','mouse'],
+  ['change_history','hexagon','pentagon','shield'],
+  ['ac_unit','downhill_skiing','snowboarding'],
+  ['medication','vaccines','health_and_safety','ecg_heart','favorite'],
+  ['music_note','queue_music','album','radio','speaker','piano'],
+  ['photo_camera','videocam','movie'],
+  ['handyman','construction','plumbing','hardware','carpenter','engineering','architecture'],
+  ['cleaning_services','local_laundry_service','soap','iron'],
+  ['chair','weekend','bed','table_restaurant'],
+  ['local_florist','spa','yard','grass','eco','park','forest'],
+  ['landscape','terrain','volcano','explore','map','public','travel_explore'],
+  ['badge','work','folder','backpack','luggage'],
+  ['light','lightbulb','solar_power','sunny','nightlight'],
+  ['pets','cruelty_free','raven','bug_report'],
+  ['casino','extension','toys','sports_esports'],
+  ['child_care','family_restroom','pregnant_woman','crib'],
+  ['edit','print','draw']
+];
+
+/* De quin grup és cada dibuix (els que no surten a la llista, d'un de sol) */
+const GRUP_DE = {};
+GRUPS_SEMBLANTS.forEach((grup, n) => grup.forEach(ic => { GRUP_DE[ic] = 'g' + n; }));
+const grupDe = item => GRUP_DE[item.i] || item.uid;
+
+/* Tria n dibuixos d'una partida sense que n'hi hagi dos que es confonguin.
+   Si no n'hi ha prou de diferents, afluixa la condició abans que quedar-se
+   curta, però sempre prioritza els que no s'assemblen. */
+function triarSimbols(pool, n){
+  if (!pool || !pool.length) return [];
+  const barrejat = barrejar(pool);
+  const triats = [], grupsUsats = new Set();
+
+  for (const item of barrejat){
+    if (triats.length >= n) break;
+    const g = grupDe(item);
+    if (grupsUsats.has(g)) continue;
+    grupsUsats.add(g); triats.push(item);
+  }
+  // Xarxa de seguretat: si encara en falten, s'hi afegeixen els que queden
+  if (triats.length < n){
+    for (const item of barrejat){
+      if (triats.length >= n) break;
+      if (!triats.includes(item)) triats.push(item);
+    }
+  }
+  return triats;
 }
 
 function getActivePool(necessaries) {
@@ -2481,11 +2648,219 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('darkMode', isDark);
 });
 
-soundBtn.addEventListener('click', () => {
+/* ═══════════════════════════════════════════════════════
+   SO I EFECTES
+   ───────────────────────────────────────────────────────
+   Música de fons: "Record", peça original de 4 min 27 s (musica-record.mp3).
+   Per no tallar-se mai, hi ha dues còpies que es passen el relleu: quan a
+   una li queden uns segons, l'altra comença des del principi. El final de la
+   peça s'apaga sobre el mateix acord amb què comença, de manera que en
+   encavalcar-se no es nota la costura.
+
+   El fitxer es demana amb fetch() i es reprodueix des de la memòria: així el
+   service worker el desa sencer (funciona sense connexió) i no hi ha
+   peticions parcials, que alguns navegadors gestionen malament.
+
+   Els navegadors no deixen sonar res fins que la persona toca la pantalla,
+   per això la música arrenca amb el primer toc.
+   ═══════════════════════════════════════════════════════ */
+const MUSICA_URL  = 'musica-record.mp3';
+const ENCAVALCAT  = 3.4;     // segons que s'encavalquen les dues còpies
+
+let musicaActiva = localStorage.getItem('musica') !== 'false';
+let sonsActius   = localStorage.getItem('sonsJoc') !== 'false';
+
+let musicaSrc = null, musicaCarregant = null;
+const reproductors = [];
+let reproductorActual = 0, musicaIniciada = false, rellevador = null, gestFet = false;
+
+function carregarMusica(){
+  if (musicaSrc) return Promise.resolve(musicaSrc);
+  if (!musicaCarregant){
+    musicaCarregant = fetch(MUSICA_URL)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
+      .then(b => (musicaSrc = URL.createObjectURL(b)))
+      .catch(err => { musicaCarregant = null; console.warn('Música:', err); throw err; });
+  }
+  return musicaCarregant;
+}
+
+/* Un so buit, per "desbloquejar" els reproductors dins del primer toc
+   (l'iPhone només deixa sonar un reproductor que s'ha engegat tocant) */
+let silenciSrc = null;
+function silenci(){
+  if (silenciSrc) return silenciSrc;
+  const n = 800, buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+  const txt = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  txt(0, 'RIFF'); v.setUint32(4, 36 + n, true); txt(8, 'WAVE'); txt(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, 8000, true); v.setUint32(28, 8000, true);
+  v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+  txt(36, 'data'); v.setUint32(40, n, true);
+  for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+  return (silenciSrc = URL.createObjectURL(new Blob([buf], { type:'audio/wav' })));
+}
+
+function prepararReproductors(){
+  if (reproductors.length) return;
+  for (let i = 0; i < 2; i++){
+    const a = new Audio();
+    a.preload = 'auto';
+    reproductors.push(a);
+  }
+}
+
+/* Engega un reproductor i el torna a aturar a l'instant: queda "beneït".
+   Si mentrestant aquest reproductor ha començat la música de debò, no el toca. */
+function desbloquejar(a, esActual){
+  if (!a.src) a.src = musicaSrc || silenci();
+  const p = a.play();
+  if (p) p.then(() => {
+    if (esActual && musicaIniciada) return;
+    a.pause(); a.currentTime = 0;
+  }).catch(() => {});
+}
+
+function tocarDesDelPrincipi(i){
+  const a = reproductors[i];
+  if (!a) return;
+  if (a.src !== musicaSrc) a.src = musicaSrc;
+  a.currentTime = 0;
+  a.volume = 1;
+  const p = a.play();
+  if (p) p.catch(err => console.warn('Música:', err));
+  reproductorActual = i;
+}
+
+/* Quan a la còpia que sona li queden uns segons, entra l'altra */
+function vigilarRelleu(){
+  clearInterval(rellevador);
+  rellevador = setInterval(() => {
+    const a = reproductors[reproductorActual];
+    if (!musicaActiva || !a || a.paused || !isFinite(a.duration)) return;
+    if (a.duration - a.currentTime <= ENCAVALCAT) tocarDesDelPrincipi(1 - reproductorActual);
+  }, 200);
+}
+
+async function engegarMusica(){
+  if (!musicaActiva || document.hidden) return;
+  prepararReproductors();
+  try { await carregarMusica(); } catch (e) { return; }
+  if (!musicaActiva || document.hidden) return;
+
+  const a = reproductors[reproductorActual];
+  if (musicaIniciada && a.src === musicaSrc){
+    const p = a.play(); if (p) p.catch(() => {});      // continua on era
+  } else {
+    // L'altra còpia es prepara ja, perquè el relleu no hagi d'esperar
+    const altra = reproductors[1 - reproductorActual];
+    if (altra.src !== musicaSrc){ altra.src = musicaSrc; altra.load(); }
+    tocarDesDelPrincipi(reproductorActual);
+    musicaIniciada = true;
+  }
+  vigilarRelleu();
+}
+
+/* Atura la música, amb una baixada curta allà on el navegador ho permet
+   (a l'iPhone el volum no es pot tocar i s'atura de cop) */
+function aturarMusica(ambFos = true){
+  clearInterval(rellevador); rellevador = null;
+  reproductors.forEach(a => {
+    if (a.paused) return;
+    if (!ambFos){ a.pause(); return; }
+    const inici = performance.now(), v0 = a.volume;
+    const pas = ara => {
+      const k = Math.min(1, (ara - inici) / 450);
+      try { a.volume = v0 * (1 - k); } catch (e) {}
+      if (k < 1) requestAnimationFrame(pas);
+      else { a.pause(); try { a.volume = 1; } catch (e) {} }
+    };
+    requestAnimationFrame(pas);
+  });
+}
+
+/* El primer toc a qualsevol lloc de la pàgina */
+function primerGest(){
+  if (gestFet) return;
+  gestFet = true;
+  ['pointerdown', 'keydown', 'touchend'].forEach(ev =>
+    document.removeEventListener(ev, primerGest, true));
+  prepararReproductors();
+
+  if (musicaActiva && musicaSrc && !document.hidden){
+    // Tot a punt: sona dins del mateix toc, que és el que demana l'iPhone
+    const altra = reproductors[1 - reproductorActual];
+    altra.src = musicaSrc;
+    desbloquejar(altra, false);
+    tocarDesDelPrincipi(reproductorActual);
+    musicaIniciada = true;
+    vigilarRelleu();
+  } else {
+    // La música encara s'està baixant: es desbloquegen els reproductors
+    // amb un so buit i sonarà en quant arribi
+    reproductors.forEach((a, i) => desbloquejar(a, i === reproductorActual));
+    engegarMusica();
+  }
+}
+['pointerdown', 'keydown', 'touchend'].forEach(ev =>
+  document.addEventListener(ev, primerGest, true));
+
+// La música es baixa aviat, sense presses, perquè estigui a punt al primer toc
+if (musicaActiva){
+  if (document.readyState === 'complete') setTimeout(() => carregarMusica().catch(() => {}), 800);
+  else window.addEventListener('load', () => setTimeout(() => carregarMusica().catch(() => {}), 800));
+}
+
+// Amb l'app en segon pla no sona res; en tornar-hi, continua
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) aturarMusica(false);
+  else if (musicaActiva && gestFet) engegarMusica();
+});
+
+/* Sons del joc. La preferència ja es desa; els sons s'hi afegiran més
+   endavant i des dels jocs es cridarà so('carta'), so('encert'),
+   so('error'), so('final')… */
+function so(nom){
+  if (!sonsActius) return;
+  /* pendent: aquí sonarà cada efecte */
+}
+
+/* ── La finestra ── */
+function pintarSo(){
+  const marca = (id, on, iconaOn, iconaOff) => {
+    const b = $(id);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
+    if (iconaOn) b.querySelector('.ico .material-symbols-rounded').textContent = on ? iconaOn : iconaOff;
+  };
+  marca('soMusica', musicaActiva, 'music_note', 'music_off');
+  marca('soSons', sonsActius, 'volume_up', 'volume_off');
+  marca('soPurpurina', efectesActius);
+
+  setIcon(soBtn, musicaActiva ? 'music_note' : 'music_off');
+  soBtn.classList.toggle('off', !musicaActiva && !sonsActius && !efectesActius);
+}
+
+soBtn.addEventListener('click', () => { pintarSo(); obrirModal($('soOverlay')); });
+
+$('soMusica').addEventListener('click', () => {
+  musicaActiva = !musicaActiva;
+  localStorage.setItem('musica', musicaActiva);
+  if (musicaActiva){ if (!gestFet) primerGest(); else engegarMusica(); }
+  else aturarMusica();
+  pintarSo();
+});
+
+$('soSons').addEventListener('click', () => {
+  sonsActius = !sonsActius;
+  localStorage.setItem('sonsJoc', sonsActius);
+  pintarSo();
+});
+
+$('soPurpurina').addEventListener('click', () => {
   efectesActius = !efectesActius;
   localStorage.setItem('efectes', efectesActius);
-  soundBtn.classList.toggle('off', !efectesActius);
-  log(efectesActius ? 'Efectes activats' : 'Efectes desactivats');
+  pintarSo();
+  if (efectesActius) celebrar($('soPurpurina'), 24);
 });
 
 function celebrar(element, quantitat = 14){
@@ -2678,7 +3053,7 @@ function iniciarParelles(){
   const nivell = NIVELLS_PARELLES[nivellParelles];
   
   const poolBase = getActivePool(nivell.parelles);
-  const triades = barrejar(poolBase).slice(0, nivell.parelles);
+  const triades = triarSimbols(poolBase, nivell.parelles);
   cartes = barrejar([...triades, ...triades]);
   cardsBoard.classList.toggle('dense-board', cartes.length >= 32);
   girades = []; bloqueig = false; trobades = 0; intents = 0;
@@ -2742,7 +3117,7 @@ function iniciarEscena(){
   faseEscena = 'mirar'; seleccio = [];
   
   const poolBase = getActivePool(nivell.objectes * 2); 
-  objectesEscena = barrejar(poolBase).slice(0, nivell.objectes);
+  objectesEscena = triarSimbols(poolBase, nivell.objectes);
 
   escenaWrap.hidden = false; optionsBoard.hidden = true; checkWrap.hidden = true; optionsBoard.classList.remove('bloquejada', 'revisant');
   $('triadesChip').hidden = true; $('faseIcon').textContent = 'visibility'; $('faseText').textContent = 'Memoritza';
@@ -2770,7 +3145,7 @@ function passarATriar(){
   const nivell = NIVELLS_ESCENA[nivellEscena];
   
   const poolBase = getActivePool(nivell.objectes * 2);
-  const distractors = barrejar(poolBase.filter(p => !objectesEscena.some(o => o.uid === p.uid))).slice(0, nivell.objectes);
+  const distractors = triarSimbols(poolBase.filter(p => !objectesEscena.some(o => o.uid === p.uid)), nivell.objectes);
   const opcions = barrejar([...objectesEscena, ...distractors]);
 
   escenaWrap.hidden = true; optionsBoard.hidden = false; checkWrap.hidden = false; checkBtn.disabled = true;
@@ -2851,7 +3226,7 @@ function iniciarSequencia(){
   $('seqRound').textContent = '1'; $('faseIconSeq').textContent = 'visibility'; $('faseTextSeq').textContent = 'Observa';
 
   const poolBase = getActivePool(nivell.caselles);
-  seqCaselles = barrejar(poolBase).slice(0, nivell.caselles);
+  seqCaselles = triarSimbols(poolBase, nivell.caselles);
 
   seqBoard.innerHTML = '';
   seqCaselles.forEach((o, i) => {
@@ -2935,7 +3310,7 @@ function iniciarCanvi(){
   canviDades = Array(total).fill(null);
 
   const poolBase = getActivePool(nivell.objectes + 3);
-  const objectes = barrejar(poolBase).slice(0, nivell.objectes);
+  const objectes = triarSimbols(poolBase, nivell.objectes);
   const posicions = barrejar(Array.from({length: total}, (_, i) => i)).slice(0, nivell.objectes);
 
   posicions.forEach((pos, i) => { canviDades[pos] = { ...objectes[i] }; });
@@ -3106,7 +3481,7 @@ function iniciarOnera(){
   oneraDades = Array(total).fill(null);
 
   const poolBase = getActivePool(nivell.objectes);
-  const objectes = barrejar(poolBase).slice(0, nivell.objectes);
+  const objectes = triarSimbols(poolBase, nivell.objectes);
   const posicions = barrejar(Array.from({length: total}, (_, i) => i)).slice(0, nivell.objectes);
 
   posicions.forEach((pos, i) => { oneraDades[pos] = { ...objectes[i] }; });
@@ -3189,7 +3564,7 @@ function iniciarAssoc(){
   const nivell = NIVELLS_ASSOC[nivellAssoc];
 
   const pool = getActivePool(nivell.parelles);
-  const items = barrejar(pool).slice(0, nivell.parelles);
+  const items = triarSimbols(pool, nivell.parelles);
   const nums  = barrejar([1,2,3,4,5,6,7,8,9]).slice(0, nivell.parelles);
   assocParelles = items.map((it, k) => ({ item:it, num:nums[k] }));
   assocEncerts = 0; assocRespostes = {};
@@ -3299,7 +3674,7 @@ function iniciarCompta(){
   const nivell = NIVELLS_COMPTA[nivellCompta];
 
   const pool = getActivePool(nivell.variants);
-  const conjunt = barrejar(pool).slice(0, Math.max(2, Math.min(nivell.variants, pool.length)));
+  const conjunt = triarSimbols(pool, Math.max(2, Math.min(nivell.variants, pool.length)));
   comptaObjectiu = conjunt[Math.floor(Math.random() * conjunt.length)];
 
   const seq = [];
@@ -3325,7 +3700,7 @@ function iniciarCompta(){
       setTimeout(() => anterior.remove(), 500);
     }
     const nova = document.createElement('div');
-    nova.className = 'mega-tile entra';
+    nova.className = 'mega-tile entra' + (nivell.velocitat <= 500 ? ' veloc' : '');
     roda.appendChild(nova);
     posarImatge(nova, seq[k]);
     k++; $('comptaProg').textContent = k;
@@ -3342,7 +3717,9 @@ function iniciarCompta(){
     preparades.then(() => {
       if (joc !== 'compta' || comptaFet) return;
       tancarModal($('comptaIntroOverlay'));
-      log('Compta quantes vegades surt la imatge de dalt', 2600);
+      log(nivell.velocitat <= 500
+      ? 'Ara de pressa! Compta quantes vegades surt'
+      : 'Compta quantes vegades surt la imatge de dalt', 2600);
       comptaTimer = setTimeout(passa, 900);
     });
   }, 2000);
@@ -3398,7 +3775,7 @@ let demoTimer = null, demoIdx = 0, demoSeq = [], demoN = 1;
 
 function muntarDemoNback(n){
   demoN = n;
-  const base = barrejar(POOL_ICONES).slice(0, 5);
+  const base = triarSimbols(POOL_ICONES, 5);
   const [a, b, c, d, e] = base;
 
   // Una tira curta on hi ha, segur, una coincidència a la distància que toca
@@ -3464,7 +3841,7 @@ function iniciarNback(){
   const nivell = NIVELLS_NBACK[nivellNback];
 
   const pool = getActivePool(nivell.variants);
-  const conjunt = barrejar(pool).slice(0, Math.max(2, Math.min(nivell.variants, pool.length)));
+  const conjunt = triarSimbols(pool, Math.max(2, Math.min(nivell.variants, pool.length)));
 
   // Aproximadament un terç de coincidències, repartides a l'atzar
   nbackSeq = [];
@@ -4043,8 +4420,9 @@ function afegirCastig(){
 
   const bases = barrejar(vives);
   const noves = [];
+  const simbolsCastig = triarSimbols(pool, quantesParelles);
   for (let p = 0; p < quantesParelles; p++){
-    const simbol = pool[Math.floor(Math.random() * pool.length)];
+    const simbol = simbolsCastig[p % simbolsCastig.length];
     // Cada carta de la parella, damunt d'una carta diferent de la piràmide
     const a = bases[(p * 2) % bases.length];
     const b = bases[(p * 2 + 1) % bases.length];
@@ -4171,7 +4549,7 @@ function iniciarPiramide(){
   const total = nivell.parelles * 2;
 
   const pool = getActivePool(nivell.parelles);
-  const simbols = barrejar(pool).slice(0, Math.min(nivell.parelles, pool.length));
+  const simbols = triarSimbols(pool, Math.min(nivell.parelles, pool.length));
 
   // Ordre de retirada: primer les capes de dalt. Emparellant posicions
   // consecutives en aquest ordre, la partida sempre té solució.
@@ -4196,6 +4574,9 @@ function iniciarPiramide(){
   candidates.sort((x, y) => (y.tapades - x.tapades) || (Math.random() - .5));
   const especials = candidates.slice(0, quantesEspecials).map(c => c.p);
 
+  /* Si el nivell demana més parelles que dibuixos n'hi ha, val més abaixar
+     el nombre de parelles que no pas repetir el mateix dibuix dues vegades:
+     dues cartes iguals que no fan parella confonen molt. */
   piramideCartes = [];
   for (let p = 0; p < total / 2; p++){
     const simbol = simbols[p % simbols.length];
@@ -4666,7 +5047,7 @@ if (screen.orientation && screen.orientation.lock) {
    INICIALITZACIÓ
    ═══════════════════════════════════════════════════════ */
 aplicarTema(localStorage.getItem('darkMode') === 'true');
-soundBtn.classList.toggle('off', !efectesActius);
+pintarSo();
 
 function actualitzarOrientacio() {
   // Activa el format PC (menú al costat esquerre) només per pantalles amples
