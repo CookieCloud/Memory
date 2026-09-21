@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.30
+    Version: 4.31
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,12 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.31
+    - La finestra "So i efectes" avisa si algun fitxer de so no s'ha pogut
+      carregar i diu quin és: així es veu de seguida si el que falla és el
+      navegador o un fitxer que no s'ha pujat al web
+    - Si la càrrega dels efectes falla, es torna a provar en obrir la finestra
 
     CANVIS v4.30
     - Biblioteca de sons completa: 25 efectes originals (carta, parella,
@@ -804,6 +810,12 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 
 /* ── So i efectes: interruptors grossos, fàcils de tocar ── */
 .so-llista{display:flex;flex-direction:column;gap:12px;width:100%;margin-bottom:18px}
+/* Avís que només surt si algun fitxer de so no s'ha pogut carregar */
+.so-avis{
+  width:100%;margin:-6px 0 16px;padding:12px 16px;border-radius:18px;
+  background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.45);
+  color:var(--ink);font-family:'Fredoka';font-size:16px;line-height:1.35;text-align:left;
+}
 .so-opcio{
   display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
   padding:14px 16px;border-radius:22px;font-family:'Fredoka';color:var(--ink);
@@ -1696,7 +1708,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.30</span>
+      <span class="version" id="version">v4.31</span>
     </div>
   </footer>
 </div>
@@ -1862,6 +1874,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
         <span class="interruptor" aria-hidden="true"></span>
       </button>
     </div>
+    <p class="so-avis" id="soAvis" hidden></p>
     <button class="btn-big" data-close>Continuar</button>
   </div>
 </div>
@@ -2693,13 +2706,20 @@ let musicaSrc = null, musicaCarregant = null;
 const reproductors = [];
 let reproductorActual = 0, musicaIniciada = false, rellevador = null, gestFet = false;
 
+let estatMusica = 'gens';
 function carregarMusica(){
   if (musicaSrc) return Promise.resolve(musicaSrc);
   if (!musicaCarregant){
     musicaCarregant = fetch(MUSICA_URL)
       .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
-      .then(b => (musicaSrc = URL.createObjectURL(b)))
-      .catch(err => { musicaCarregant = null; console.warn('Música:', err); throw err; });
+      .then(b => { estatMusica = 'llest'; return (musicaSrc = URL.createObjectURL(b)); })
+      .catch(err => {
+        musicaCarregant = null;
+        estatMusica = 'falta';
+        if (typeof pintarAvisSo === 'function') pintarAvisSo();
+        console.warn('Música:', err);
+        throw err;
+      });
   }
   return musicaCarregant;
 }
@@ -2870,6 +2890,7 @@ const MAPA_SONS = {"carta":[0.225,0.33],"safata":[0.695,0.37],"triar":[1.205,0.2
 const VARIA = { carta:0.05, triar:0.04, destriar:0.04, boto:0.03, tic:0.02, caiguda:0.06, apareix:0.05 };
 
 let ctxSo = null, bufferSons = null, sonsCarregant = null, busSons = null;
+let estatSons = 'gens';        // gens · carregant · llest · falta · malmes · sense-audio
 const ultimSo = {};
 
 function obrirAudio(){
@@ -2892,17 +2913,48 @@ function obrirAudio(){
 function carregarSons(){
   if (bufferSons || sonsCarregant) return sonsCarregant || Promise.resolve();
   const ctx = obrirAudio();
-  if (!ctx) return Promise.resolve();
+  if (!ctx){ estatSons = 'sense-audio'; pintarAvisSo(); return Promise.resolve(); }
+  estatSons = 'carregant';
   sonsCarregant = fetch(SONS_URL)
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+    .then(r => {
+      // 404 vol dir, gairebé sempre, que el fitxer no s'ha pujat al web
+      if (!r.ok) { const e = new Error(r.status); e.falta = true; throw e; }
+      return r.arrayBuffer();
+    })
     .then(dades => new Promise((ok, mal) => {
       // La forma antiga de decodeAudioData (amb funcions) també va a l'iPhone vell
       const p = ctx.decodeAudioData(dades, ok, mal);
       if (p && p.then) p.then(ok, mal);
     }))
-    .then(b => { bufferSons = b; })
-    .catch(() => { sonsCarregant = null; });   // si falla, es tornarà a provar
+    .then(b => { bufferSons = b; estatSons = 'llest'; pintarAvisSo(); })
+    .catch(err => {
+      // Si s'obre amb una adreça file:/// el navegador no deixa llegir el
+      // fitxer i el fetch peta sense arribar a demanar res
+      estatSons = (err && err.falta) ? 'falta'
+                : (location.protocol === 'file:' ? 'local' : 'malmes');
+      sonsCarregant = null;                   // així es torna a provar més tard
+      pintarAvisSo();
+    });
   return sonsCarregant;
+}
+
+/* Si els efectes no han pogut sonar, la finestra ho diu clarament: així no
+   cal endevinar si el problema és el navegador o un fitxer que no s'ha pujat */
+function pintarAvisSo(){
+  const avis = $('soAvis');
+  if (!avis) return;
+  const textos = {
+    falta: 'No s\'ha trobat el fitxer <b>' + SONS_URL + '</b> al web. Cal pujar-lo al costat de l\'index.html.',
+    local: 'Els sons no poden sonar en obrir la pàgina des del disc (adreça file:///). Cal servir-la des d\'un servidor.',
+    malmes: 'El fitxer ' + SONS_URL + ' no s\'ha pogut llegir: potser s\'ha pujat malament.',
+    'sense-audio': 'Aquest navegador no admet els efectes de so.'
+  };
+  const linies = [];
+  if (textos[estatSons]) linies.push(textos[estatSons]);
+  if (estatMusica === 'falta')
+    linies.push('Tampoc s\'ha trobat la música (<b>' + MUSICA_URL + '</b>).');
+  avis.hidden = !linies.length;
+  if (linies.length) avis.innerHTML = linies.join('<br>');
 }
 
 /* Fa sonar un efecte. volum: 0..1 sobre el que ja porta el fitxer. */
@@ -2964,7 +3016,12 @@ function pintarSo(){
   soBtn.classList.toggle('off', !musicaActiva && !sonsActius && !efectesActius);
 }
 
-soBtn.addEventListener('click', () => { pintarSo(); obrirModal($('soOverlay')); });
+soBtn.addEventListener('click', () => {
+  pintarSo();
+  if (sonsActius && !bufferSons) carregarSons();   // per si va fallar abans
+  pintarAvisSo();
+  obrirModal($('soOverlay'));
+});
 
 $('soMusica').addEventListener('click', () => {
   musicaActiva = !musicaActiva;
