@@ -15,9 +15,9 @@
    Els fitxers de so (.mp3) es desen en una memòria a part, CACHE_SO, que
    NO s'esborra en canviar de versió: si no, cada actualització tornaria a
    baixar uns quants megues. Per canviar la música, puja-la amb un nom nou
-   (per exemple musica-record-2.mp3) i canvia MUSICA_URL a l'index.html.
+   (com s'ha fet amb musica-record-piano.mp3) i canvia MUSICA_URL a l'index.html.
    ═══════════════════════════════════════════════════════ */
-const VERSIO   = '4.20';
+const VERSIO   = '4.30';
 const CACHE    = 'memoria-v' + VERSIO;
 const CACHE_SO = 'memoria-so';
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.20
+    Version: 4.30
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,23 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.30
+    - Biblioteca de sons completa: 25 efectes originals (carta, parella,
+      error, safata, estrella, cartes que cauen, tic-tac dels últims cinc
+      segons, victòria…) dins d'un sol fitxer, sons-memoria.mp3, amb un
+      mapa de posicions (MAPA_SONS) que diu on comença cadascun
+    - Sonen per Web Audio, no amb <audio>: així es poden repetir de pressa,
+      cada toc varia una mica de to i queden per sobre de la música
+    - Les caselles de "Seqüència" tenen cada una la seva nota, com un piano
+    - L'interruptor "Efectes de so" de la finestra ja funciona de debò i,
+      en encendre'l, sona una mostra
+
+    CANVIS v4.21
+    - La música passa a ser només de piano: dos pianos de cua (melodia i
+      acompanyament), més greu i una mica més ràpida (88 bpm). Fitxer nou,
+      musica-record-piano.mp3, amb un nom diferent perquè ningú es quedi
+      amb la versió anterior desada a la memòria del navegador
 
     CANVIS v4.20
     - Música de fons original, "Record" (4 min 27 s, fitxer
@@ -1679,7 +1696,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.20</span>
+      <span class="version" id="version">v4.30</span>
     </div>
   </footer>
 </div>
@@ -2651,11 +2668,13 @@ themeToggle.addEventListener('click', () => {
 /* ═══════════════════════════════════════════════════════
    SO I EFECTES
    ───────────────────────────────────────────────────────
-   Música de fons: "Record", peça original de 4 min 27 s (musica-record.mp3).
+   Música de fons: "Record", peça original per a dos pianos de cua, 4 min
+   16 s a 88 bpm (musica-record-piano.mp3). So de piano: banc GeneralUser GS
+   de S. Christian Collins, d'ús lliure per fer música.
    Per no tallar-se mai, hi ha dues còpies que es passen el relleu: quan a
-   una li queden uns segons, l'altra comença des del principi. El final de la
-   peça s'apaga sobre el mateix acord amb què comença, de manera que en
-   encavalcar-se no es nota la costura.
+   una li queden uns segons, l'altra comença des del principi. L'última nota
+   s'apaga sobre el mateix acord de Fa amb què comença la peça, i la còpia
+   nova hi entra quan encara ressona, de manera que no es nota la costura.
 
    El fitxer es demana amb fetch() i es reprodueix des de la memòria: així el
    service worker el desa sencer (funciona sense connexió) i no hi ha
@@ -2664,8 +2683,8 @@ themeToggle.addEventListener('click', () => {
    Els navegadors no deixen sonar res fins que la persona toca la pantalla,
    per això la música arrenca amb el primer toc.
    ═══════════════════════════════════════════════════════ */
-const MUSICA_URL  = 'musica-record.mp3';
-const ENCAVALCAT  = 3.4;     // segons que s'encavalquen les dues còpies
+const MUSICA_URL  = 'musica-record-piano.mp3';
+const ENCAVALCAT  = 4.1;     // segons: la còpia nova entra quan l'últim acord ja és fluix (uns -33 dB)
 
 let musicaActiva = localStorage.getItem('musica') !== 'false';
 let sonsActius   = localStorage.getItem('sonsJoc') !== 'false';
@@ -2786,6 +2805,9 @@ function primerGest(){
   ['pointerdown', 'keydown', 'touchend'].forEach(ev =>
     document.removeEventListener(ev, primerGest, true));
   prepararReproductors();
+  // Els efectes també necessiten el primer toc per poder sonar
+  obrirAudio();
+  if (sonsActius) carregarSons();
 
   if (musicaActiva && musicaSrc && !document.hidden){
     // Tot a punt: sona dins del mateix toc, que és el que demana l'iPhone
@@ -2810,6 +2832,13 @@ if (musicaActiva){
   if (document.readyState === 'complete') setTimeout(() => carregarMusica().catch(() => {}), 800);
   else window.addEventListener('load', () => setTimeout(() => carregarMusica().catch(() => {}), 800));
 }
+// Els efectes pesen poc: es deixen desats al navegador des del primer moment,
+// encara que el context d'àudio no s'obri fins al primer toc
+if (sonsActius){
+  const preescalfar = () => setTimeout(() => { fetch(SONS_URL).catch(() => {}); }, 400);
+  if (document.readyState === 'complete') preescalfar();
+  else window.addEventListener('load', preescalfar);
+}
 
 // Amb l'app en segon pla no sona res; en tornar-hi, continua
 document.addEventListener('visibilitychange', () => {
@@ -2817,13 +2846,108 @@ document.addEventListener('visibilitychange', () => {
   else if (musicaActiva && gestFet) engegarMusica();
 });
 
-/* Sons del joc. La preferència ja es desa; els sons s'hi afegiran més
-   endavant i des dels jocs es cridarà so('carta'), so('encert'),
-   so('error'), so('final')… */
-function so(nom){
-  if (!sonsActius) return;
-  /* pendent: aquí sonarà cada efecte */
+/* ═══════════════════════════════════════════════════════
+   ELS SONS DEL JOC
+
+   Tots els efectes viuen dins d'un sol fitxer, sons-memoria.mp3, un darrere
+   l'altre. MAPA_SONS diu on comença i quant dura cadascun. Es baixa un cop,
+   es descodifica un cop i, a partir d'aquí, fer sonar un efecte no costa
+   gairebé res: per això no es fan servir <audio>, que no serveixen quan cal
+   repetir el mateix so molt de pressa.
+
+   Els efectes van per un camí propi (amb un compressor al final perquè no
+   petin si en coincideixen uns quants) i són més forts que la música, que
+   és la que ha d'acompanyar.
+
+   Per canviar un so: torna a generar el fitxer amb el guió de sons i
+   actualitza MAPA_SONS i el nom del fitxer (SONS_URL).
+   ═══════════════════════════════════════════════════════ */
+const SONS_URL = 'sons-memoria.mp3';
+const MAPA_SONS = {"carta":[0.225,0.33],"safata":[0.695,0.37],"triar":[1.205,0.27],"destriar":[1.615,0.27],"boto":[2.025,0.24],"bloquejada":[2.405,0.41],"parella":[2.955,0.81],"ronda":[3.905,0.66],"estrella":[4.705,1.06],"buidar":[5.905,1.21],"error":[7.255,0.66],"fi":[8.055,1.06],"temps":[9.255,0.96],"tic":[10.355,0.17],"victoria":[10.665,2.11],"nivell":[12.915,1.41],"caiguda":[14.465,1.06],"apareix":[15.665,0.56],"pista":[16.365,0.51],"seq0":[17.015,0.66],"seq1":[17.815,0.66],"seq2":[18.615,0.66],"seq3":[19.415,0.66],"seq4":[20.215,0.66],"seq5":[21.015,0.66]};
+
+/* Els que es repeteixen molt varien una mica de to a cada toc, perquè
+   sentir vint cops el mateix clac exacte cansa */
+const VARIA = { carta:0.05, triar:0.04, destriar:0.04, boto:0.03, tic:0.02, caiguda:0.06, apareix:0.05 };
+
+let ctxSo = null, bufferSons = null, sonsCarregant = null, busSons = null;
+const ultimSo = {};
+
+function obrirAudio(){
+  if (ctxSo) { if (ctxSo.state === 'suspended') ctxSo.resume().catch(() => {}); return ctxSo; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  try { ctxSo = new AC(); } catch(e){ return null; }
+  // Compressor suau: deixa passar els efectes tal com són i només frena
+  // quan en coincideixen diversos (una parella mentre cauen cartes, posem)
+  const comp = ctxSo.createDynamicsCompressor();
+  comp.threshold.value = -8; comp.knee.value = 8; comp.ratio.value = 4;
+  comp.attack.value = 0.003; comp.release.value = 0.18;
+  busSons = ctxSo.createGain();
+  busSons.gain.value = 0.9;
+  busSons.connect(comp); comp.connect(ctxSo.destination);
+  if (ctxSo.state === 'suspended') ctxSo.resume().catch(() => {});
+  return ctxSo;
 }
+
+function carregarSons(){
+  if (bufferSons || sonsCarregant) return sonsCarregant || Promise.resolve();
+  const ctx = obrirAudio();
+  if (!ctx) return Promise.resolve();
+  sonsCarregant = fetch(SONS_URL)
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+    .then(dades => new Promise((ok, mal) => {
+      // La forma antiga de decodeAudioData (amb funcions) també va a l'iPhone vell
+      const p = ctx.decodeAudioData(dades, ok, mal);
+      if (p && p.then) p.then(ok, mal);
+    }))
+    .then(b => { bufferSons = b; })
+    .catch(() => { sonsCarregant = null; });   // si falla, es tornarà a provar
+  return sonsCarregant;
+}
+
+/* Fa sonar un efecte. volum: 0..1 sobre el que ja porta el fitxer. */
+function so(nom, volum){
+  if (!sonsActius) return;
+  const tall = MAPA_SONS[nom];
+  if (!tall) return;
+  if (!bufferSons){ carregarSons(); return; }
+  if (!ctxSo || !busSons) return;
+  if (ctxSo.state === 'suspended') ctxSo.resume().catch(() => {});
+
+  // Un mateix so no es pot encavalcar amb ell mateix cada dos per tres:
+  // si no, deu cartes caient alhora sonen com una explosió
+  const ara = ctxSo.currentTime;
+  if (ultimSo[nom] !== undefined && ara - ultimSo[nom] < 0.045) return;
+  ultimSo[nom] = ara;
+
+  try {
+    const font = ctxSo.createBufferSource();
+    font.buffer = bufferSons;
+    const v = VARIA[nom];
+    if (v) font.playbackRate.value = 1 + (Math.random() * 2 - 1) * v;
+    const g = ctxSo.createGain();
+    g.gain.value = (volum === undefined ? 1 : volum);
+    font.connect(g); g.connect(busSons);
+    font.start(0, tall[0], tall[1]);
+    font.onended = () => { try { font.disconnect(); g.disconnect(); } catch(e){} };
+  } catch(e){}
+}
+
+/* Diverses notes seguides, per als finals i les sèries */
+function soSerie(noms, pas, volum){
+  noms.forEach((n, i) => setTimeout(() => so(n, volum), i * (pas || 130)));
+}
+
+/* Els botons de menú, de la barra i de les finestres fan tots el mateix clic.
+   Les cartes i les fitxes dels jocs no: aquelles ja tenen el seu so, i cada
+   joc el crida quan toca. */
+const SENSE_CLIC = '.card, .tile, .opt-tile, .num-btn, .prova-btn, .ptile, .nb-carta, .bcarta, .bslot, .slot, .mega-tile';
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('button, .game-card, .pill, .so-opcio, .tema-opcio, .size-option');
+  if (!b || b.disabled) return;
+  if (b.closest(SENSE_CLIC) || b.matches(SENSE_CLIC)) return;
+  so('boto');
+}, true);
 
 /* ── La finestra ── */
 function pintarSo(){
@@ -2854,6 +2978,12 @@ $('soSons').addEventListener('click', () => {
   sonsActius = !sonsActius;
   localStorage.setItem('sonsJoc', sonsActius);
   pintarSo();
+  // En encendre'ls, es baixen si encara no hi són i sona una mostra
+  if (sonsActius){
+    if (!gestFet) primerGest();
+    if (bufferSons) so('parella');
+    else carregarSons().then(() => so('parella'));
+  }
 });
 
 $('soPurpurina').addEventListener('click', () => {
@@ -3003,7 +3133,11 @@ function arrencarRellotge(){
   pararRellotge();
   tickTimer = setInterval(() => {
     tempsRestant--; pintarRellotge();
-    if (tempsRestant <= 0){ pararRellotge(); if (alAcabarElTemps) alAcabarElTemps(); }
+    if (tempsRestant > 0 && tempsRestant <= 5) so('tic');
+    if (tempsRestant <= 0){
+      pararRellotge(); so('temps');
+      if (alAcabarElTemps) alAcabarElTemps();
+    }
   }, 1000);
 }
 function pararRellotge(){ clearInterval(tickTimer); tickTimer = null; }
@@ -3036,6 +3170,7 @@ function mostrarPantalla(nom){
   });
   backBtn.hidden = restartBtn.hidden = levelBtn.hidden = (nom === 'home');
   $('brandText').textContent = TITOLS[nom];
+  if (nom !== 'home') setTimeout(() => so('nivell'), 60);
   programarAjust();
 }
 
@@ -3082,6 +3217,7 @@ function girarCarta(idx){
   if (!el || el.classList.contains('girada') || el.classList.contains('aparellada')) return;
 
   el.classList.add('girada'); el.setAttribute('aria-label', 'Carta destapada');
+  so('carta');
   girades.push(idx);
   if (girades.length < 2) return;
 
@@ -3093,13 +3229,15 @@ function girarCarta(idx){
     girades = []; elA.classList.add('aparellada'); elB.classList.add('aparellada');
     elA.disabled = elB.disabled = true;
     celebrar(elB, 50); trobades++; $('found').textContent = trobades;
-    
+    setTimeout(() => so('parella'), 120);
+
     if (trobades === NIVELLS_PARELLES[nivellParelles].parelles){
       const usat = tempsTotal - tempsRestant;
       aturarTot(); setTimeout(() => finalPartida(true, null, usat), 1200);
     } else { log('Parella trobada!'); }
   } else {
     bloqueig = true; elA.classList.add('fallada'); elB.classList.add('fallada');
+    setTimeout(() => so('error'), 120);
     setTimeout(() => {
       elA.classList.remove('girada','fallada'); elB.classList.remove('girada','fallada');
       elA.setAttribute('aria-label','Carta amagada'); elB.setAttribute('aria-label','Carta amagada');
@@ -3171,10 +3309,10 @@ function triarObjecteEscena(boto, uid){
   const i = seleccio.indexOf(uid);
 
   if (i === -1){
-    if (seleccio.length >= objectiu){ log(`Només en pots triar ${objectiu}`); return; }
-    seleccio.push(uid); boto.setAttribute('aria-pressed', 'true');
+    if (seleccio.length >= objectiu){ so('bloquejada'); log(`Només en pots triar ${objectiu}`); return; }
+    seleccio.push(uid); boto.setAttribute('aria-pressed', 'true'); so('triar');
   } else {
-    seleccio.splice(i, 1); boto.setAttribute('aria-pressed', 'false');
+    seleccio.splice(i, 1); boto.setAttribute('aria-pressed', 'false'); so('destriar');
   }
   $('triats').textContent = seleccio.length; checkBtn.disabled = seleccio.length !== objectiu;
 }
@@ -3200,6 +3338,10 @@ function comprovarEscena(perTemps){
       if (marca) marca.textContent = 'visibility';   // "aquesta hi era"
     }
   });
+
+  // Un dring per cada encert, un darrere l'altre, i el to greu si n'hi ha de malament
+  for (let i = 0; i < encerts; i++) setTimeout(() => so('parella'), 150 + i * 190);
+  if (errorsMarcats + errorsOblidats > 0) setTimeout(() => so('error'), 250 + encerts * 190);
 
   const guanyat = encerts === correctes.length && errorsMarcats === 0;
   let motiu = '';
@@ -3245,6 +3387,7 @@ function novaRondaSequencia() {
   do { novaCasella = Math.floor(Math.random() * seqCaselles.length); } 
   while (seqActiva.length > 0 && novaCasella === seqActiva[seqActiva.length - 1] && seqCaselles.length > 1);
   seqActiva.push(novaCasella); seqPasJugador = 0; $('seqRound').textContent = seqActiva.length;
+  if (seqActiva.length > 1) so('ronda');
   reproduirSequencia();
 }
 
@@ -3255,7 +3398,7 @@ function reproduirSequencia() {
     if (joc !== 'sequencia' || modalObert) return;
     Array.from(seqBoard.children).forEach(c => c.classList.remove('seq-activa'));
     if (i < seqActiva.length) {
-      setTimeout(() => { seqBoard.children[seqActiva[i]].classList.add('seq-activa'); i++; }, 50);
+      setTimeout(() => { seqBoard.children[seqActiva[i]].classList.add('seq-activa'); so('seq' + (seqActiva[i] % 6)); i++; }, 50);
     } else {
       clearInterval(seqInterval); seqReproduint = false;
       $('faseIconSeq').textContent = 'touch_app'; $('faseTextSeq').textContent = 'Repeteix'; log('Et toca!', 1000);
@@ -3269,18 +3412,20 @@ function clicSequencia(idx) {
   const cel = seqBoard.children[idx];
   
   if (idx === correcte) {
-    seqPasJugador++; 
+    seqPasJugador++;
+    so('seq' + (idx % 6));
     cel.classList.add('seq-activa'); 
     setTimeout(() => cel.classList.remove('seq-activa'), 200);
     
     if (seqPasJugador === seqActiva.length) {
       seqReproduint = true; 
       celebrar(cel, 60); // Amb la nova funció de font contínua, 60 queda espectacular
+      setTimeout(() => so('parella'), 150);
       setTimeout(novaRondaSequencia, 1500); // Pujem a 1.5s per deixar que l'animació respiri
     }
   } else {
     seqReproduint = true; // Bloquegem immediatament els futurs clics
-    cel.classList.add('erronia');
+    cel.classList.add('erronia'); so('error');
     
     // Obtenim totes les caselles per fer l'efecte en cadena
     const fitxes = Array.from(seqBoard.children);
@@ -3288,7 +3433,7 @@ function clicSequencia(idx) {
     // Apaguem les cartes restants una a una, cada 150 mil·lisegons
     fitxes.forEach((fitxa, i) => {
       setTimeout(() => {
-        if (i !== idx) fitxa.classList.add('apagada');
+        if (i !== idx){ fitxa.classList.add('apagada'); so('caiguda', 0.5); }
       }, i * 150);
     });
 
@@ -3448,8 +3593,9 @@ function resoldreCanvi(idx, perTemps) {
   const cel = canviBoard.children[canviResposta];
 
   if (encertat){
-    cel.classList.add('correcta'); celebrar(cel, 60);
+    cel.classList.add('correcta'); celebrar(cel, 60); so('parella');
   } else {
+    so('error');
     if (idx >= 0) canviBoard.children[idx].classList.add('erronia');
     cel.classList.add('correcta');   // on era el canvi de debò
   }
@@ -3544,10 +3690,10 @@ function resoldreOnera(idx) {
   cel.classList.remove('buit','forat'); cel.innerHTML = renderContent(oneraObjectiu);
 
   if (idx === oneraPosicio) {
-    cel.classList.add('correcta'); celebrar(cel, 60);
+    cel.classList.add('correcta'); celebrar(cel, 60); so('parella');
     setTimeout(() => finalPartida(true, null, null, 'Has recordat la posició!'), 1500);
   } else {
-    cel.classList.add('erronia');
+    cel.classList.add('erronia'); so('error');
     const bona = oneraBoard.children[oneraPosicio];
     bona.classList.remove('buit','forat'); bona.classList.add('correcta'); bona.innerHTML = renderContent(oneraObjectiu);
     setTimeout(() => finalPartida(false, 'L\'element no era aquí'), 2000);
@@ -3608,6 +3754,7 @@ function seguentAssoc(){
     b.addEventListener('click', () => respondreAssoc(b, n));
     caixa.appendChild(b);
   });
+  so('apareix');
   log('Quin número li tocava?');
 }
 
@@ -3620,9 +3767,9 @@ function respondreAssoc(boto, num){
   assocRespostes[correcte] = num;
   if (bo){
     boto.classList.add('correcta'); assocEncerts++;
-    $('assocProg').textContent = assocEncerts; celebrar(boto, 60); log('Molt bé!');
+    $('assocProg').textContent = assocEncerts; celebrar(boto, 60); so('parella'); log('Molt bé!');
   } else {
-    boto.classList.add('erronia');
+    boto.classList.add('erronia'); so('error');
     const bona = [...$('assocOptions').children].find(b => Number(b.textContent) === correcte);
     if (bona) bona.classList.add('correcta');
     log(`Aquesta imatge anava amb el ${correcte}`, 2000);
@@ -3703,6 +3850,7 @@ function iniciarCompta(){
     nova.className = 'mega-tile entra' + (nivell.velocitat <= 500 ? ' veloc' : '');
     roda.appendChild(nova);
     posarImatge(nova, seq[k]);
+    so('apareix', 0.55);
     k++; $('comptaProg').textContent = k;
     comptaTimer = setTimeout(passa, nivell.velocitat);
   };
@@ -3744,6 +3892,7 @@ function preguntarCompta(){
   });
 
   log('', 0);
+  so('ronda');
   $('timeChipCompta').hidden = false;
   iniciarCompte(25, () => respondreCompta(null, -1));
 }
@@ -3759,7 +3908,7 @@ function respondreCompta(boto, n){
     const bona = [...$('comptaOptions').children].find(b => Number(b.textContent) === comptaCompte);
     if (bona) bona.classList.add('correcta');
   }
-  if (bo) celebrar(boto, 60);
+  if (bo){ celebrar(boto, 60); so('parella'); } else so('error');
 
   setTimeout(() => finalPartida(bo, bo ? null : (n < 0 ? 'Temps esgotat' : 'No era aquest nombre'),
                                 null, `N'hi havia ${comptaCompte}`), 1800);
@@ -3887,7 +4036,7 @@ function passaNback(){
     const i = nbackIdx - 1;
     if (i >= nivell.n && nbackSeq[i].uid === nbackSeq[i - nivell.n].uid){
       nbackErrors++; $('nbackErrors').textContent = nbackErrors;
-      nbackResultat[i] = 'perduda';
+      nbackResultat[i] = 'perduda'; so('temps', 0.6);   // se t'ha escapat
       if (nbackTotal > 0 && nbackEncerts + nbackErrors >= nbackTotal) return acabarNback();
     }
   }
@@ -3928,6 +4077,7 @@ function pintarFilm(){
     else if (p === 'next') el.dataset.pos = 'cur';
   });
   afegirCartaRoda(nbackIdx + 1, 'entra');
+  so('apareix', 0.5);
 }
 
 /* La imatge que hi ha ara al mig, per als efectes de celebració */
@@ -3945,10 +4095,10 @@ function premerNback(){
   nbackResultat[i] = encertat ? 'encert' : 'falsa';
   if (encertat){
     nbackEncerts++; $('nbackEncerts').textContent = nbackEncerts;
-    celebrar(cartaCentral(), 45); log('Sí, era la mateixa!', 900);
+    celebrar(cartaCentral(), 45); so('parella'); log('Sí, era la mateixa!', 900);
   } else {
     nbackErrors++; $('nbackErrors').textContent = nbackErrors;
-    log('Aquesta no ho era', 900);
+    so('error'); log('Aquesta no ho era', 900);
   }
   // Quan encerts i errades sumen totes les coincidències possibles, s'ha acabat
   if (nbackTotal > 0 && nbackEncerts + nbackErrors >= nbackTotal){
@@ -4380,6 +4530,7 @@ function treureProva(){
     caixa.appendChild(b);
   });
 
+  so('pista');
   obrirModal($('provaOverlay'));
 }
 
@@ -4389,10 +4540,10 @@ function respondreProva(boto, resposta, prova){
 
   if (bo){
     boto.classList.add('correcta');
-    celebrar(boto, 40);
+    celebrar(boto, 40); so('parella');
     $('provaPeu').textContent = 'Molt bé! Continuem.';
   } else {
-    boto.classList.add('erronia');
+    boto.classList.add('erronia'); so('error');
     [...$('provaOpcions').children]
       .find(b => String(b.textContent) === String(prova.bona))?.classList.add('correcta');
     piramideFallades++;
@@ -4439,7 +4590,10 @@ function afegirCastig(){
   piramideRestants += noves.length;
   $('piramideRestants').textContent = piramideRestants;
   pintarPiramide();
-  noves.forEach(c => c.el && c.el.classList.add('castig'));
+  noves.forEach((c, i) => {
+    if (c.el) c.el.classList.add('castig');
+    setTimeout(() => so('caiguda'), i * 90);
+  });
   log(`${noves.length} cartes més!`, 3000);
 }
 
@@ -4639,6 +4793,8 @@ function muntarPiramideAmbCaiguda(vives){
     const lenta = i >= ordre.length - queden;
     retard += lenta ? 180 : Math.max(10, 26 - ordre.length / 12);
     carta.el.style.animation = `caiguda ${lenta ? 520 : 380}ms cubic-bezier(.34,1.56,.64,1) ${Math.round(retard)}ms both`;
+    // Un cop sord cada poques cartes: totes alhora seria un terrabastall
+    if (i % 3 === 0 || lenta) setTimeout(() => so('caiguda', lenta ? 0.85 : 0.5), retard + 160);
   });
 
   setTimeout(() => {
@@ -4707,7 +4863,7 @@ function pintarSafata(){
 function agafarCarta(carta){
   if (piramideFet || carta.fora || modalObert) return;
   if (cartaTapada(carta)){
-    carta.el.classList.add('mal');
+    carta.el.classList.add('mal'); so('bloquejada');
     setTimeout(() => carta.el.classList.remove('mal'), 420);
     log('Aquesta encara està tapada');
     return;
@@ -4720,6 +4876,7 @@ function agafarCarta(carta){
 
   piramideCompteEnrere--;
   const bessona = piramideSafataLlista.find(c => c.uid === carta.uid);
+  so(carta.especial ? 'estrella' : 'safata');
   piramideSafataLlista.push(carta);
   pintarSafata();
   marcarLliures();
@@ -4731,7 +4888,7 @@ function agafarCarta(carta){
       piramideRestants -= 2;
       $('piramideRestants').textContent = piramideRestants;
       pintarSafata();
-      celebrar($('piramideSafata'), 40);
+      celebrar($('piramideSafata'), 40); so('parella');
       if (carta.especial) buidarSafata();
       else log('Parella!');
       if (piramideRestants <= 0) acabarPiramide(true);
@@ -4740,6 +4897,7 @@ function agafarCarta(carta){
   }
 
   if (piramideSafataLlista.length >= nivell.safata){
+    so('fi');
     setTimeout(() => acabarPiramide(false, 'La safata s\'ha omplert'), 500);
     return;
   }
@@ -4776,6 +4934,7 @@ function buidarSafata(){
   if (!pendents.length){ log('Estrella! La safata ja era buida'); return; }
 
   log('Estrella! La safata es buida', 3000);
+  so('buidar');
   safata.classList.add('buidant');
   setTimeout(() => safata.classList.remove('buidant'), 650);
 
@@ -4794,7 +4953,7 @@ function buidarSafata(){
       $('piramideRestants').textContent = Math.max(0, piramideRestants);
       pintarSafata();
       marcarLliures();
-      celebrar(safata, 25);
+      celebrar(safata, 25); so('parella', 0.8);
       if (piramideRestants <= 0) acabarPiramide(true);
     }, 220 * k);
   });
@@ -5006,7 +5165,12 @@ function finalPartida(guanyat, motiu, segonsUsats, detall){
   else if (detall) { afegir('check_circle', '#22c55e', detall); }
   afegir('emoji_events', '#f59e0b', 'Victòries totals', victories);
 
-  if (guanyat) setTimeout(() => celebrar(document.querySelector('.stage'), 26), 120);
+  if (guanyat){
+    setTimeout(() => celebrar(document.querySelector('.stage'), 26), 120);
+    so('victoria');
+  } else {
+    so('fi');
+  }
   obrirModal(resultOverlay);
 }
 
