@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.40
+    Version: 4.41
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,19 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.41
+    - El so de muntar la piràmide és ara UN sol so de 2 s, amb la cascada
+      de cartes ja composta a dins. Abans en sonava un per cada carta i,
+      com que en cauen moltes de seguides, se superposaven i feien soroll
+    - Igual amb les cartes de càstig: un sol so d'1,3 s
+    - La icona del botó de so ja no menteix: nota musical si sona la música,
+      altaveu si només sonen els efectes, i el símbol de "sense so" només
+      quan de debò no se sent res
+    - N-ENRERE: la tirada de repàs es queda a la pantalla fins que la
+      jugadora prem "He acabat de mirar-ho". Abans marxava als 5 segons
+    - SEQÜÈNCIA: entre ronda i ronda hi havia uns dos segons de no-res.
+      Ara la primera casella s'encén de seguida i la pausa és de 0,9 s
 
     CANVIS v4.40
     - PIRÀMIDE: figures noves. Les cartes se superposen sense fer cas de la
@@ -189,7 +202,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <!-- Icones: afegits 'image' i 'brush' per al selector de gràfics 
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,accessibility_new,agriculture,air,airport_shuttle,album,anchor,architecture,arrow_back,arrow_forward,attractions,auto_awesome,auto_stories,backpack,badge,bakery_dining,bar_chart,bathtub,beach_access,bed,biotech,blender,bolt,bookmark,breakfast_dining,brunch_dining,brush,bug_report,cabin,cake,calculate,camera,camping,cancel,carpenter,casino,castle,category,celebration,chair,change_history,check_circle,checkroom,child_care,church,cleaning_services,close,cloud,coffee,color_lens,commute,computer,construction,cookie,cruelty_free,curtains,dark_mode,diamond,diamond_shine,dinner_dining,directions_boat,directions_bus,directions_car,directions_railway,directions_run,directions_walk,door_front,downhill_skiing,draw,ecg_heart,eco,edit,egg,elderly,electric_scooter,emoji_emotions,emoji_events,emoji_food_beverage,engineering,explore,extension,face,family_restroom,fastfood,favorite,festival,find_replace,fire_truck,fireplace,fitness_center,flag,flight,flight_takeoff,flood,foggy,folder,forest,format_paint,front_hand,gesture,grass,grid_view,handshake,handyman,hardware,headphones,health_and_safety,hearing,help,hexagon,hiking,history,history_edu,holiday_village,home,hotel,houseboat,icecream,image,info,iron,kayaking,kebab_dining,key,keyboard,kitchen,label,landscape,layers,light,light_mode,lightbulb,link,liquor,local_bar,local_cafe,local_drink,local_fire_department,local_florist,local_laundry_service,local_pizza,local_shipping,local_taxi,location_on,lock,luggage,lunch_dining,map,medication,menu_book,mic,military_tech,mosque,mouse,movie,museum,music_note,music_off,nightlife,nightlight,nutrition,palette,park,pedal_bike,pentagon,pets,photo_camera,piano,plumbing,pool,pregnant_woman,print,psychology,public,queue_music,radio,rainy,ramen_dining,raven,recycling,replay,restaurant,rice_bowl,rocket_launch,rowing,sailing,school,science,scuba_diving,self_improvement,sentiment_satisfied,sentiment_very_satisfied,set_meal,shield,shopping_basket,shopping_cart,shower,shuffle,sign_language,skateboarding,smartphone,snowboarding,snowmobile,soap,solar_power,soup_kitchen,spa,speaker,sports_baseball,sports_basketball,sports_esports,sports_football,sports_golf,sports_handball,sports_hockey,sports_martial_arts,sports_soccer,sports_tennis,sports_volleyball,stairs,star,stars,style,subway,sunny,surfing,synagogue,table_restaurant,takeout_dining,tapas,temple_buddhist,terrain,theater_comedy,thumb_up,thunderstorm,timer,touch_app,tour,toys,traffic,train,tram,translate,travel_explore,two_wheeler,umbrella,undo,vaccines,verified,videocam,villa,visibility,volcano,volume_off,volume_up,volunteer_activism,watch,water_drop,waves,waving_hand,weekend,window,wine_bar,work,workspace_premium,yard&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,accessibility_new,agriculture,air,airport_shuttle,album,anchor,architecture,arrow_back,arrow_forward,attractions,auto_awesome,auto_stories,backpack,badge,bakery_dining,bar_chart,bathtub,beach_access,bed,biotech,blender,bolt,bookmark,breakfast_dining,brunch_dining,brush,bug_report,cabin,cake,calculate,camera,camping,cancel,carpenter,casino,castle,category,celebration,chair,change_history,check_circle,checkroom,child_care,church,cleaning_services,close,cloud,coffee,color_lens,commute,computer,construction,cookie,cruelty_free,curtains,dark_mode,diamond,diamond_shine,dinner_dining,directions_boat,directions_bus,directions_car,directions_railway,directions_run,directions_walk,done_all,door_front,downhill_skiing,draw,ecg_heart,eco,edit,egg,elderly,electric_scooter,emoji_emotions,emoji_events,emoji_food_beverage,engineering,explore,extension,face,family_restroom,fastfood,favorite,festival,find_replace,fire_truck,fireplace,fitness_center,flag,flight,flight_takeoff,flood,foggy,folder,forest,format_paint,front_hand,gesture,grass,grid_view,handshake,handyman,hardware,headphones,health_and_safety,hearing,help,hexagon,hiking,history,history_edu,holiday_village,home,hotel,houseboat,icecream,image,info,iron,kayaking,kebab_dining,key,keyboard,kitchen,label,landscape,layers,light,light_mode,lightbulb,link,liquor,local_bar,local_cafe,local_drink,local_fire_department,local_florist,local_laundry_service,local_pizza,local_shipping,local_taxi,location_on,lock,luggage,lunch_dining,map,medication,menu_book,mic,military_tech,mosque,mouse,movie,museum,music_note,music_off,nightlife,nightlight,nutrition,palette,park,pedal_bike,pentagon,pets,photo_camera,piano,plumbing,pool,pregnant_woman,print,psychology,public,queue_music,radio,rainy,ramen_dining,raven,recycling,replay,restaurant,rice_bowl,rocket_launch,rowing,sailing,school,science,scuba_diving,self_improvement,sentiment_satisfied,sentiment_very_satisfied,set_meal,shield,shopping_basket,shopping_cart,shower,shuffle,sign_language,skateboarding,smartphone,snowboarding,snowmobile,soap,solar_power,soup_kitchen,spa,speaker,sports_baseball,sports_basketball,sports_esports,sports_football,sports_golf,sports_handball,sports_hockey,sports_martial_arts,sports_soccer,sports_tennis,sports_volleyball,stairs,star,stars,style,subway,sunny,surfing,synagogue,table_restaurant,takeout_dining,tapas,temple_buddhist,terrain,theater_comedy,thumb_up,thunderstorm,timer,touch_app,tour,toys,traffic,train,tram,translate,travel_explore,two_wheeler,umbrella,undo,vaccines,verified,videocam,villa,visibility,volcano,volume_off,volume_up,volunteer_activism,watch,water_drop,waves,waving_hand,weekend,window,wine_bar,work,workspace_premium,yard&display=block" rel="stylesheet">
 -->
 <!-- Canvia la línia llarga de Material Symbols per aquesta: -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&display=block" rel="stylesheet">
@@ -1732,6 +1745,9 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
           <button class="btn-big" id="nbackBtn">
             <span class="material-symbols-rounded">check_circle</span> És la mateixa!
           </button>
+          <button class="btn-big" id="nbackRepasBtn" hidden>
+            <span class="material-symbols-rounded">done_all</span> He acabat de mirar-ho
+          </button>
         </div>
       </section>
 
@@ -1745,7 +1761,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.40</span>
+      <span class="version" id="version">v4.41</span>
     </div>
   </footer>
 </div>
@@ -2935,7 +2951,7 @@ document.addEventListener('visibilitychange', () => {
    actualitza MAPA_SONS i el nom del fitxer (SONS_URL).
    ═══════════════════════════════════════════════════════ */
 const SONS_URL = 'sons-memoria.mp3';
-const MAPA_SONS = {"carta":[0.225,0.33],"safata":[0.695,0.37],"triar":[1.205,0.27],"destriar":[1.615,0.27],"boto":[2.025,0.24],"bloquejada":[2.405,0.41],"parella":[2.955,0.81],"ronda":[3.905,0.66],"estrella":[4.705,1.06],"buidar":[5.905,1.21],"error":[7.255,0.66],"fi":[8.055,1.06],"temps":[9.255,0.96],"tic":[10.355,0.17],"victoria":[10.665,2.11],"nivell":[12.915,1.41],"caiguda":[14.465,0.37],"apareix":[14.975,0.56],"pista":[15.675,0.51],"seq0":[16.325,0.66],"seq1":[17.125,0.66],"seq2":[17.925,0.66],"seq3":[18.725,0.66],"seq4":[19.525,0.66],"seq5":[20.325,0.66]};
+const MAPA_SONS = {"carta":[0.225,0.33],"safata":[0.695,0.37],"triar":[1.205,0.27],"destriar":[1.615,0.27],"boto":[2.025,0.24],"bloquejada":[2.405,0.41],"parella":[2.955,0.81],"ronda":[3.905,0.66],"estrella":[4.705,1.06],"buidar":[5.905,1.21],"error":[7.255,0.66],"fi":[8.055,1.06],"temps":[9.255,0.96],"tic":[10.355,0.17],"victoria":[10.665,2.11],"nivell":[12.915,1.41],"caiguda":[14.465,0.37],"muntar":[14.975,2.15],"castig":[17.265,1.36],"apareix":[18.765,0.56],"pista":[19.465,0.51],"seq0":[20.115,0.66],"seq1":[20.915,0.66],"seq2":[21.715,0.66],"seq3":[22.515,0.66],"seq4":[23.315,0.66],"seq5":[24.115,0.66]};
 
 /* Els que es repeteixen molt varien una mica de to a cada toc, perquè
    sentir vint cops el mateix clac exacte cansa */
@@ -3064,8 +3080,11 @@ function pintarSo(){
   marca('soSons', sonsActius, 'volume_up', 'volume_off');
   marca('soPurpurina', efectesActius);
 
-  setIcon(soBtn, musicaActiva ? 'music_note' : 'music_off');
-  soBtn.classList.toggle('off', !musicaActiva && !sonsActius && !efectesActius);
+  /* La icona ha de dir la veritat: si sona la música, nota musical; si
+     només sonen els efectes, altaveu; i el símbol de "sense so" només quan
+     de debò no se sent res. */
+  setIcon(soBtn, musicaActiva ? 'music_note' : (sonsActius ? 'volume_up' : 'music_off'));
+  soBtn.classList.toggle('off', !musicaActiva && !sonsActius);
 }
 
 soBtn.addEventListener('click', () => {
@@ -3488,7 +3507,7 @@ function iniciarSequencia(){
     cel.addEventListener('click', () => clicSequencia(i));
     seqBoard.appendChild(cel);
   });
-  ajustarTauler(); setTimeout(novaRondaSequencia, 800);
+  ajustarTauler(); setTimeout(novaRondaSequencia, 550);
 }
 
 function novaRondaSequencia() {
@@ -3504,16 +3523,26 @@ function novaRondaSequencia() {
 function reproduirSequencia() {
   seqReproduint = true; let i = 0;
   $('faseIconSeq').textContent = 'visibility'; $('faseTextSeq').textContent = 'Observa';
-  seqInterval = setInterval(() => {
+
+  /* La primera casella s'encén de seguida. Abans s'esperava un compàs
+     sencer abans de començar i, sumat a la pausa entre rondes, es feien
+     un parell de segons de no-res a cada ronda. */
+  const pas = () => {
     if (joc !== 'sequencia' || modalObert) return;
     Array.from(seqBoard.children).forEach(c => c.classList.remove('seq-activa'));
     if (i < seqActiva.length) {
-      setTimeout(() => { seqBoard.children[seqActiva[i]].classList.add('seq-activa'); so('seq' + (seqActiva[i] % 6)); i++; }, 50);
+      setTimeout(() => {
+        if (joc !== 'sequencia') return;
+        seqBoard.children[seqActiva[i]].classList.add('seq-activa');
+        so('seq' + (seqActiva[i] % 6)); i++;
+      }, 50);
     } else {
       clearInterval(seqInterval); seqReproduint = false;
       $('faseIconSeq').textContent = 'touch_app'; $('faseTextSeq').textContent = 'Repeteix'; log('Et toca!', 1000);
     }
-  }, 650);
+  };
+  pas();
+  seqInterval = setInterval(pas, 650);
 }
 
 function clicSequencia(idx) {
@@ -3531,7 +3560,7 @@ function clicSequencia(idx) {
       seqReproduint = true; 
       celebrar(cel, 60); // Amb la nova funció de font contínua, 60 queda espectacular
       setTimeout(() => so('parella'), 150);
-      setTimeout(novaRondaSequencia, 1500); // Pujem a 1.5s per deixar que l'animació respiri
+      setTimeout(novaRondaSequencia, 850);   // just el que dura la celebració, i au
     }
   } else {
     seqReproduint = true; // Bloquegem immediatament els futurs clics
@@ -4096,6 +4125,7 @@ $('nbackIntroBtn').addEventListener('click', () => {
 });
 
 function iniciarNback(){
+  $('nbackRepasBtn').hidden = true; $('nbackBtn').hidden = false;
   aturarTot(); aturarDemo(); mostrarPantalla('nback'); nbackFet = false;
   const nivell = NIVELLS_NBACK[nivellNback];
 
@@ -4234,18 +4264,25 @@ function mostrarRepasNback(){
       : '';
     return `<div class="repas-tile ${res || (coincidia ? '' : '')}">${renderContent(o)}${marca}</div>`;
   }).join('');
-  log('Aquesta ha estat la tirada', 5200);
+  log('Aquesta ha estat la tirada. Mira-te-la amb calma.', 0);
 }
 
+/* El resultat no surt sol: la jugadora es mira la tirada l'estona que
+   vulgui i la tanca quan li va bé. Abans marxava als cinc segons i no hi
+   havia manera de tornar-hi. */
 function acabarNback(){
   if (nbackFet) return;
   nbackFet = true; aturarTot();
   mostrarRepasNback();
   const guanyat = nbackEncerts === nbackTotal && nbackErrors === 0;
-  temporitzadorFase = setTimeout(() => {
+  const boto = $('nbackRepasBtn');
+  $('nbackBtn').hidden = true;          // mentre es mira la tirada, no es juga
+  boto.hidden = false;
+  boto.onclick = () => {
+    boto.hidden = true; $('nbackBtn').hidden = false;
     finalPartida(guanyat, guanyat ? null : 'Se n\'han escapat algunes', null,
                  `${nbackEncerts} de ${nbackTotal} encertades i ${nbackErrors} errades`);
-  }, 5200);
+  };
 }
 
 $('nbackBtn').addEventListener('click', premerNback);
@@ -4918,13 +4955,13 @@ function afegirCastig(){
   $('piramideRestants').textContent = piramideRestants;
   pintarPiramide();
 
-  // Cauen de baix a dalt, una darrere l'altra, amb el seu "plim"
+  // Cauen de baix a dalt, una darrere l'altra, amb un sol so per a totes
+  so('castig');
   const ordre = [...noves].sort((a, b) => (a.l - b.l) || (a.y - b.y) || (a.x - b.x));
   ordre.forEach((carta, i) => {
     if (!carta.el) return;
     carta.el.style.animation = `caiguda 420ms cubic-bezier(.34,1.56,.64,1) ${i * 110}ms both`;
     carta.el.classList.add('castig');
-    setTimeout(() => so('caiguda'), i * 110 + 170);
   });
   setTimeout(() => {
     ordre.forEach(c => { if (c.el) c.el.style.animation = ''; });
@@ -5173,6 +5210,10 @@ function pintarPiramide(ambCaiguda){
 /* La construcció: primer la base, després cada capa, i les últimes cartes
    una mica més a poc a poc per rematar l'efecte. */
 function muntarPiramideAmbCaiguda(vives){
+  /* Un únic so per a tota la construcció, de dos segons, amb la cascada ja
+     composta a dins. Abans en sonava un per cada carta i, com que en cauen
+     moltes de seguides, se superposaven i feien soroll. */
+  so('muntar');
   const ordre = [...vives].sort((a, b) => (a.l - b.l) || (a.y - b.y) || (a.x - b.x));
   const queden = 5;                 // les últimes, més lentes
   let retard = 0;
@@ -5183,8 +5224,6 @@ function muntarPiramideAmbCaiguda(vives){
     const lenta = i >= ordre.length - queden;
     retard += lenta ? 180 : Math.max(10, 26 - ordre.length / 12);
     carta.el.style.animation = `caiguda ${lenta ? 520 : 380}ms cubic-bezier(.34,1.56,.64,1) ${Math.round(retard)}ms both`;
-    // Un cop sord cada poques cartes: totes alhora seria un terrabastall
-    if (i % 2 === 0 || lenta) setTimeout(() => so('caiguda', lenta ? 1 : 0.7), retard + 150);
   });
 
   setTimeout(() => {
