@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.51
+    Version: 4.60
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,23 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.60
+    - "Pregunta't" ja és públic: la targeta es veu al menú com la de
+      qualsevol altre joc i s'ha retirat el doble clic al títol
+    - El banc passa de 87 a 196 preguntes, totes amb la seva explicació.
+      Cada tema i nivell en té entre 14 i 18 de pròpies
+    - Les preguntes ja no es trien a l'atzar sinó com una bossa de boles:
+      una pregunta que ha sortit no hi torna fins que han sortit totes les
+      altres del seu tema i nivell. Resultat mesurat: CAP pregunta es
+      repeteix d'una partida a la següent, en cap tema ni nivell
+    - Amb un tema sol, la bossa inclou també els nivells del costat, perquè
+      una quinzena de preguntes no donen per a deu partides seguides
+    - El repàs final ja no se surt de la pantalla: cabia més ample del que
+      li tocava perquè, dins d'una caixa flexible, un fill no s'encongeix
+      per sota del seu contingut si no se li diu
+    - El botó "He acabat de mirar-ho" passa a dir "Continuar", aquí i al
+      repàs de N-enrere
 
     CANVIS v4.51
     - Els pop-ups de nivells i de temes s'escampen a l'ample: tantes
@@ -872,7 +889,7 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 
 /* ── So i efectes: interruptors grossos, fàcils de tocar ── */
 /* ── Pregunta't ─────────────────────────────────────────────────── */
-.board-wrap.quiz-wrap{align-items:flex-start;justify-content:center;overflow-y:auto;padding-top:10px}
+.board-wrap.quiz-wrap{align-items:flex-start;justify-content:center;overflow-y:auto;overflow-x:hidden;padding:10px 4px 10px}
 .quiz-caixa{
   width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:18px;
 }
@@ -909,8 +926,8 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 /* El repàs del final */
 /* El repàs també s'escampa: una columna al telèfon, dues o tres al PC */
 .repas-preguntes{
-  width:100%;max-width:1500px;margin:0 auto;
-  display:grid;grid-template-columns:repeat(auto-fit, minmax(265px, 1fr));
+  width:100%;min-width:0;max-width:100%;margin:0 auto;
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(min(250px, 100%), 1fr));
   gap:12px;align-items:start;
 }
 .repas-preguntes[hidden]{display:none}
@@ -924,16 +941,6 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 .repas-p small{display:block;font-family:'Fredoka';font-size:15px;line-height:1.38;color:var(--ink);opacity:.85}
 .repas-p .resp{font-weight:600;opacity:1}
 /* La targeta del joc en proves */
-.game-card.en-proves{
-  position:relative;padding-top:26px;
-  outline:3px dashed rgba(124,58,237,.7);outline-offset:3px;
-}
-.marca-proves{
-  position:absolute;top:6px;left:50%;transform:translateX(-50%);
-  font-family:'Fredoka';font-size:11px;font-weight:600;white-space:nowrap;
-  letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px;
-  background:#7c3aed;color:#fff;
-}
 .game-card[hidden]{display:none}
 .tema-mini{
   display:flex;align-items:center;justify-content:center;
@@ -1646,10 +1653,8 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
             <small class="llarg">Passen imatges seguides. Prem el botó quan la d'ara sigui igual que la de fa una o dues.</small>
           </button>
 
-          <!-- En proves: no es veu fins que es fa doble clic al títol "Memòria" -->
-          <button class="game-card en-proves" data-joc="quiz" hidden
+          <button class="game-card" data-joc="quiz"
                   style="--tint:#7c3aed;--tint-deep:#4c1d95">
-            <span class="marca-proves">en proves</span>
             <span class="ico"><span class="material-symbols-rounded">quiz</span></span>
             <b>Pregunta't</b>
             <small class="curt">Preguntes i respostes</small>
@@ -1911,7 +1916,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
             <span class="material-symbols-rounded">check_circle</span> És la mateixa!
           </button>
           <button class="btn-big" id="nbackRepasBtn" hidden>
-            <span class="material-symbols-rounded">done_all</span> He acabat de mirar-ho
+            <span class="material-symbols-rounded">arrow_forward</span> Continuar
           </button>
         </div>
       </section>
@@ -1948,7 +1953,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
             <span class="material-symbols-rounded">arrow_forward</span> Següent
           </button>
           <button class="btn-big" id="quizFiBtn" hidden>
-            <span class="material-symbols-rounded">done_all</span> He acabat de mirar-ho
+            <span class="material-symbols-rounded">arrow_forward</span> Continuar
           </button>
         </div>
       </section>
@@ -1963,7 +1968,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.51</span>
+      <span class="version" id="version">v4.60</span>
     </div>
   </footer>
 </div>
@@ -2604,7 +2609,6 @@ let provaObertaDes  = 0;
 let temaQuiz        = localStorage.getItem('temaQuiz') || 'barreja';
 let nivellQuiz      = parseInt(localStorage.getItem('nivellQuiz')||0,10);
 let quizLlista = [], quizIdx = 0, quizEncerts = 0, quizFet = false, quizRespost = false;
-let jocsEnProves    = false;   // la porta de darrere del menú
 let nivellBlanca    = parseInt(localStorage.getItem('nivellBlanca')||0,10);
 let nivellEditant   = 'parelles';
 
@@ -4892,7 +4896,116 @@ const BANC_PREGUNTES = [
   {p:'Com es diu la persona que escriu llibres?', b:'Escriptor', o:['Lector', 'Llibreter', 'Impressor'], e:'L\'escriptor l\'escriu, l\'impressor l\'imprimeix, el llibreter el ven i el lector el llegeix. Cadascú té el seu nom.', t:'llengua', n:0},
   {p:'Quantes síl·labes té la paraula "finestra"?', b:'3', o:['2', '4', '5'], e:'Tres: fi-nes-tra. Les síl·labes són els cops de veu; es poden comptar picant de mans mentre es diu la paraula a poc a poc.', t:'llengua', n:1},
   {p:'Què és un refrany?', b:'Una dita curta amb una ensenyança', o:['Una cançó', 'Un conte llarg', 'Una pregunta'], e:'Com "qui no vol pols, que no vagi a l’era": una frase breu que guarda una experiència repetida durant generacions.', t:'llengua', n:1},
-  {p:'Què vol dir "matinar"?', b:'Llevar-se molt aviat', o:['Dinar tard', 'Dormir la migdiada', 'Sopar d’hora'], e:'Ve de matí, com matiner. El refrany diu que a qui matina, Déu l\'ajuda, que és una manera d\'animar a començar aviat.', t:'llengua', n:1}
+  {p:'Què vol dir "matinar"?', b:'Llevar-se molt aviat', o:['Dinar tard', 'Dormir la migdiada', 'Sopar d’hora'], e:'Ve de matí, com matiner. El refrany diu que a qui matina, Déu l\'ajuda, que és una manera d\'animar a començar aviat.', t:'llengua', n:1},
+  {p:'Quantes potes té un gos?', b:'4', o:['2', '6', '8'], e:'Quatre, com la majoria de mamífers de terra. Els ocells en tenen dues i les aranyes, vuit.', t:'natura', n:0},
+  {p:'On viuen les abelles?', b:'Al rusc', o:['Al niu', 'Al cau', 'A la conquilla'], e:'Al rusc, que fabriquen elles mateixes amb cera. Els ocells fan niu, els conills cau i els cargols porten la conquilla a sobre.', t:'natura', n:0},
+  {p:'Quin animal porta la casa a sobre?', b:'El cargol', o:['La formiga', 'La granota', 'El ratolí'], e:'El cargol i la tortuga porten la closca enganxada al cos: no és una casa que es puguin treure, sinó part de l\'esquelet.', t:'natura', n:0},
+  {p:'Quin arbre fa pinyes?', b:'El pi', o:['El roure', 'L\'alzina', 'El pollancre'], e:'Les pinyes són el fruit dels pins i guarden els pinyons a dins. El roure i l\'alzina fan aglans.', t:'natura', n:0},
+  {p:'Què menja una vaca?', b:'Herba', o:['Carn', 'Peix', 'Insectes'], e:'Herba i farratge. Té quatre compartiments a l\'estómac i remuga: es torna a passar el menjar per la boca per acabar-lo de desfer.', t:'natura', n:0},
+  {p:'Quin animal té plomes?', b:'L\'ocell', o:['El gos', 'El peix', 'La serp'], e:'Només els ocells tenen plomes. Els mamífers tenen pèl, els peixos escates i els rèptils, plaques.', t:'natura', n:0},
+  {p:'Quin animal és mamífer però viu al mar?', b:'El dofí', o:['El tauró', 'La sardina', 'El pop'], e:'El dofí i la balena respiren aire pels pulmons i alleten les cries, com nosaltres. Han de pujar a la superfície per respirar.', t:'natura', n:1},
+  {p:'Quantes ales té una papallona?', b:'4', o:['2', '6', '8'], e:'Quatre: dues de davant i dues de darrere. Com que es mouen alhora, de lluny sembla que només en tingui dues.', t:'natura', n:1},
+  {p:'Quin òrgan filtra la sang i fa l’orina?', b:'El ronyó', o:['El fetge', 'El pàncrees', 'L\'estómac'], e:'En tenim dos. Filtren tota la sang del cos unes trenta vegades cada dia i en treuen el que sobra.', t:'natura', n:1},
+  {p:'Quin sentit tenim al nas?', b:'L\'olfacte', o:['L\'oïda', 'El gust', 'El tacte'], e:'L\'olfacte. Va molt lligat al gust: amb el nas tapat, el menjar perd gairebé tot el sabor.', t:'natura', n:1},
+  {p:'De quin arbre surten les castanyes?', b:'Del castanyer', o:['De l\'avellaner', 'Del noguer', 'Del pi'], e:'Del castanyer. Cada fruit ve dins d\'una bola plena de punxes que s\'obre quan la castanya és a punt.', t:'natura', n:1},
+  {p:'Què li passa a l’aigua quan es congela?', b:'Augmenta de volum', o:['Es fa més petita', 'Es torna més pesada', 'No canvia'], e:'Ocupa més lloc que quan és líquida, i per això el gel sura i una ampolla plena es pot esquerdar al congelador.', t:'natura', n:1},
+  {p:'Quin animal fa la teranyina?', b:'L\'aranya', o:['El cuc de seda', 'La formiga', 'La papallona'], e:'L\'aranya la fabrica amb un fil que surt del seu propi cos i que, pel gruix que té, és més resistent que l\'acer.', t:'natura', n:1},
+  {p:'Quin animal té el coll més llarg?', b:'La girafa', o:['L\'estruç', 'El camell', 'El cigne'], e:'La girafa. Curiosament té les mateixes set vèrtebres al coll que nosaltres, però cadascuna fa més de vint centímetres.', t:'natura', n:1},
+  {p:'Quin animal pon ous i alhora dona llet?', b:'L\'ornitorinc', o:['El dofí', 'La tortuga', 'El pingüí'], e:'L\'ornitorinc és un mamífer que pon ous, cosa rara: quan els europeus en van rebre el primer exemplar, van pensar que era una broma.', t:'natura', n:2},
+  {p:'Quina és la unitat més petita d’un ésser viu?', b:'La cèl·lula', o:['L\'òrgan', 'El teixit', 'La molècula'], e:'La cèl·lula. Hi ha éssers vius d\'una sola cèl·lula, i una persona en té desenes de bilions.', t:'natura', n:2},
+  {p:'Quin òrgan fabrica la insulina?', b:'El pàncrees', o:['El fetge', 'El ronyó', 'La melsa'], e:'El pàncrees. La insulina controla el sucre de la sang; quan el cos no en fabrica prou, apareix la diabetis.', t:'natura', n:2},
+  {p:'Quin gas forma la major part de l’aire?', b:'El nitrogen', o:['L\'oxigen', 'El diòxid de carboni', 'L\'hidrogen'], e:'El nitrogen, que ocupa gairebé quatre cinquenes parts de l\'aire. L\'oxigen, que és el que respirem, només n\'és una cinquena part.', t:'natura', n:2},
+  {p:'Quin és l’òrgan més gran del cos humà?', b:'La pell', o:['El fetge', 'El pulmó', 'L\'intestí'], e:'La pell. En un adult pesa uns quatre quilos i es va renovant: les cèl·lules de fora cauen i en surten de noves per sota.', t:'natura', n:2},
+  {p:'Quin animal té tres cors?', b:'El pop', o:['La balena', 'El cocodril', 'L\'elefant'], e:'El pop. Dos cors envien la sang a les brànquies i el tercer la reparteix pel cos. A més, té la sang blava.', t:'natura', n:2},
+  {p:'Quina vitamina fabrica el cos amb la llum del sol?', b:'La vitamina D', o:['La vitamina C', 'La vitamina A', 'La vitamina B'], e:'La D, que ajuda a fixar el calci als ossos. És l\'única que el cos pot fabricar tot sol, amb una estona de sol a la pell.', t:'natura', n:2},
+  {p:'Què mesura l’escala de Richter?', b:'Els terratrèmols', o:['El vent', 'La pluja', 'La temperatura'], e:'La força dels terratrèmols. No és una escala normal: cada punt més vol dir deu vegades més moviment.', t:'natura', n:2},
+  {p:'Com es diu el pas de líquid a gas?', b:'Evaporació', o:['Condensació', 'Fusió', 'Solidificació'], e:'Evaporació. El camí contrari, de gas a líquid, és la condensació: és el que passa als vidres freds de la finestra.', t:'natura', n:2},
+  {p:'Quants cromosomes té una persona?', b:'46', o:['23', '64', '12'], e:'Quaranta-sis, en vint-i-tres parelles: de cada parella, un ve del pare i l\'altre de la mare.', t:'natura', n:2},
+  {p:'Quants mesos té un any?', b:'12', o:['10', '11', '14'], e:'Dotze. Els noms vénen dels romans, i per això setembre, octubre, novembre i desembre porten a dins el set, el vuit, el nou i el deu.', t:'mon', n:0},
+  {p:'Quants dies té un any normal?', b:'365', o:['360', '350', '370'], e:'Tres-cents seixanta-cinc. La Terra en triga una mica més a fer la volta al Sol, i per això cada quatre anys s\'hi afegeix un dia.', t:'mon', n:0},
+  {p:'Per on surt el sol?', b:'Per l’est', o:['Per l’oest', 'Pel nord', 'Pel sud'], e:'Sempre per l\'est i es pon per l\'oest. No és que el sol es mogui: som nosaltres, que girem.', t:'mon', n:0},
+  {p:'Quina és la capital d’Itàlia?', b:'Roma', o:['Milà', 'Venècia', 'Nàpols'], e:'Roma, que a dins té un altre estat sencer, el Vaticà. Milà és la capital econòmica del país, però no la política.', t:'mon', n:0},
+  {p:'Què fem servir per saber on és el nord?', b:'La brúixola', o:['El termòmetre', 'El rellotge', 'La balança'], e:'La brúixola. L\'agulla està imantada i s\'orienta sola cap al nord, perquè la Terra sencera funciona com un imant.', t:'mon', n:0},
+  {p:'Quantes hores hi ha en mig dia?', b:'12', o:['6', '10', '24'], e:'Dotze. Per això els rellotges d\'agulles fan dues voltes senceres cada dia.', t:'mon', n:0},
+  {p:'Quina és la capital de Portugal?', b:'Lisboa', o:['Porto', 'Coïmbra', 'Braga'], e:'Lisboa, a la desembocadura del Tajo. És una de les ciutats més antigues d\'Europa, més que Roma.', t:'mon', n:1},
+  {p:'En quin continent és el Japó?', b:'Àsia', o:['Oceania', 'Amèrica', 'Europa'], e:'A Àsia. És un arxipèlag de milers d\'illes, però gairebé tota la gent viu a les quatre més grans.', t:'mon', n:1},
+  {p:'Quin riu passa per París?', b:'El Sena', o:['El Roine', 'El Loira', 'El Rin'], e:'El Sena. La ciutat va néixer en una illa enmig del riu, que és on avui hi ha la catedral de Notre-Dame.', t:'mon', n:1},
+  {p:'Quin monument és el símbol de París?', b:'La torre Eiffel', o:['El Big Ben', 'El Coliseu', 'La Sagrada Família'], e:'La torre Eiffel, construïda el 1889 per a una exposició. Havia de ser provisional i es volia desmuntar al cap de vint anys.', t:'mon', n:1},
+  {p:'Quina és la capital del Regne Unit?', b:'Londres', o:['Manchester', 'Edimburg', 'Liverpool'], e:'Londres. Edimburg és la capital d\'Escòcia, que forma part del Regne Unit però té parlament propi.', t:'mon', n:1},
+  {p:'Quin oceà hi ha entre Europa i Amèrica?', b:'L\'Atlàntic', o:['El Pacífic', 'L\'Índic', 'El Mediterrani'], e:'L\'Atlàntic. És el que van travessar Colom i, segles després, els primers vols entre els dos continents.', t:'mon', n:1},
+  {p:'Quin és el planeta vermell?', b:'Mart', o:['Venus', 'Júpiter', 'Mercuri'], e:'Mart. El color li ve del ferro rovellat del terra: literalment, és un planeta ple de rovell.', t:'mon', n:1},
+  {p:'Quina serralada separa la península Ibèrica de la resta d’Europa?', b:'Els Pirineus', o:['Els Alps', 'Els Carpats', 'Els Apenins'], e:'Els Pirineus, que van del Mediterrani al Cantàbric. Andorra és a dalt de tot, entre Espanya i França.', t:'mon', n:1},
+  {p:'Quin és el planeta més gran del sistema solar?', b:'Júpiter', o:['Saturn', 'La Terra', 'Neptú'], e:'Júpiter. Hi cabrien més de mil Terres a dins, i té una tempesta més gran que el nostre planeta que dura segles.', t:'mon', n:1},
+  {p:'Quin és el país més petit del món?', b:'El Vaticà', o:['Mònaco', 'San Marino', 'Malta'], e:'El Vaticà, que ocupa menys de mig quilòmetre quadrat dins de Roma. S\'hi pot donar la volta a peu en una estona.', t:'mon', n:2},
+  {p:'Quina és la capital del Canadà?', b:'Ottawa', o:['Toronto', 'Montreal', 'Vancouver'], e:'Ottawa. Es va triar justament perquè no era ni la ciutat més gran ni la més poderosa, i així ningú s\'hi va oposar.', t:'mon', n:2},
+  {p:'Quin és el riu més llarg d’Àfrica?', b:'El Nil', o:['El Congo', 'El Níger', 'El Zambezi'], e:'El Nil, que travessa el desert de sud a nord. Egipte hi va néixer al voltant, perquè les seves crescudes fertilitzaven la terra.', t:'mon', n:2},
+  {p:'Quina serralada travessa Amèrica del Sud de nord a sud?', b:'Els Andes', o:['Les Rocalloses', 'L\'Himàlaia', 'Els Urals'], e:'Els Andes, la serralada més llarga del món: més de set mil quilòmetres seguits al llarg de la costa del Pacífic.', t:'mon', n:2},
+  {p:'En quin oceà és l’illa de Madagascar?', b:'A l\'Índic', o:['A l\'Atlàntic', 'Al Pacífic', 'A l\'Àrtic'], e:'A l\'Índic, davant de la costa d\'Àfrica. Fa tants milions d\'anys que està separada que hi viuen animals que no hi ha enlloc més.', t:'mon', n:2},
+  {p:'Quina és la capital de Turquia?', b:'Ankara', o:['Istanbul', 'Esmirna', 'Bursa'], e:'Ankara. Istanbul és molt més gran i coneguda, però la capital es va traslladar a Ankara el 1923.', t:'mon', n:2},
+  {p:'Quin canal uneix el Mediterrani amb el mar Roig?', b:'El de Suez', o:['El de Panamà', 'El de Corint', 'El de Kiel'], e:'El canal de Suez, obert el 1869. Evita haver de fer la volta sencera a Àfrica per anar d\'Europa a Àsia.', t:'mon', n:2},
+  {p:'Quin estret separa Àsia d’Amèrica?', b:'Bering', o:['Gibraltar', 'Magallanes', 'Bòsfor'], e:'L\'estret de Bering. Fa uns 85 quilòmetres i, en plena glaciació, era terra ferma: per allà van passar els primers pobladors d\'Amèrica.', t:'mon', n:2},
+  {p:'Quin continent no té cap país?', b:'L\'Antàrtida', o:['Oceania', 'L\'Àfrica', 'L\'Àsia'], e:'L\'Antàrtida. Un tractat internacional la reserva per a la ciència i prohibeix que ningú se\'n faci l\'amo.', t:'mon', n:2},
+  {p:'Quin és el punt més fondo dels oceans?', b:'La fossa de les Mariannes', o:['El mar dels Sargassos', 'La fossa de Puerto Rico', 'El golf de Bengala'], e:'La fossa de les Mariannes, al Pacífic: passa dels 10.000 metres. Si hi posessis l\'Everest a dins, encara quedaria cobert d\'aigua.', t:'mon', n:2},
+  {p:'Què escoltava la gent abans que hi hagués televisió?', b:'La ràdio', o:['El telèfon', 'El tocadiscos', 'El cinema'], e:'La ràdio. Les famílies s\'hi asseien al voltant a la nit per sentir notícies, música i fins i tot novel·les llegides.', t:'historia', n:0},
+  {p:'Com es viatjava per terra abans del tren?', b:'Amb cavall i carro', o:['Amb bicicleta', 'Amb globus', 'A peu i prou'], e:'Amb cavalls i carruatges. Un viatge que avui es fa en una hora podia durar dos dies, amb parades per canviar els cavalls.', t:'historia', n:0},
+  {p:'Quin animal feia servir la gent per llaurar el camp abans del tractor?', b:'El bou', o:['El gos', 'L\'ovella', 'La gallina'], e:'El bou i la mula. Eren tan valuosos que una família de pagès podia estar-hi endeutada tota la vida.', t:'historia', n:0},
+  {p:'Quin joc es juga en un tauler de 64 caselles?', b:'Els escacs', o:['El parxís', 'Les dames xineses', 'El dòmino'], e:'Els escacs, amb setze peces per banda. Ve de l\'Índia, fa més de mil cinc-cents anys, i les regles actuals són del segle XV.', t:'historia', n:0},
+  {p:'Quin aparell serveix per parlar amb algú que és lluny?', b:'El telèfon', o:['El termòmetre', 'El microscopi', 'El baròmetre'], e:'El telèfon. Els primers eren fixos i compartits: en molts pobles n\'hi havia un per a tothom.', t:'historia', n:0},
+  {p:'Què és un museu?', b:'Un lloc on es guarden i s’ensenyen obres', o:['Una escola de dibuix', 'Una botiga de quadres', 'Un taller de pintors'], e:'Un lloc que conserva obres i objectes i els ensenya al públic. La paraula ve de les muses, les deesses gregues de les arts.', t:'historia', n:0},
+  {p:'Quin instrument es toca prement tecles?', b:'El piano', o:['El violí', 'La trompeta', 'El tambor'], e:'El piano. Cada tecla mou un martellet que colpeja una corda: per dins, és alhora instrument de corda i de percussió.', t:'historia', n:0},
+  {p:'Quin esport es juga encistellant una pilota?', b:'El bàsquet', o:['El futbol', 'El tennis', 'El handbol'], e:'El bàsquet, inventat el 1891 en un gimnàs amb dues cistelles de fruita clavades a la paret; d\'aquí li ve el nom.', t:'historia', n:0},
+  {p:'De què està feta una escultura de marbre?', b:'De pedra', o:['De fusta', 'De metall', 'De vidre'], e:'El marbre és una pedra. L\'escultor no hi afegeix res: només en treu el que sobra fins que apareix la figura.', t:'historia', n:0},
+  {p:'Qui va ser el primer home a trepitjar la Lluna?', b:'Neil Armstrong', o:['Iuri Gagarin', 'Buzz Aldrin', 'John Glenn'], e:'Neil Armstrong, seguit minuts després per Buzz Aldrin. Gagarin havia estat el primer home a l\'espai, vuit anys abans.', t:'historia', n:0},
+  {p:'Quina llengua parlaven els antics romans?', b:'El llatí', o:['El grec', 'L\'italià', 'L\'àrab'], e:'El llatí. D\'ell en vénen el català, el castellà, el francès, l\'italià, el portuguès i el romanès.', t:'historia', n:1},
+  {p:'Quin poble va construir els aqüeductes que encara es veuen a Europa?', b:'Els romans', o:['Els grecs', 'Els àrabs', 'Els víkings'], e:'Els romans. Portaven aigua a les ciutats amb un pendent d\'uns pocs centímetres per quilòmetre, calculat a mà.', t:'historia', n:1},
+  {p:'Quin animal era sagrat a l’antic Egipte?', b:'El gat', o:['El gos', 'El cavall', 'El porc'], e:'El gat, que protegia els graners dels ratolins. Matar-ne un es castigava amb la mort, i quan moria la família feia dol.', t:'historia', n:1},
+  {p:'Qui va arribar a Amèrica el 1492?', b:'Cristòfol Colom', o:['Magallanes', 'Marco Polo', 'Vasco de Gama'], e:'Colom, buscant un camí cap a Àsia per l\'oest. Va morir convençut que havia arribat a les Índies.', t:'historia', n:1},
+  {p:'Qui va pintar el sostre de la Capella Sixtina?', b:'Miquel Àngel', o:['Leonardo da Vinci', 'Rafael', 'Botticelli'], e:'Miquel Àngel, en quatre anys, dret dalt d\'una bastida. Ell es considerava escultor i va acceptar l\'encàrrec de mala gana.', t:'historia', n:1},
+  {p:'Quin instrument va perfeccionar Stradivari?', b:'El violí', o:['El piano', 'La flauta', 'L\'orgue'], e:'El violí. Encara avui ningú ha sabut repetir exactament el seu so, i els seus instruments valen milions.', t:'historia', n:1},
+  {p:'Qui va escriure Romeu i Julieta?', b:'Shakespeare', o:['Molière', 'Dante', 'Goethe'], e:'William Shakespeare, cap al 1595. Al seu teatre els papers de dona els feien nois, perquè les dones no hi podien actuar.', t:'historia', n:1},
+  {p:'En quin país es van celebrar els primers Jocs Olímpics moderns?', b:'A Grècia', o:['A França', 'A Anglaterra', 'A Itàlia'], e:'A Atenes, el 1896, en record dels jocs de l\'antiga Grècia, que se celebraven a Olímpia cada quatre anys.', t:'historia', n:1},
+  {p:'Quin invent va permetre navegar sense veure la costa?', b:'La brúixola', o:['El telescopi', 'El rellotge de sorra', 'El timó'], e:'La brúixola, que arriba d\'Àsia a l\'edat mitjana. Fins llavors els vaixells procuraven no perdre la terra de vista.', t:'historia', n:1},
+  {p:'Quin edifici de Barcelona és obra de Gaudí?', b:'La Pedrera', o:['El Palau de la Música', 'L\'Hospital de Sant Pau', 'L\'Arc de Triomf'], e:'La Pedrera, o Casa Milà, sense una sola línia recta a la façana. El Palau de la Música i Sant Pau són de Domènech i Montaner.', t:'historia', n:1},
+  {p:'En quin any va començar la Primera Guerra Mundial?', b:'1914', o:['1918', '1910', '1920'], e:'El 1914, i va durar fins al 1918. Es deia que seria curta i que els soldats serien a casa per Nadal.', t:'historia', n:2},
+  {p:'Qui va ser el primer emperador romà?', b:'August', o:['Juli Cèsar', 'Neró', 'Trajà'], e:'August, fill adoptiu de Juli Cèsar. Cèsar mai no va ser emperador: el van matar abans, quan era dictador.', t:'historia', n:2},
+  {p:'En quin any es va acabar la Segona Guerra Mundial?', b:'1945', o:['1939', '1942', '1950'], e:'El 1945, primer a Europa al maig i després al Pacífic al setembre. Havia començat el 1939.', t:'historia', n:2},
+  {p:'Qui va ser la primera dona a guanyar un premi Nobel?', b:'Marie Curie', o:['Rosalind Franklin', 'Ada Lovelace', 'Florence Nightingale'], e:'Marie Curie, el 1903 en física. Encara avui és l\'única persona que n\'ha guanyat dos en dues ciències diferents.', t:'historia', n:2},
+  {p:'Quin moviment artístic van fundar Picasso i Braque?', b:'El cubisme', o:['L\'impressionisme', 'El surrealisme', 'El romanticisme'], e:'El cubisme, cap al 1907. Pinten un mateix objecte des de diversos punts de vista alhora, i per això sembla trencat.', t:'historia', n:2},
+  {p:'Quin compositor va escriure Les quatre estacions?', b:'Vivaldi', o:['Mozart', 'Bach', 'Haydn'], e:'Antonio Vivaldi, cap al 1720. Cada concert va acompanyat d\'un poema, i la música imita ocells, tempestes i gent patinant.', t:'historia', n:2},
+  {p:'Quin filòsof grec va ser mestre d’Alexandre el Gran?', b:'Aristòtil', o:['Plató', 'Sòcrates', 'Pitàgores'], e:'Aristòtil. La cadena és curiosa: Sòcrates va ensenyar Plató, Plató va ensenyar Aristòtil i Aristòtil, Alexandre.', t:'historia', n:2},
+  {p:'Qui va pintar La nit estrellada?', b:'Van Gogh', o:['Monet', 'Munch', 'Klimt'], e:'Van Gogh, el 1889, des de la finestra de l\'hospital on estava ingressat. El poble del quadre se\'l va inventar.', t:'historia', n:2},
+  {p:'Quin poeta català va escriure L’Atlàntida?', b:'Jacint Verdaguer', o:['Ausiàs March', 'Joan Maragall', 'Salvador Espriu'], e:'Jacint Verdaguer, el 1877. Explica l\'enfonsament del continent llegendari i és una de les obres clau de la Renaixença.', t:'historia', n:2},
+  {p:'Quin tractat va repartir el món entre Espanya i Portugal?', b:'El de Tordesillas', o:['El de Versalles', 'El dels Pirineus', 'El de Roma'], e:'El de Tordesillas, del 1494: una ratlla al mapa de l\'Atlàntic. Per això al Brasil es parla portuguès i a la resta del continent no.', t:'historia', n:2},
+  {p:'Quantes lletres té la paraula "casa"?', b:'4', o:['3', '5', '6'], e:'Quatre: c-a-s-a. Compten totes les lletres escrites, encara que n\'hi hagi dues d\'iguals.', t:'llengua', n:0},
+  {p:'Com acaba una frase que no és pregunta ni exclamació?', b:'Amb un punt', o:['Amb una coma', 'Amb dos punts', 'Amb un guionet'], e:'Amb un punt. La coma només fa una pausa dins la frase; el punt la tanca del tot.', t:'llengua', n:0},
+  {p:'Quin és el plural de "gat"?', b:'gats', o:['gates', 'gatos', 'gat'], e:'Gats. La majoria de paraules catalanes fan el plural afegint una essa al final.', t:'llengua', n:0},
+  {p:'Quantes síl·labes té la paraula "sol"?', b:'1', o:['2', '3', '4'], e:'Una de sola. Les síl·labes són els cops de veu, i la paraula sol es diu d\'una tirada.', t:'llengua', n:0},
+  {p:'Quina d’aquestes paraules és una vocal?', b:'e', o:['b', 'm', 'r'], e:'Les vocals són a, e, i, o, u. La resta de lletres són consonants i necessiten una vocal a prop per poder-se dir.', t:'llengua', n:0},
+  {p:'Com es diu el conjunt de totes les lletres?', b:'L\'abecedari', o:['El diccionari', 'La gramàtica', 'El vocabulari'], e:'L\'abecedari o alfabet. El diccionari recull paraules amb el seu significat; la gramàtica, les regles per combinar-les.', t:'llengua', n:0},
+  {p:'Quina d’aquestes paraules anomena un animal?', b:'gos', o:['taula', 'verd', 'córrer'], e:'Gos. Taula és un objecte, verd és un color i córrer és una acció: cada paraula fa la seva feina dins la frase.', t:'llengua', n:0},
+  {p:'Què vol dir "escoltar"?', b:'Parar atenció al que se sent', o:['Parlar en veu alta', 'Mirar amb atenció', 'Escriure el que et diuen'], e:'Escoltar és sentir amb atenció i voluntat. Es pot sentir un soroll sense voler, però escoltar demana posar-hi interès.', t:'llengua', n:0},
+  {p:'Què és un substantiu?', b:'Una paraula que anomena coses', o:['Una paraula que indica acció', 'Una paraula que descriu com és una cosa', 'Una paraula que uneix frases'], e:'El substantiu anomena persones, animals, objectes o idees: casa, Anna, alegria. L\'acció la indica el verb.', t:'llengua', n:0},
+  {p:'Quin és el contrari de "gran"?', b:'Petit', o:['Ample', 'Alt', 'Llarg'], e:'Petit. Ample, alt i llarg parlen de mides concretes; gran i petit parlen de la mida en general.', t:'llengua', n:0},
+  {p:'Què és un adverbi?', b:'Una paraula que diu com, quan o on', o:['Una paraula que anomena coses', 'Una paraula que indica acció', 'Una paraula que substitueix un nom'], e:'L\'adverbi acompanya el verb i el matisa: parlar *a poc a poc*, venir *demà*, quedar-se *aquí*.', t:'llengua', n:1},
+  {p:'Quin és el femení de "cavall"?', b:'euga', o:['cavalla', 'cavalleta', 'poltra'], e:'Euga (també egua). Passa amb uns quants animals: el mascle i la femella tenen noms del tot diferents, com toro i vaca.', t:'llengua', n:1},
+  {p:'Quantes síl·labes té la paraula "ordinador"?', b:'4', o:['3', '5', '6'], e:'Quatre: or-di-na-dor. Es poden comptar picant de mans mentre es diu la paraula a poc a poc.', t:'llengua', n:1},
+  {p:'Què és un diminutiu?', b:'Una paraula que indica que una cosa és petita', o:['Una paraula escrita en minúscula', 'Una paraula curta', 'Una paraula mal dita'], e:'Un diminutiu es forma afegint un tros al final: casa → caseta, gos → gosset. Sovint també indica afecte.', t:'llengua', n:1},
+  {p:'Què és una rima?', b:'Quan dues paraules acaben igual', o:['Quan dues paraules comencen igual', 'Quan dues paraules volen dir el mateix', 'Quan una paraula es repeteix'], e:'La rima és la coincidència dels sons finals: amor i dolor, cançó i il·lusió. És el que fa que un poema s\'enganxi a la memòria.', t:'llengua', n:1},
+  {p:'Què és un prefix?', b:'Un tros que es posa davant d’una paraula', o:['Un tros que es posa darrere', 'La síl·laba forta', 'La primera lletra'], e:'El prefix va al davant i canvia el sentit: *des*fer, *re*llegir, *in*útil. El que va darrere és el sufix.', t:'llengua', n:1},
+  {p:'Quin és el femení de "gendre"?', b:'nora', o:['gendra', 'sogra', 'cunyada'], e:'Nora. El gendre és el marit de la filla i la nora, la dona del fill. La sogra és la mare de la parella.', t:'llengua', n:1},
+  {p:'Com es diu el so que fa el gat?', b:'El miol', o:['El bram', 'El grunyit', 'El xiscle'], e:'El gat miola. El burro brama, el porc grunyeix i el gos lladra: cada animal té el seu verb.', t:'llengua', n:1},
+  {p:'Quina d’aquestes paraules està ben escrita?', b:'cafè', o:['café', 'cafe', 'càfe'], e:'Cafè, amb accent obert. En català, la e i la o porten accent obert o tancat segons com sonin.', t:'llengua', n:1},
+  {p:'Què vol dir "efímer"?', b:'Que dura molt poc', o:['Que dura per sempre', 'Que és molt petit', 'Que és molt car'], e:'Efímer vol dir de vida breu: una flor efímera, una moda efímera. El contrari seria durador o perenne.', t:'llengua', n:2},
+  {p:'Quin temps verbal és "cantava"?', b:'L\'imperfet', o:['El present', 'El futur', 'El condicional'], e:'El pretèrit imperfet, que explica accions repetides o que duraven: *cantava* cada dia. El passat acabat seria *va cantar*.', t:'llengua', n:2},
+  {p:'Què és una onomatopeia?', b:'Una paraula que imita un so', o:['Una paraula molt llarga', 'Una paraula estrangera', 'Una paraula inventada per un escriptor'], e:'Paraules com xiuxiueig, catacrac o ronc imiten el soroll que anomenen. Cada llengua les fa a la seva manera.', t:'llengua', n:2},
+  {p:'Quin és el femení de "heroi"?', b:'heroïna', o:['heroia', 'heroa', 'heroina'], e:'Heroïna, amb dièresi a la i perquè es llegeixi separada de la o. Sense la dièresi es llegiria com un diftong.', t:'llengua', n:2},
+  {p:'Què és un sufix?', b:'Un tros que es posa darrere d’una paraula', o:['Un tros que es posa davant', 'Una paraula composta', 'Un accent'], e:'El sufix va al final i sovint canvia de categoria: de *fusta* surt *fuster*; de *cantar*, *cantant*.', t:'llengua', n:2},
+  {p:'Què és un homònim?', b:'Paraules que sonen igual i volen dir coses diferents', o:['Paraules que volen dir el mateix', 'Paraules que volen dir el contrari', 'Paraules escrites al revés'], e:'Com *son* (dormir) i *son* (el seu). Els sinònims volen dir el mateix; els homònims només coincideixen en el so.', t:'llengua', n:2},
+  {p:'Quin és el contrari de "abundant"?', b:'Escàs', o:['Ampli', 'Divers', 'Constant'], e:'Escàs vol dir que n\'hi ha poc. Abundant vol dir que n\'hi ha de sobres, molt més del que caldria.', t:'llengua', n:2},
+  {p:'Què vol dir "tàcit"?', b:'Que s’entén sense dir-ho', o:['Que es diu molt fort', 'Que està escrit', 'Que és molt curt'], e:'Un acord tàcit és el que tothom dona per fet sense haver-lo parlat. Ve del llatí *tacere*, callar.', t:'llengua', n:2},
+  {p:'Quin és el plural de "reflex"?', b:'reflexos', o:['reflexs', 'reflexes', 'reflex'], e:'Reflexos. Les paraules acabades en x precedida de vocal afegeixen -os: annex → annexos, complex → complexos.', t:'llengua', n:2},
+  {p:'Què vol dir "perenne"?', b:'Que dura tot l’any o sempre', o:['Que dura un dia', 'Que floreix a la primavera', 'Que creix molt de pressa'], e:'Un arbre de fulla perenne no es queda pelat a l\'hivern, com el pi. El contrari és de fulla caduca, com el plàtan.', t:'llengua', n:2},
+  {p:'Què és una comparació en literatura?', b:'Dir que una cosa és com una altra', o:['Repetir una paraula', 'Dir el contrari del que es pensa', 'Escriure en vers'], e:'Fa servir un "com": *fort com un roure*. Si es treu el "com" i es diu directament que una cosa és l’altra, ja és una metàfora.', t:'llengua', n:2}
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -5094,21 +5207,64 @@ function preguntaLlengua(nivell){
 }
 
 /* ── Les del banc ────────────────────────────────────────────── */
-function preguntaDelBanc(tema, nivell, evitades){
+/* Quines preguntes del banc poden sortir amb aquest tema i aquest nivell.
+   Amb "Barreja" n'hi ha de sobres i es queda al nivell demanat. Amb un tema
+   sol, en canvi, cada nivell té una quinzena de preguntes, i sis partides
+   seguides en demanen seixanta: per això s'hi afegeixen sempre les dels
+   nivells del costat, que tripliquen les possibilitats. Les del nivell
+   demanat hi entren dues vegades perquè continuïn sent les més probables. */
+function fonsDePreguntes(tema, nivell){
   const delTema = q => tema === 'barreja' || q.t === tema;
   let fons = BANC_PREGUNTES.filter(q => delTema(q) && q.n === nivell);
-
-  /* Si d'aquell tema i nivell no n'hi ha prou per omplir una partida sense
-     repetir-ne cap, s'estira als nivells del costat. Les del nivell demanat
-     hi entren dues vegades perquè continuïn sent les més probables. */
-  if (fons.length < QUIZ_QUANTES + 4){
+  if (tema !== 'barreja' || fons.length < QUIZ_QUANTES + 4){
     const veines = BANC_PREGUNTES.filter(q => delTema(q) && Math.abs(q.n - nivell) === 1);
     fons = fons.concat(fons, veines);
   }
+  return fons;
+}
+
+/* ── La bossa de preguntes ────────────────────────────────────
+   Abans cada partida triava a l'atzar i, com a les rifes, sortien números
+   repetits mentre d'altres no sortien mai. Ara funciona com una bossa de
+   boles: una pregunta que ja ha sortit no hi torna fins que han sortit
+   TOTES les altres del seu tema i nivell. Quan la bossa es buida, es torna
+   a omplir, però les de l'última partida es queden fora perquè no puguin
+   sortir dues vegades seguides.
+
+   Cada tema i nivell té la seva bossa, desada al navegador. */
+function clauBossa(tema, nivell){ return 'bossa_' + tema + '_' + nivell; }
+
+function llegirBossa(tema, nivell){
+  try { return JSON.parse(localStorage.getItem(clauBossa(tema, nivell)) || '[]'); }
+  catch(e){ return []; }
+}
+
+function desarBossa(tema, nivell, gastades){
+  try { localStorage.setItem(clauBossa(tema, nivell), JSON.stringify(gastades)); }
+  catch(e){}
+}
+
+/* Torna les preguntes d'aquest tema i nivell que encara no han sortit i,
+   de propina, la llista actualitzada del que s'ha gastat */
+function bossaDisponible(tema, nivell){
+  const totes = [...new Set(fonsDePreguntes(tema, nivell).map(q => q.p))];
+  let gastades = llegirBossa(tema, nivell).filter(p => totes.includes(p));
+  let queden = totes.filter(p => !gastades.includes(p));
+
+  if (queden.length < QUIZ_QUANTES){
+    // La bossa s'ha buidat: es torna a omplir deixant fora l'última partida
+    gastades = gastades.slice(0, QUIZ_QUANTES);
+    queden = totes.filter(p => !gastades.includes(p));
+  }
+  return { totes, queden, gastades };
+}
+
+function preguntaDelBanc(tema, nivell, evitades){
+  const fons = fonsDePreguntes(tema, nivell);
   if (!fons.length) return null;
   const noves = fons.filter(q => !evitades.has(q.p));
   const q = unDe(noves.length ? noves : fons);
-  return { pregunta:q.p, bona:q.b, opcions:q.o, explicacio:q.e, tema:q.t };
+  return { pregunta:q.p, bona:q.b, opcions:q.o, explicacio:q.e, tema:q.t, delBanc:true };
 }
 
 /* ── La porta d'entrada ──────────────────────────────────────── */
@@ -5744,9 +5900,6 @@ function acabarPiramide(guanyat, motiu){
    resposta surt l'explicació, encertis o no: la gràcia del joc és entendre
    el perquè, no pas endevinar-la.
 
-   Encara és en proves i per això la targeta del menú no es veu: cal fer
-   doble clic al títol "Memòria" per fer-la sortir, i no es recorda d'una
-   visita a l'altra (vegeu obrirPortaEnProves, més avall).
    ═══════════════════════════════════════════════════════ */
 const QUIZ_QUANTES = 10;
 
@@ -5772,9 +5925,13 @@ function iniciarQuiz(){
   $('quizCaixa').hidden = false;
   $('quizFiBtn').hidden = true;
 
-  /* Es preparen les deu d'una tirada, sense repetir-ne cap */
+  /* Es preparen les deu d'una tirada. S'aparten les que ja han sortit
+     d'aquesta bossa, de manera que no en torni cap fins que hagin sortit
+     totes les altres. */
+  const bossa = bossaDisponible(temaQuiz, nivellQuiz);
+  const permeses = new Set(bossa.queden);
   quizLlista = [];
-  const jaSortides = new Set();
+  const jaSortides = new Set(bossa.totes.filter(p => !permeses.has(p)));
   for (let i = 0; i < QUIZ_QUANTES; i++){
     let q = null;
     // Fins a vint intents d'aconseguir-ne una de nova abans de conformar-s'hi
@@ -5786,6 +5943,9 @@ function iniciarQuiz(){
     jaSortides.add(q.pregunta);
     quizLlista.push({ ...q, opcionsFetes:opcionsProva(q), resposta:null });
   }
+  // Les d'aquesta partida passen a estar gastades, les últimes al davant
+  desarBossa(temaQuiz, nivellQuiz,
+    quizLlista.filter(q => q.delBanc).map(q => q.pregunta).concat(bossa.gastades));
 
   pintarPregunta();
 }
@@ -5895,38 +6055,6 @@ function acabarQuiz(){
   so(quizEncerts >= Math.ceil(quizLlista.length * 0.6) ? 'victoria' : 'fi');
 }
 
-/* ── La porta de darrere ──────────────────────────────────────
-   Els jocs en proves no es veuen fins que es fa doble clic al títol
-   "Memòria". No es desa enlloc: qui recarregui la pàgina torna a no
-   veure'ls, de manera que ningú se'ls pot trobar per accident. */
-function pintarJocsEnProves(){
-  document.querySelectorAll('.game-card.en-proves').forEach(c => { c.hidden = !jocsEnProves; });
-}
-
-function obrirPortaEnProves(){
-  jocsEnProves = !jocsEnProves;
-  pintarJocsEnProves();
-  so(jocsEnProves ? 'estrella' : 'destriar');
-  if (joc === 'home') log(jocsEnProves ? 'Jocs en proves: a la vista' : 'Jocs en proves: amagats', 2200);
-  if (!jocsEnProves && joc === 'quiz'){ aturarTot(); mostrarPantalla('home'); }
-}
-
-/* Doble clic amb el ratolí i doble toc amb el dit: al mòbil el dblclick no
-   sempre arriba, així que es compten els tocs a mà */
-(function portaDelTitol(){
-  const titol = $('brandText');
-  if (!titol) return;
-  let ultim = 0;
-  titol.style.cursor = 'pointer';
-  titol.addEventListener('dblclick', obrirPortaEnProves);
-  titol.addEventListener('pointerup', ev => {
-    if (ev.pointerType === 'mouse') return;      // amb ratolí ja hi ha el dblclick
-    const ara = Date.now();
-    if (ara - ultim < 450){ ultim = 0; obrirPortaEnProves(); }
-    else ultim = ara;
-  });
-})();
-pintarJocsEnProves();
 
 const INICIAR = {
   parelles: () => iniciarParelles(), escena: () => iniciarEscena(),
