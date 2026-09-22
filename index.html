@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.31
+    Version: 4.40
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,27 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.40
+    - PIRÀMIDE: figures noves. Les cartes se superposen sense fer cas de la
+      física, de manera que la piràmide creix en alçada i no en amplada:
+      quatre piràmides petites a la base, una de grossa al damunt i dues
+      més a la punta. Les cartes es mantenen igual de grosses i la partida
+      dura més
+    - Sis nivells en comptes de quatre, i tots amb més cartes:
+      36 · 52 · 72 · 92 · 112 · 140
+    - Les cartes tapades ara són d'un gris molt més clar: es veien massa
+      fosques
+    - Les mini-preguntes tenen tres nivells (Fàcil · Mitjà · Difícil) que es
+      trien al mateix pop-up dels nivells i es recorden. El fàcil és igual
+      que sempre; el mitjà i el difícil afegeixen càlcul, sèries, contraris,
+      sinònims i cultura general
+    - Les respostes de la mini-pregunta surten mig segon més tard i, mentre
+      no surten, no reaccionen al tacte: així no es prem res sense voler
+    - Les cartes de càstig cauen col·locades en bloc, centrades i alineades,
+      i les dues cartes d'una parella mai no cauen juntes
+    - El so de les cartes que cauen és un "plim" tou de cartes que piquen
+      entre elles, en comptes del cop d'abans
 
     CANVIS v4.31
     - La finestra "So i efectes" avisa si algun fitxer de so no s'ha pogut
@@ -705,7 +726,7 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .ptile .material-symbols-rounded{font-size:calc(var(--pw,60px) * .56)}
 .ptile .foto-asset{width:100%;height:100%;object-fit:cover}
 /* Tapada: marc apagat i la imatge enfosquida */
-.ptile.tapada{filter:brightness(.5) saturate(.55);cursor:default;border-color:rgba(90,90,110,.5)}
+.ptile.tapada{filter:brightness(.88) saturate(.35) contrast(.92);cursor:default;border-color:rgba(120,120,140,.45)}
 /* Lliure: marc daurat i brillant, es veu d'una ullada quines pots tocar */
 .ptile.lliure{
   cursor:pointer;border-color:#f5b301;
@@ -719,7 +740,7 @@ body.day .menu-intro{color:#5a3410;text-shadow:0 1px 0 rgba(255,255,255,.5)}
   box-shadow:0 0 0 3px rgba(236,72,153,.4), 0 0 22px rgba(236,72,153,.6), 2px 3px 0 rgba(0,0,0,.3);
 }
 body:not(.day) .ptile{border-color:rgba(255,255,255,.18)}
-body:not(.day) .ptile.tapada{border-color:rgba(255,255,255,.12);filter:brightness(.42) saturate(.5)}
+body:not(.day) .ptile.tapada{border-color:rgba(255,255,255,.16);filter:brightness(.72) saturate(.35) contrast(.9)}
 body:not(.day) .ptile.lliure{border-color:#ffc400;
   box-shadow:0 0 0 2px rgba(255,196,0,.4), 0 0 18px rgba(255,196,0,.5), 0 6px 16px rgba(0,0,0,.45)}
 body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px rgba(244,114,182,.4), 0 0 20px rgba(244,114,182,.5)}
@@ -809,6 +830,22 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 .chip-boto:disabled{opacity:.45;cursor:default}
 
 /* ── So i efectes: interruptors grossos, fàcils de tocar ── */
+/* Mig segon sense respostes, perquè no es premi res sense voler */
+.prova-opcions.esperant{opacity:0;pointer-events:none}
+.prova-opcions{transition:opacity .22s ease}
+#provaBloc{width:100%;margin-top:20px;padding-top:18px;border-top:2px dashed var(--card-ring)}
+.prova-titol{font-family:'Baloo 2';font-weight:700;font-size:20px;color:var(--ink);margin:0 0 12px;text-align:center}
+.prova-nivells{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.prova-nivell{
+  display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;
+  padding:14px 6px;border-radius:20px;font-family:'Fredoka';color:var(--ink);
+  background:var(--chip-bg);border:3px solid transparent;transition:transform .12s, border-color .15s;
+}
+.prova-nivell b{font-size:19px;font-weight:600;line-height:1.1}
+.prova-nivell small{font-size:12px;opacity:.75;line-height:1.15;text-align:center}
+.prova-nivell:active{transform:scale(.95)}
+.prova-nivell[aria-checked="true"]{border-color:var(--to);background:color-mix(in srgb, var(--to) 18%, var(--chip-bg))}
+.prova-nivell[aria-checked="true"] b{color:var(--to)}
 .so-llista{display:flex;flex-direction:column;gap:12px;width:100%;margin-bottom:18px}
 /* Avís que només surt si algun fitxer de so no s'ha pogut carregar */
 .so-avis{
@@ -1708,7 +1745,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.31</span>
+      <span class="version" id="version">v4.40</span>
     </div>
   </footer>
 </div>
@@ -1761,6 +1798,10 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
     <span class="material-symbols-rounded modal-icon">grid_view</span>
     <h2 id="levelTitle">Quantes parelles?</h2>
     <div class="size-grid" id="levelGrid" role="radiogroup" aria-labelledby="levelTitle"></div>
+    <div id="provaBloc" hidden>
+      <p class="prova-titol" id="provaTitol">I les preguntes?</p>
+      <div class="prova-nivells" id="provaNivells" role="radiogroup" aria-labelledby="provaTitol"></div>
+    </div>
   </div>
 </div>
 
@@ -2265,11 +2306,15 @@ const NIVELLS_ASSOC = [ { parelles:3, mirar:12, respondre:45, text:'3 parelles' 
 const NIVELLS_COMPTA = [ { mostres:12, velocitat:1000, variants:3, text:'12 imatges' }, { mostres:18, velocitat:900, variants:4, text:'18 imatges' }, { mostres:24, velocitat:800, variants:5, text:'24 imatges' }, { mostres:32, velocitat:700, variants:6, text:'32 imatges' }, { mostres:40, velocitat:420, variants:6, text:'Súper ràpid!' } ];
 const NIVELLS_NBACK = [ { n:1, mostres:14, velocitat:3000, variants:4, text:'Per començar' }, { n:1, mostres:18, velocitat:1900, variants:5, text:'Més ràpid' }, { n:2, mostres:20, velocitat:2600, variants:5, text:'Costa més' }, { n:3, mostres:22, velocitat:2900, variants:6, text:'Per a experts' } ];
 
+/* La planta es manté petita i el que creix és l'alçada: les cartes tenen
+   sempre la mateixa mida i el que augmenta és el nombre de capes */
 const NIVELLS_PIRAMIDE = [
-  { parelles:14, safata:6, segons:240, text:'28 cartes · 3 capes' },
-  { parelles:22, safata:6, segons:320, text:'44 cartes · 3 capes' },
-  { parelles:30, safata:6, segons:400, text:'60 cartes · 4 capes' },
-  { parelles:40, safata:6, segons:520, text:'80 cartes · 4 capes' }
+  { parelles:18, safata:6, segons:260, text:'36 cartes · poques capes' },
+  { parelles:26, safata:6, segons:360, text:'52 cartes' },
+  { parelles:36, safata:6, segons:480, text:'72 cartes' },
+  { parelles:46, safata:6, segons:620, text:'92 cartes · ben alta' },
+  { parelles:56, safata:7, segons:760, text:'112 cartes · molt alta' },
+  { parelles:70, safata:7, segons:940, text:'140 cartes · per a valents' }
 ];
 
 /* Els quatre "pals": dues famílies de color, com el vermell i el negre
@@ -2328,6 +2373,13 @@ let nivellAssoc     = parseInt(localStorage.getItem('nivellAssoc')||1,10);
 let nivellCompta    = parseInt(localStorage.getItem('nivellCompta')||1,10);
 let nivellNback     = parseInt(localStorage.getItem('nivellNback')||1,10);
 let nivellPiramide  = parseInt(localStorage.getItem('nivellPiramide')||1,10);
+/* Dificultat de les mini-preguntes: 0 fàcil · 1 mitjà · 2 difícil.
+   Es tria al pop-up de nivells i es recorda: qui vulgui sempre fàcil, ho
+   tria una vegada i no hi ha de tornar mai més. */
+let nivellProva     = parseInt(localStorage.getItem('nivellProva')||0,10);
+const GRACIA_PROVA  = 500;    // mig segon abans de poder respondre
+let provaRespostes  = null;   // temporitzador d'aquest mig segon
+let provaObertaDes  = 0;
 let nivellBlanca    = parseInt(localStorage.getItem('nivellBlanca')||0,10);
 let nivellEditant   = 'parelles';
 
@@ -2883,11 +2935,11 @@ document.addEventListener('visibilitychange', () => {
    actualitza MAPA_SONS i el nom del fitxer (SONS_URL).
    ═══════════════════════════════════════════════════════ */
 const SONS_URL = 'sons-memoria.mp3';
-const MAPA_SONS = {"carta":[0.225,0.33],"safata":[0.695,0.37],"triar":[1.205,0.27],"destriar":[1.615,0.27],"boto":[2.025,0.24],"bloquejada":[2.405,0.41],"parella":[2.955,0.81],"ronda":[3.905,0.66],"estrella":[4.705,1.06],"buidar":[5.905,1.21],"error":[7.255,0.66],"fi":[8.055,1.06],"temps":[9.255,0.96],"tic":[10.355,0.17],"victoria":[10.665,2.11],"nivell":[12.915,1.41],"caiguda":[14.465,1.06],"apareix":[15.665,0.56],"pista":[16.365,0.51],"seq0":[17.015,0.66],"seq1":[17.815,0.66],"seq2":[18.615,0.66],"seq3":[19.415,0.66],"seq4":[20.215,0.66],"seq5":[21.015,0.66]};
+const MAPA_SONS = {"carta":[0.225,0.33],"safata":[0.695,0.37],"triar":[1.205,0.27],"destriar":[1.615,0.27],"boto":[2.025,0.24],"bloquejada":[2.405,0.41],"parella":[2.955,0.81],"ronda":[3.905,0.66],"estrella":[4.705,1.06],"buidar":[5.905,1.21],"error":[7.255,0.66],"fi":[8.055,1.06],"temps":[9.255,0.96],"tic":[10.355,0.17],"victoria":[10.665,2.11],"nivell":[12.915,1.41],"caiguda":[14.465,0.37],"apareix":[14.975,0.56],"pista":[15.675,0.51],"seq0":[16.325,0.66],"seq1":[17.125,0.66],"seq2":[17.925,0.66],"seq3":[18.725,0.66],"seq4":[19.525,0.66],"seq5":[20.325,0.66]};
 
 /* Els que es repeteixen molt varien una mica de to a cada toc, perquè
    sentir vint cops el mateix clac exacte cansa */
-const VARIA = { carta:0.05, triar:0.04, destriar:0.04, boto:0.03, tic:0.02, caiguda:0.06, apareix:0.05 };
+const VARIA = { carta:0.05, triar:0.04, destriar:0.04, boto:0.03, tic:0.02, caiguda:0.10, apareix:0.05 };
 
 let ctxSo = null, bufferSons = null, sonsCarregant = null, busSons = null;
 let estatSons = 'gens';        // gens · carregant · llest · falta · malmes · sense-audio
@@ -3208,6 +3260,7 @@ function aturarTot(){
   clearTimeout(nbackTimer); nbackTimer = null;
   clearTimeout(demoTimer); demoTimer = null;
   clearTimeout(provaIdle); provaIdle = null; provaPendent = false;
+  clearTimeout(provaRespostes); provaRespostes = null;
   alAcabarElTemps = null; aturatPerModal = false;
 }
 
@@ -4506,48 +4559,221 @@ const piramideBoard = $('piramideBoard');
    ═══════════════════════════════════════════════════════ */
 const ABECEDARI = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
 
-function generarProva(){
-  const tipus = Math.floor(Math.random() * 5);
-  const enter = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+/* ═══════════════════════════════════════════════════════
+   LES MINI-PREGUNTES DE LA PIRÀMIDE
 
-  if (tipus === 0){                                   // suma
-    const a = enter(7, 39), b = enter(4, 29);
-    return { pregunta:`Quant fan ${a} + ${b}?`, bona:a + b, numerica:true };
-  }
-  if (tipus === 1){                                   // resta
-    const a = enter(20, 60), b = enter(3, 19);
-    return { pregunta:`Quant fan ${a} − ${b}?`, bona:a - b, numerica:true };
-  }
-  if (tipus === 2){                                   // lletres
-    const i = enter(0, ABECEDARI.length - 3);
-    const endavant = Math.random() < .6;
-    const j = endavant ? i + 1 : Math.max(0, i - 1);
+   Tres nivells, que es trien al pop-up de "Quantes cartes?" i es recorden
+   d'una partida a l'altra. La idea és que una persona gran triï "Fàcil"
+   una vegada i no hi hagi de tornar mai, i que qui en vulgui més triï
+   "Difícil" i tampoc. No hi ha cap ajust automàtic: pujar la dificultat a
+   qui encerta acaba castigant qui ho fa bé, i baixar-la a qui falla treu
+   la gràcia d'encertar.
+
+   Les preguntes de cultura general estan totes comprovades i no depenen
+   de l'actualitat: no hi ha res que caduqui ni res discutible.
+   ═══════════════════════════════════════════════════════ */
+const NIVELLS_PROVA = [
+  { nom:'Fàcil',   sub:'Sumes i lletres',        color:'#22c55e' },
+  { nom:'Mitjà',   sub:'Càlcul i cultura',       color:'#f59e0b' },
+  { nom:'Difícil', sub:'Per a qui vol pensar',   color:'#ef4444' }
+];
+
+/* Cultura general de nivell mitjà: coses que tothom ha sentit alguna vegada */
+const CULTURA_MITJA = [
+  { p:'Quantes potes té una aranya?',                    b:'8',  o:['6','10','4'] },
+  { p:'Quin és el planeta més a prop del Sol?',          b:'Mercuri', o:['Venus','Mart','La Terra'] },
+  { p:'Quin color surt de barrejar blau i groc?',        b:'Verd', o:['Taronja','Lila','Marró'] },
+  { p:'Quantes cares té un dau?',                        b:'6',  o:['4','8','12'] },
+  { p:'Quin és l\'oceà més gran del món?',                b:'El Pacífic', o:['L\'Atlàntic','L\'Índic','L\'Àrtic'] },
+  { p:'Quin és l\'animal més gran del planeta?',          b:'La balena blava', o:['L\'elefant','La girafa','El tauró blanc'] },
+  { p:'Quina és la capital de França?',                  b:'París', o:['Lió','Marsella','Niça'] },
+  { p:'Quants minuts té una hora?',                      b:'60', o:['50','100','30'] },
+  { p:'Quantes hores té un dia?',                        b:'24', o:['12','20','36'] },
+  { p:'Quantes cordes té una guitarra clàssica?',        b:'6',  o:['4','8','12'] },
+  { p:'Quin mar banya Barcelona?',                       b:'El Mediterrani', o:['L\'Atlàntic','El Cantàbric','El mar del Nord'] },
+  { p:'Quin òrgan bomba la sang pel cos?',               b:'El cor', o:['El fetge','El pulmó','El ronyó'] },
+  { p:'Quin és l\'animal terrestre més ràpid?',           b:'El guepard', o:['El cavall','El lleó','La llebre'] },
+  { p:'Quin insecte fa la mel?',                         b:'L\'abella', o:['La vespa','La formiga','El borinot'] },
+  { p:'Quants dies té el febrer en un any de traspàs?',  b:'29', o:['28','30','31'] },
+  { p:'En quin mes comença la primavera aquí?',          b:'Al març', o:['Al gener','Al maig','Al juny'] },
+  { p:'Quantes lletres té l\'alfabet català?',            b:'26', o:['24','28','30'] },
+  { p:'Quin metall és líquid a temperatura ambient?',    b:'El mercuri', o:['El plom','L\'estany','El coure'] },
+  { p:'Quants costats té un hexàgon?',                   b:'6',  o:['5','7','8'] },
+  { p:'De quin animal ve la llana?',                     b:'De l\'ovella', o:['De la vaca','De la cabra','Del porc'] },
+  { p:'Quantes estacions té l\'any?',                     b:'4',  o:['2','3','6'] },
+  { p:'Quin és el satèl·lit natural de la Terra?',       b:'La Lluna', o:['Mart','Venus','El Sol'] },
+  { p:'Quina figura té tots els costats iguals i quatre angles rectes?', b:'El quadrat', o:['El rombe','El rectangle','El trapezi'] },
+  { p:'Quin instrument es toca amb un arquet?',          b:'El violí', o:['La flauta','El piano','La trompeta'] }
+];
+
+/* Cultura general de nivell difícil: cal saber-ho o deduir-ho */
+const CULTURA_DIFICIL = [
+  { p:'Qui va pintar el Guernica?',                      b:'Picasso', o:['Dalí','Miró','Velázquez'] },
+  { p:'En quin any va caure el mur de Berlín?',          b:'1989', o:['1979','1991','1985'] },
+  { p:'Quin element químic té el símbol Fe?',            b:'El ferro', o:['El fòsfor','El fluor','El franci'] },
+  { p:'Quin planeta té els anells més visibles?',        b:'Saturn', o:['Júpiter','Urà','Neptú'] },
+  { p:'Qui va escriure el Tirant lo Blanc?',             b:'Joanot Martorell', o:['Ausiàs March','Ramon Llull','Jacint Verdaguer'] },
+  { p:'Quina és la muntanya més alta del món?',          b:'L\'Everest', o:['El K2','El Mont Blanc','El Kilimanjaro'] },
+  { p:'Quants costats té un heptàgon?',                  b:'7',  o:['6','8','9'] },
+  { p:'Quin gas absorbeixen les plantes per fer la fotosíntesi?', b:'El diòxid de carboni', o:['L\'oxigen','El nitrogen','L\'hidrogen'] },
+  { p:'En quin segle va començar la Revolució Francesa?', b:'Al segle XVIII', o:['Al segle XVII','Al segle XIX','Al segle XVI'] },
+  { p:'Qui va dissenyar la Sagrada Família?',            b:'Antoni Gaudí', o:['Lluís Domènech i Montaner','Josep Puig i Cadafalch','Ildefons Cerdà'] },
+  { p:'Quin és el país més extens del món?',             b:'Rússia', o:['El Canadà','La Xina','El Brasil'] },
+  { p:'Quin instrument té 88 tecles?',                   b:'El piano', o:['L\'orgue','L\'acordió','El clavicèmbal'] },
+  { p:'Quina és la capital d\'Austràlia?',                b:'Canberra', o:['Sydney','Melbourne','Perth'] },
+  { p:'Qui va formular la teoria de la relativitat?',    b:'Einstein', o:['Newton','Galileu','Bohr'] },
+  { p:'Quin és l\'os més llarg del cos humà?',            b:'El fèmur', o:['L\'húmer','La tíbia','La columna'] },
+  { p:'En quin any va arribar l\'home a la Lluna?',       b:'1969', o:['1959','1972','1965'] },
+  { p:'Qui va escriure el Quixot?',                      b:'Cervantes', o:['Lope de Vega','Quevedo','Góngora'] },
+  { p:'Quin és el desert càlid més extens del món?',     b:'El Sàhara', o:['El Gobi','L\'Atacama','El Kalahari'] },
+  { p:'Quants graus fan els angles d\'un triangle sumats?', b:'180', o:['90','360','270'] },
+  { p:'Quina cèl·lula transporta l\'oxigen per la sang?',  b:'El glòbul vermell', o:['El glòbul blanc','La plaqueta','La neurona'] },
+  { p:'Quin país va ser el primer a fer servir el paper moneda?', b:'La Xina', o:['Egipte','Grècia','Itàlia'] },
+  { p:'Quina és la llengua amb més parlants com a llengua materna?', b:'El xinès mandarí', o:['L\'anglès','L\'espanyol','L\'hindi'] },
+  { p:'Quin és l\'estret que separa Europa d\'Àfrica?',    b:'Gibraltar', o:['Bòsfor','Ormuz','Malaca'] },
+  { p:'Quants elements té una octava musical?',          b:'8',  o:['5','7','12'] }
+];
+
+/* Paraules: contraris i sinònims, per no fer-ho tot de números */
+const CONTRARIS = [
+  ['alt','baix'], ['ràpid','lent'], ['calent','fred'], ['ple','buit'],
+  ['clar','fosc'], ['dur','tou'], ['llarg','curt'], ['ample','estret'],
+  ['pesat','lleuger'], ['humit','sec'], ['dolç','amarg'], ['fort','feble']
+];
+const SINONIMS = [
+  ['content','alegre'], ['cansat','fatigat'], ['bonic','formós'],
+  ['valent','coratjós'], ['tranquil','calmat'], ['antic','vell'],
+  ['begut','ebri'], ['llest','espavilat'], ['brut','endropit']
+];
+
+function generarProva(){
+  const dif = nivellProva;                    // 0 fàcil · 1 mitjà · 2 difícil
+  const enter = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const tria = llista => llista[Math.floor(Math.random() * llista.length)];
+
+  /* ── FÀCIL: exactament com sempre ── */
+  if (dif === 0){
+    const tipus = Math.floor(Math.random() * 5);
+    if (tipus === 0){
+      const a = enter(7, 39), b = enter(4, 29);
+      return { pregunta:`Quant fan ${a} + ${b}?`, bona:a + b, numerica:true };
+    }
+    if (tipus === 1){
+      const a = enter(20, 60), b = enter(3, 19);
+      return { pregunta:`Quant fan ${a} − ${b}?`, bona:a - b, numerica:true };
+    }
+    if (tipus === 2){
+      const i = enter(0, ABECEDARI.length - 3);
+      const endavant = Math.random() < .6;
+      const j = endavant ? i + 1 : Math.max(0, i - 1);
+      return {
+        pregunta: endavant ? `Quina lletra va després de la ${ABECEDARI[i]}?`
+                           : `Quina lletra va abans de la ${ABECEDARI[i]}?`,
+        bona: ABECEDARI[j], lletres:true
+      };
+    }
+    if (tipus === 3){
+      const inici = enter(2, 15), pas = enter(2, 7);
+      const serie = [inici, inici + pas, inici + pas * 2];
+      return { pregunta:`${serie.join(', ')}… quin número ve ara?`, bona: inici + pas * 3, numerica:true };
+    }
+    const n = enter(11, 98);
+    const parell = Math.random() < .5;
     return {
-      pregunta: endavant ? `Quina lletra va després de la ${ABECEDARI[i]}?`
-                         : `Quina lletra va abans de la ${ABECEDARI[i]}?`,
-      bona: ABECEDARI[j], lletres:true
+      pregunta: parell ? `El ${n} és un número parell?` : `El ${n} es pot dividir entre 5?`,
+      bona: (parell ? (n % 2 === 0) : (n % 5 === 0)) ? 'Sí' : 'No', siono:true
     };
   }
-  if (tipus === 3){                                   // sèrie de números
-    const inici = enter(2, 15), pas = enter(2, 7);
-    const serie = [inici, inici + pas, inici + pas * 2];
-    return {
-      pregunta:`${serie.join(', ')}… quin número ve ara?`,
-      bona: inici + pas * 3, numerica:true
-    };
+
+  /* ── MITJÀ ── */
+  if (dif === 1){
+    const tipus = Math.floor(Math.random() * 6);
+    if (tipus === 0){                                    // taula de multiplicar
+      const a = enter(3, 9), b = enter(3, 9);
+      return { pregunta:`Quant fan ${a} × ${b}?`, bona:a * b, numerica:true };
+    }
+    if (tipus === 1){                                    // dobles, meitats i percentatges rodons
+      const quin = Math.floor(Math.random() * 3);
+      if (quin === 0){ const n = enter(12, 48) * 2; return { pregunta:`Quina és la meitat de ${n}?`, bona:n / 2, numerica:true }; }
+      if (quin === 1){ const n = enter(14, 60); return { pregunta:`Quin és el doble de ${n}?`, bona:n * 2, numerica:true }; }
+      const n = enter(2, 18) * 10;
+      return { pregunta:`Quant és el 10 % de ${n}?`, bona:n / 10, numerica:true };
+    }
+    if (tipus === 2){                                    // sèries multiplicatives o alternades
+      if (Math.random() < .5){
+        const i = enter(2, 5), f = enter(2, 3);
+        const s = [i, i * f, i * f * f];
+        return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i * f * f * f, numerica:true };
+      }
+      const i = enter(4, 20), p = enter(3, 8);
+      const s = [i, i + p, i + p - 2, i + p * 2 - 2];
+      return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 2 - 4, numerica:true };
+    }
+    if (tipus === 3){                                    // contraris
+      const [a, b] = tria(CONTRARIS);
+      const altres = CONTRARIS.filter(c => c[1] !== b).map(c => c[1]);
+      return { pregunta:`Quin és el contrari de "${a}"?`, bona:b, opcions:barrejar(altres).slice(0, 3) };
+    }
+    if (tipus === 4){                                    // lletres, però saltant
+      const salt = enter(2, 3);
+      const i = enter(0, ABECEDARI.length - salt - 1);
+      return { pregunta:`Quina lletra hi ha ${salt} llocs després de la ${ABECEDARI[i]}?`,
+               bona:ABECEDARI[i + salt], lletres:true };
+    }
+    const q = tria(CULTURA_MITJA);                       // cultura general
+    return { pregunta:q.p, bona:q.b, opcions:q.o };
   }
-  // sí o no
-  const n = enter(11, 98);
-  const parell = Math.random() < .5;
-  return {
-    pregunta: parell ? `El ${n} és un número parell?` : `El ${n} es pot dividir entre 5?`,
-    bona: (parell ? (n % 2 === 0) : (n % 5 === 0)) ? 'Sí' : 'No',
-    siono:true
-  };
+
+  /* ── DIFÍCIL ── */
+  const tipus = Math.floor(Math.random() * 6);
+  if (tipus === 0){                                      // dues operacions
+    const a = enter(4, 12), b = enter(3, 9);
+    const c = enter(5, Math.max(6, a * b - 4));          // mai un resultat negatiu
+    return { pregunta:`Quant fan ${a} × ${b} − ${c}?`, bona:a * b - c, numerica:true };
+  }
+  if (tipus === 1){                                      // fraccions i percentatges
+    if (Math.random() < .5){
+      const n = enter(3, 15) * 4;
+      return { pregunta:`Quina és la quarta part de ${n}?`, bona:n / 4, numerica:true };
+    }
+    const n = enter(4, 20) * 5;
+    return { pregunta:`Quant és el 20 % de ${n}?`, bona:Math.round(n / 5), numerica:true };
+  }
+  if (tipus === 2){                                      // sèries de debò
+    const quina = Math.floor(Math.random() * 3);
+    if (quina === 0){                                    // quadrats
+      const i = enter(2, 7);
+      const s = [i * i, (i + 1) * (i + 1), (i + 2) * (i + 2)];
+      return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:(i + 3) * (i + 3), numerica:true };
+    }
+    if (quina === 1){                                    // Fibonacci
+      let a = enter(1, 5), b = a + enter(1, 4);
+      const s = [a, b, a + b, a + 2 * b];
+      return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:2 * a + 3 * b, numerica:true };
+    }
+    const i = enter(2, 6), p = enter(2, 4);              // salt que creix
+    const s = [i, i + p, i + p * 3, i + p * 6];
+    return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 10, numerica:true };
+  }
+  if (tipus === 3){                                      // sinònims
+    const [a, b] = tria(SINONIMS);
+    const altres = SINONIMS.filter(c => c[1] !== b).map(c => c[1]);
+    return { pregunta:`Quina paraula vol dir el mateix que "${a}"?`, bona:b, opcions:barrejar(altres).slice(0, 3) };
+  }
+  if (tipus === 4){                                      // l\'abecedari a l\'inrevés
+    const salt = enter(2, 4);
+    const i = enter(salt, ABECEDARI.length - 1);
+    return { pregunta:`Quina lletra hi ha ${salt} llocs abans de la ${ABECEDARI[i]}?`,
+             bona:ABECEDARI[i - salt], lletres:true };
+  }
+  const q = tria(CULTURA_DIFICIL);                       // cultura general
+  return { pregunta:q.p, bona:q.b, opcions:q.o };
 }
 
 function opcionsProva(prova){
   if (prova.siono) return ['Sí', 'No'];
+  // Les preguntes de cultura general porten les seves pròpies opcions
+  if (prova.opcions) return barrejar([prova.bona, ...prova.opcions]);
 
   const opcions = new Set([prova.bona]);
   if (prova.lletres){
@@ -4558,11 +4784,15 @@ function opcionsProva(prova){
       if (k >= 0 && k < ABECEDARI.length) opcions.add(ABECEDARI[k]);
     }
   } else {
-    while (opcions.size < 4){
+    // Amb un límit d'intents: si la resposta és molt petita pot ser que no
+    // hi hagi prou números diferents a prop, i abans això es penjava
+    for (let i = 0; opcions.size < 4 && i < 200; i++){
       const d = Math.floor(Math.random() * 13) - 6;
       const v = prova.bona + d;
-      if (v > 0) opcions.add(v);
+      if (v >= 0 && v !== prova.bona) opcions.add(v);
     }
+    let seguent = prova.bona + 1;
+    while (opcions.size < 4) opcions.add(seguent++);
   }
   return barrejar([...opcions]);
 }
@@ -4579,7 +4809,7 @@ function treureProva(){
   $('provaPeu').textContent = '';   // res d'avisos: només la pregunta
 
   const caixa = $('provaOpcions');
-  caixa.innerHTML = ''; caixa.style.pointerEvents = 'auto';
+  caixa.innerHTML = '';
   opcionsProva(prova).forEach(op => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'prova-btn'; b.textContent = op;
@@ -4587,11 +4817,26 @@ function treureProva(){
     caixa.appendChild(b);
   });
 
+  /* Mig segon de gràcia: la pregunta surt de cop i el dit sovint ja anava
+     cap a una carta de la piràmide. Durant aquest mig segon les respostes
+     ni es veuen ni reaccionen al tacte, i així no es pot prémer res sense
+     voler. */
+  caixa.classList.add('esperant');
+  caixa.style.pointerEvents = 'none';
+  provaObertaDes = Date.now();
+  clearTimeout(provaRespostes);
+  provaRespostes = setTimeout(() => {
+    caixa.classList.remove('esperant');
+    caixa.style.pointerEvents = 'auto';
+  }, GRACIA_PROVA);
+
   so('pista');
   obrirModal($('provaOverlay'));
 }
 
 function respondreProva(boto, resposta, prova){
+  // Encara som dins del mig segon de gràcia: no compta
+  if (Date.now() - provaObertaDes < GRACIA_PROVA) return;
   const bo = String(resposta) === String(prova.bona);
   $('provaOpcions').style.pointerEvents = 'none';
 
@@ -4622,35 +4867,70 @@ function afegirCastig(){
   const vives = piramideCartes.filter(c => !c.fora);
   if (!vives.length) return;
 
+  /* Les cartes noves no cauen escampades: es col·loquen com un bloc ben
+     fet, centrat damunt del que queda de piràmide i alineat a la mateixa
+     quadrícula. Si no hi caben en una capa, se'n fa una segona a sobre,
+     més petita, de manera que continuï semblant una piràmide i no un
+     munt de cartes tirades. */
   const capaNova = Math.max(...vives.map(c => c.l)) + 1;
   const pool = getActivePool(1);
   const quantesParelles = Math.min(3 + nivellPiramide, Math.max(3, Math.floor(vives.length / 2)));
+  const quantes = quantesParelles * 2;
 
-  const bases = barrejar(vives);
-  const noves = [];
+  // La planta que ocupa ara la piràmide, en mitges caselles
+  const x0 = Math.min(...vives.map(c => c.x)), x1 = Math.max(...vives.map(c => c.x));
+  const y0 = Math.min(...vives.map(c => c.y)), y1 = Math.max(...vives.map(c => c.y));
+  const ampleMax = Math.max(1, Math.floor((x1 - x0) / 2) + 1);
+  const altMax   = Math.max(1, Math.floor((y1 - y0) / 2) + 1);
+
+  // Un bloc el més quadrat possible que hi càpiga
+  let c = Math.min(ampleMax, Math.max(1, Math.round(Math.sqrt(quantes * ampleMax / altMax))));
+  let f = Math.min(altMax, Math.ceil(quantes / c));
+  if (c * f < quantes) c = Math.min(ampleMax, Math.ceil(quantes / f));
+
+  // Centrat damunt de la piràmide, mig desplaçat perquè es vegi el relleu
+  const dx = x0 + Math.max(0, Math.round((ampleMax - c)));
+  const dy = y0 + Math.max(0, Math.round((altMax - f)));
+
+  const llocs = [];
+  for (let k = 0; llocs.length < quantes && k < 6; k++){
+    const cc = Math.max(1, c - k), ff = Math.max(1, f - k);
+    blocDeCartes(cc, ff, dx + k, dy + k, capaNova + k).forEach(pos => {
+      if (llocs.length < quantes) llocs.push(pos);
+    });
+  }
+
+  /* Les dues cartes d'una parella, en llocs separats: si caiguessin totes
+     dues de bracet, la parella es faria sola i el càstig no seria càstig */
+  const barrejats = barrejar(llocs);
   const simbolsCastig = triarSimbols(pool, quantesParelles);
+  const noves = [];
   for (let p = 0; p < quantesParelles; p++){
     const simbol = simbolsCastig[p % simbolsCastig.length];
-    // Cada carta de la parella, damunt d'una carta diferent de la piràmide
-    const a = bases[(p * 2) % bases.length];
-    const b = bases[(p * 2 + 1) % bases.length];
-    const apilada = p === 0;     // la primera parella sí que cau una sobre l'altra
-    noves.push(
-      { l:capaNova + (apilada ? 1 : 0), x:a.x, y:a.y,
-        uid:simbol.uid, item:simbol, especial:false, fora:false, el:null },
-      { l:capaNova, x:apilada ? a.x : b.x, y:apilada ? a.y : b.y,
-        uid:simbol.uid, item:simbol, especial:false, fora:false, el:null }
-    );
+    [barrejats[p], barrejats[p + quantesParelles]].forEach(pos => {
+      if (!pos) return;
+      noves.push({ ...pos, uid:simbol.uid, item:simbol, especial:false, fora:false, el:null });
+    });
   }
 
   piramideCartes.push(...noves);
   piramideRestants += noves.length;
   $('piramideRestants').textContent = piramideRestants;
   pintarPiramide();
-  noves.forEach((c, i) => {
-    if (c.el) c.el.classList.add('castig');
-    setTimeout(() => so('caiguda'), i * 90);
+
+  // Cauen de baix a dalt, una darrere l'altra, amb el seu "plim"
+  const ordre = [...noves].sort((a, b) => (a.l - b.l) || (a.y - b.y) || (a.x - b.x));
+  ordre.forEach((carta, i) => {
+    if (!carta.el) return;
+    carta.el.style.animation = `caiguda 420ms cubic-bezier(.34,1.56,.64,1) ${i * 110}ms both`;
+    carta.el.classList.add('castig');
+    setTimeout(() => so('caiguda'), i * 110 + 170);
   });
+  setTimeout(() => {
+    ordre.forEach(c => { if (c.el) c.el.style.animation = ''; });
+    marcarLliures();
+  }, ordre.length * 110 + 600);
+
   log(`${noves.length} cartes més!`, 3000);
 }
 
@@ -4673,77 +4953,130 @@ function espaiPiramide(){
   };
 }
 
+/* ═══════════════════════════════════════════════════════
+   LA FIGURA DE LA PIRÀMIDE
+
+   Les cartes no s'aguanten les unes damunt les altres: se superposen i
+   prou, sense cap llei física pel mig. Això permet fer figures que de debò
+   no s'aguantarien —quatre piràmides petites a la base, una de grossa al
+   damunt i dues més a la punta— i, sobretot, permet créixer cap amunt en
+   comptes de créixer cap als costats. La planta es manté petita, les cartes
+   es mantenen grosses i el que augmenta és el nombre de capes: més estona
+   de joc sense que res es faci més petit.
+
+   Les coordenades van en mitges caselles, perquè una capa pugui quedar
+   desplaçada mitja carta respecte de la de sota. Una carta ocupa 2×2.
+   ═══════════════════════════════════════════════════════ */
+function blocDeCartes(c, f, dx, dy, l){
+  const pos = [];
+  for (let fila = 0; fila < f; fila++)
+    for (let col = 0; col < c; col++)
+      pos.push({ l, x: dx + col * 2, y: dy + fila * 2 });
+  return pos;
+}
+
+/* Les capes, de baix a dalt. El joc en va demanant fins que té prou cartes.
+   Cada cinc capes es tanca un cicle i el següent comença una mica més
+   estret, de manera que la silueta continua sent piramidal per molt amunt
+   que arribi. */
+function capaDeLaFigura(k, cols, files){
+  const cicle = Math.floor(k / 5), pas = k % 5;
+  const c0 = Math.max(2, cols - cicle), f0 = Math.max(2, files - cicle);
+  const centrat = (c, f) => ({ dx: cols - c, dy: files - f });   // en mitges caselles
+
+  if (pas === 0){                       // la planta sencera
+    const { dx, dy } = centrat(c0, f0);
+    return blocDeCartes(c0, f0, dx, dy, k);
+  }
+
+  if (pas === 1 || pas === 2){          // quatre piràmides petites, una a cada angle
+    const menys = pas === 2 ? 1 : 0;    // a la segona capa, les seves puntes
+    const c = Math.max(1, Math.floor((c0 - 1) / 2) - menys);
+    const f = Math.max(1, Math.floor((f0 - 1) / 2) - menys);
+    const { dx, dy } = centrat(c0, f0);
+    const sagnat = menys;               // les puntes, mitja carta cap endins
+    const esq = dx + sagnat, dalt = dy + sagnat;
+    const dre = dx + (c0 - c) * 2 - sagnat, baix = dy + (f0 - f) * 2 - sagnat;
+    return [
+      ...blocDeCartes(c, f, esq, dalt, k), ...blocDeCartes(c, f, dre, dalt, k),
+      ...blocDeCartes(c, f, esq, baix, k), ...blocDeCartes(c, f, dre, baix, k)
+    ];
+  }
+
+  if (pas === 3){                       // la piràmide gran del mig
+    const c = Math.max(1, c0 - 1), f = Math.max(1, f0 - 1);
+    const { dx, dy } = centrat(c, f);
+    return blocDeCartes(c, f, dx, dy, k);
+  }
+
+  // pas 4: dues piràmides a dalt, una a cada banda
+  const c = Math.max(1, Math.floor((c0 - 1) / 2));
+  const f = Math.max(1, f0 - 2);
+  const { dx, dy } = centrat(c0 - 1, f);
+  return [
+    ...blocDeCartes(c, f, dx, dy, k),
+    ...blocDeCartes(c, f, dx + (c0 - 1 - c) * 2, dy, k)
+  ];
+}
+
+/* Treu les repeticions dins d'una mateixa capa: amb plantes petites, dos
+   blocs dels angles es poden encavalcar i quedarien dues cartes al mateix
+   lloc */
+function capaNeta(k, cols, files){
+  const vistes = new Set(), fora = [];
+  capaDeLaFigura(k, cols, files).forEach(p => {
+    const clau = p.x + '·' + p.y;
+    if (!vistes.has(clau)){ vistes.add(clau); fora.push(p); }
+  });
+  return fora;
+}
+
 function disposicioPiramide(total){
-  /* La base es tria segons la forma de la pantalla: en un portàtil, ampla i
-     baixa; en un telèfon vertical, estreta i alta. Entre totes les que hi
-     caben, guanya la que fa les cartes més grosses. */
+  /* Quina planta. Tres condicions, per ordre d'importància:
+       · ha de semblar una piràmide i no una xemeneia → entre 4 i 9 capes
+       · sempre hi ha d'haver unes quantes cartes jugables → prou cartes
+         per capa, o el joc es converteix en anar traient-ne una a una
+       · i, complint això, la que fa les cartes més grosses i s'assembla
+         més a la forma de la pantalla */
   const espai = espaiPiramide();
+  const formaPantalla = espai.w / espai.h;
   let millor = null;
-  for (let cols = 4; cols <= 10; cols++){
-    for (let files = 2; files <= 7; files++){
-      let suma = 0, capes = 0;
-      for (let k = 0; ; k++){
-        const c = cols - k, f = files - k;
-        if (c < 1 || f < 1) break;
-        suma += c * f; capes++;
-      }
-      if (suma < total) continue;
-      const sobra = suma - total;
 
-      /* El sobrant es retalla de la punta. Comptem quantes capes queden
-         realment dretes després de retallar: una piràmide que perd la punta
-         sencera torna a ser una llosa, i això no ho volem. */
-      const mides = [];
-      for (let k = 0; ; k++){
-        const c = cols - k, f = files - k;
-        if (c < 1 || f < 1) break;
-        mides.push(c * f);
-      }
-      let queda = sobra, capesEfectives = mides.length;
-      for (let k = mides.length - 1; k >= 0 && queda > 0; k--){
-        if (queda >= mides[k]){ queda -= mides[k]; capesEfectives--; }
-        else break;
-      }
-      if (capesEfectives < 3) continue;
+  for (let cols = 4; cols <= 9; cols++){
+    for (let files = 3; files <= 7; files++){
+      let n = 0, capes = 0;
+      while (n < total && capes < 20){ n += capaNeta(capes, cols, files).length; capes++; }
+      if (n < total) continue;
+      if (capes < 4 || capes > 9) continue;          // ni llosa ni xemeneia
+      if (total / capes < 6) continue;               // prou cartes a cada capa
 
-      // Com de grosses quedarien les cartes amb aquesta base
       const mida = Math.min(espai.w / cols, espai.h / files);
-      // Mana la mida de la carta; les capes de més només desempaten
-      const punts = mida * (1 + capesEfectives * 0.05);
-      if (!millor || punts > millor.punts) millor = { cols, files, capes, sobra, punts };
+      // Com s'assembla la planta a la forma de la pantalla (1 = clavat)
+      const forma = Math.min(cols / files, formaPantalla) / Math.max(cols / files, formaPantalla);
+      const punts = mida * (0.75 + 0.25 * forma);
+      if (!millor || punts > millor.punts) millor = { cols, files, punts };
     }
   }
+
+  /* Si res no complia les condicions (pantalles molt petites o totals molt
+     grans), s'afluixa el límit de capes abans de rendir-se */
   if (!millor){
-    // Xarxa de seguretat: la piràmide més alta que hi càpiga, encara que
-    // la punta quedi més retallada del compte
     for (let cols = 4; cols <= 10; cols++){
-      for (let files = 2; files <= 7; files++){
-        let suma = 0, capes = 0;
-        for (let k = 0; ; k++){
-          const c = cols - k, f = files - k;
-          if (c < 1 || f < 1) break;
-          suma += c * f; capes++;
-        }
-        if (suma < total) continue;
-        if (!millor || suma - total < millor.sobra) millor = { cols, files, capes, sobra:suma - total };
+      for (let files = 3; files <= 8; files++){
+        let n = 0, capes = 0;
+        while (n < total && capes < 24){ n += capaNeta(capes, cols, files).length; capes++; }
+        if (n < total) continue;
+        const mida = Math.min(espai.w / cols, espai.h / files);
+        if (!millor || mida > millor.punts) millor = { cols, files, punts:mida };
       }
     }
   }
-  if (!millor) millor = { cols:Math.ceil(Math.sqrt(total)) + 1, files:Math.ceil(Math.sqrt(total)) };
+  if (!millor) millor = { cols:9, files:8 };
 
   const pos = [];
-  for (let k = 0; ; k++){
-    const c = millor.cols - k, f = millor.files - k;
-    if (c < 1 || f < 1) break;
-    for (let fila = 0; fila < f; fila++)
-      for (let col = 0; col < c; col++)
-        pos.push({ l:k, x:k + col * 2, y:k + fila * 2 });
-  }
-
-  // El sobrant es treu de dalt: així la punta queda incompleta i natural
-  let sobra = pos.length - total;
-  while (sobra > 0){ pos.pop(); sobra--; }
-  return pos;
+  for (let k = 0; pos.length < total && k < 40; k++) pos.push(...capaNeta(k, millor.cols, millor.files));
+  // El sobrant es treu de dalt: la punta queda incompleta, com ha de ser
+  return pos.slice(0, total);
 }
 
 /* Una carta està tapada si n'hi ha cap altra, en una capa superior,
@@ -4851,7 +5184,7 @@ function muntarPiramideAmbCaiguda(vives){
     retard += lenta ? 180 : Math.max(10, 26 - ordre.length / 12);
     carta.el.style.animation = `caiguda ${lenta ? 520 : 380}ms cubic-bezier(.34,1.56,.64,1) ${Math.round(retard)}ms both`;
     // Un cop sord cada poques cartes: totes alhora seria un terrabastall
-    if (i % 3 === 0 || lenta) setTimeout(() => so('caiguda', lenta ? 0.85 : 0.5), retard + 160);
+    if (i % 2 === 0 || lenta) setTimeout(() => so('caiguda', lenta ? 1 : 0.7), retard + 150);
   });
 
   setTimeout(() => {
@@ -4875,9 +5208,13 @@ function ajustarPiramide(){
   const availW = Math.max(120, wrap.clientWidth  - parseFloat(wcs.paddingLeft) - parseFloat(wcs.paddingRight) - 12);
   const availH = Math.max(120, wrap.clientHeight - parseFloat(wcs.paddingTop)  - parseFloat(wcs.paddingBottom) - 12);
 
-  // Sense sostre petit: les cartes creixen fins a omplir l'espai disponible
-  const mida = Math.max(26, Math.min(availW / (amplada / 2), availH / (alcada / 2)));
-  const relleu = Math.max(2, mida * 0.06);
+  /* Sense sostre petit: les cartes creixen fins a omplir l'espai. Amb
+     moltes capes, el relleu apilat ocupa força, i per això entra al càlcul:
+     si no, una piràmide alta es menjava els marges. */
+  const GRUIX = 0.055;                                  // relleu de cada capa, en cartes
+  const extra = capes * GRUIX;
+  const mida = Math.max(26, Math.min(availW / (amplada / 2 + extra), availH / (alcada / 2 + extra)));
+  const relleu = Math.max(2, mida * GRUIX);
 
   piramideBoard.style.width  = (amplada / 2 * mida + capes * relleu) + 'px';
   piramideBoard.style.height = (alcada  / 2 * mida + capes * relleu) + 'px';
@@ -5082,6 +5419,29 @@ function obrirNivell(quinJoc){
     });
     levelGrid.appendChild(boto);
   });
+
+  /* Només la piràmide fa preguntes: als altres jocs el bloc no surt */
+  const bloc = $('provaBloc'), caixa = $('provaNivells');
+  bloc.hidden = quinJoc !== 'piramide';
+  if (!bloc.hidden){
+    caixa.innerHTML = '';
+    NIVELLS_PROVA.forEach((n, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'prova-nivell'; b.style.setProperty('--to', n.color);
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', i === nivellProva ? 'true' : 'false');
+      b.innerHTML = '<b>' + n.nom + '</b><small>' + n.sub + '</small>';
+      b.addEventListener('click', () => {
+        nivellProva = i;
+        localStorage.setItem('nivellProva', i);
+        caixa.querySelectorAll('.prova-nivell').forEach((x, k) =>
+          x.setAttribute('aria-checked', k === i ? 'true' : 'false'));
+        // No es tanca res: la partida comença en triar les cartes, no aquí
+      });
+      caixa.appendChild(b);
+    });
+  }
+
   obrirModal(levelOverlay);
 }
 levelBtn.addEventListener('click', () => obrirNivell(joc));

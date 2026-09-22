@@ -17,7 +17,7 @@
    baixar uns quants megues. Per canviar la música, puja-la amb un nom nou
    (com s'ha fet amb musica-record-piano.mp3) i canvia MUSICA_URL a l'index.html.
    ═══════════════════════════════════════════════════════ */
-const VERSIO   = '4.31';
+const VERSIO   = '4.40';
 const CACHE    = 'memoria-v' + VERSIO;
 const CACHE_SO = 'memoria-so';
 
