@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.50
+    Version: 4.51
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,19 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.51
+    - Els pop-ups de nivells i de temes s'escampen a l'ample: tantes
+      columnes com en càpiguen (dues en un telèfon, sis en un PC) i cap
+      desplaçament, de 360×640 fins a 1680×1050
+    - El pop-up del resultat tampoc no necessita desplaçament en cap mida
+    - El repàs de Pregunta't va en columnes i comença per dalt de tot:
+      abans la primera explicació quedava tallada
+    - Al pop-up de temes no hi ha cap tema marcat, perquè prémer-ne un és
+      el que engega la partida, i s'hi ha afegit la línia "Tria un tema i
+      la partida comença"
+    - Les finestres i la purpurina ara van per sobre dels missatges
+      flotants, que abans les tapaven
 
     CANVIS v4.50
     - JOC NOU, EN PROVES: "Pregunta't". Deu preguntes del tema i el nivell
@@ -859,7 +872,7 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 
 /* ── So i efectes: interruptors grossos, fàcils de tocar ── */
 /* ── Pregunta't ─────────────────────────────────────────────────── */
-.quiz-wrap{align-items:flex-start;overflow-y:auto}
+.board-wrap.quiz-wrap{align-items:flex-start;justify-content:center;overflow-y:auto;padding-top:10px}
 .quiz-caixa{
   width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:18px;
 }
@@ -894,16 +907,21 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 }
 .quiz-text em{font-style:italic;opacity:.9}
 /* El repàs del final */
-.repas-preguntes{width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+/* El repàs també s'escampa: una columna al telèfon, dues o tres al PC */
+.repas-preguntes{
+  width:100%;max-width:1500px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(265px, 1fr));
+  gap:12px;align-items:start;
+}
 .repas-preguntes[hidden]{display:none}
 .repas-p{
-  padding:16px 18px;border-radius:22px;background:var(--card-face);
-  border:3px solid var(--card-ring);border-left-width:10px;
+  padding:13px 15px;border-radius:20px;background:var(--card-face);
+  border:3px solid var(--card-ring);border-left-width:9px;
 }
 .repas-p.be{border-left-color:#16a34a}
 .repas-p.mal{border-left-color:#dc2626}
-.repas-p b{display:block;font-family:'Baloo 2';font-size:19px;line-height:1.25;margin-bottom:6px;color:var(--ink)}
-.repas-p small{display:block;font-family:'Fredoka';font-size:16px;line-height:1.4;color:var(--ink);opacity:.85}
+.repas-p b{display:block;font-family:'Baloo 2';font-size:18px;line-height:1.22;margin-bottom:5px;color:var(--ink)}
+.repas-p small{display:block;font-family:'Fredoka';font-size:15px;line-height:1.38;color:var(--ink);opacity:.85}
 .repas-p .resp{font-weight:600;opacity:1}
 /* La targeta del joc en proves */
 .game-card.en-proves{
@@ -1102,7 +1120,14 @@ body:not(.day) .prova-btn{
 .mini-asset .foto-asset{width:100%;height:100%;border-radius:6px;object-fit:cover}
 
 /* ── tria de mida / nivell ──────────────────────────── */
-.size-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;width:100%}
+/* Les opcions s'escampen soles: tantes columnes com en càpiguen de 148 px
+   amunt. En un telèfon en surten dues i en un PC, cinc o sis, i així no cal
+   desplaçar res per veure-les totes. */
+.size-grid{
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(min(132px, 100%), 1fr));
+  gap:10px;margin-bottom:16px;width:100%;
+}
+.size-option small{overflow-wrap:anywhere}
 .size-option{
   display:flex;flex-direction:column;align-items:center;gap:8px;
   padding:14px 10px 12px;border-radius:20px;cursor:pointer;
@@ -1308,7 +1333,7 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 .log.show{opacity:1;transform:translate(-50%,0)}
 
 .espurna{
-  position:fixed;z-index:1200;width:10px;height:10px;border-radius:3px;pointer-events:none;
+  position:fixed;z-index:2600;width:10px;height:10px;border-radius:3px;pointer-events:none;
   animation:volar .9s ease-out forwards;
 }
 @keyframes volar{0%{transform:translate(0,0) scale(1) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.2) rotate(var(--rot));opacity:0}}
@@ -1317,7 +1342,7 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 
 /* ── modals ─────────────────────────────────────────── */
 .modal-overlay{
-  position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;
+  position:fixed;inset:0;z-index:2400;display:none;align-items:center;justify-content:center;
   padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-left));
   background:rgba(10,6,20,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
 }
@@ -1342,6 +1367,56 @@ body.day .tile.seq-activa{ border-color:#9333ea; box-shadow:0 0 30px #9333ea, in
 }
 .modal-close:active{transform:scale(.9)}
 .modal-info{max-width:min(440px,100%)}
+/* Les finestres amb graella (nivells, resultat) ocupen l'ample que tinguin:
+   cal donar-los amplada de debò, perquè si només se'ls posa un màxim
+   s'encongeixen al voltant del contingut i la graella es queda en dues
+   columnes encara que a la pantalla n'hi càpiguen sis */
+#levelOverlay .modal{width:min(980px,96vw);max-width:96vw}
+#resultOverlay .modal{width:min(720px,96vw);max-width:96vw}
+
+/* Telèfons estrets: les opcions més arrapades, perquè les sis hi càpiguen
+   sense haver de desplaçar res */
+@media (max-width:430px){
+  .modal{padding:16px 14px 14px}
+  .size-grid{gap:8px;margin-bottom:12px}
+  .size-option{padding:9px 6px 8px;gap:4px;font-size:16px}
+  .size-option small{font-size:11px;line-height:1.2}
+  .tema-mini{width:42px;height:42px;margin-bottom:2px;border-radius:14px}
+  .tema-mini .material-symbols-rounded{font-size:26px}
+  #provaBloc{margin-top:12px;padding-top:12px}
+  .prova-titol{font-size:17px;margin-bottom:8px}
+  .prova-nivell{padding:10px 4px}
+  .prova-nivell b{font-size:17px}
+  .prova-nivell small{font-size:10px}
+  #levelPista{font-size:13px;margin:0 0 8px}
+}
+
+/* Pantalles baixes (un telèfon en horitzontal): tot més arrapat, perquè
+   hi càpiga sense haver de desplaçar res */
+@media (max-height:520px){
+  .modal{padding:10px 12px 8px}
+  .modal h2 + p.credit{display:none}
+  .modal .modal-icon{display:none}
+  #levelPista{font-size:12px;margin:0 0 6px}
+  .modal h2{font-size:clamp(18px,4vw,24px);margin-bottom:6px}
+  .modal-icon{font-size:30px}
+  .size-grid{gap:7px;margin-bottom:8px}
+  .size-option{padding:6px 6px 5px;font-size:15px;gap:3px}
+  .tema-mini{width:38px;height:38px;margin-bottom:2px;border-radius:12px}
+  .tema-mini .material-symbols-rounded{font-size:24px}
+  .size-option small{font-size:11px}
+  #provaBloc{margin-top:8px;padding-top:8px}
+  .prova-titol{font-size:15px;margin-bottom:5px}
+  .prova-nivell{padding:6px 5px}
+  .prova-nivell b{font-size:16px}
+  .prova-nivell small{font-size:10px}
+  .stats{margin:2px 0 8px}
+  .btn-big{padding:11px 22px}
+  .btn-soft{padding:9px 16px}
+}
+#resultStats{gap:10px}
+#resultStats .chip{font-size:16px;padding:10px 18px}
+#resultStats .chip .material-symbols-rounded{font-size:22px}
 .modal-icon{
   font-size:46px;color:var(--accent);margin-bottom:2px;
   filter:drop-shadow(0 3px 0 var(--accent-deep)) drop-shadow(0 6px 12px rgba(0,0,0,.35));
@@ -1888,7 +1963,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.50</span>
+      <span class="version" id="version">v4.51</span>
     </div>
   </footer>
 </div>
@@ -1940,6 +2015,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
     </button>
     <span class="material-symbols-rounded modal-icon">grid_view</span>
     <h2 id="levelTitle">Quantes parelles?</h2>
+    <p class="credit" id="levelPista" hidden></p>
     <div class="size-grid" id="levelGrid" role="radiogroup" aria-labelledby="levelTitle"></div>
     <div id="provaBloc" hidden>
       <p class="prova-titol" id="provaTitol">I les preguntes?</p>
@@ -5776,8 +5852,10 @@ function respondreQuiz(boto, resposta){
     if (quizIdx >= quizLlista.length) acabarQuiz();
     else pintarPregunta();
   };
-  // Que es vegi l'explicació encara que la pregunta fos llarga
-  requestAnimationFrame(() => $('quizExplicacio').scrollIntoView({ behavior:'smooth', block:'nearest' }));
+  /* Que es vegi l'explicació encara que la pregunta fos llarga. Sense
+     animació: un desplaçament suau continua movent-se després i, en acabar
+     la partida, deixava el repàs començat per la meitat. */
+  requestAnimationFrame(() => $('quizExplicacio').scrollIntoView({ block:'nearest' }));
 }
 
 /* El repàs: les deu preguntes amb la seva explicació, per rellegir-les amb
@@ -5790,6 +5868,12 @@ function acabarQuiz(){
   $('quizSeguent').hidden = true;
   const repas = $('quizRepas');
   repas.hidden = false;
+  // La caixa venia desplaçada de l'última explicació: es torna a dalt de tot
+  const caixa = repas.parentElement;
+  if (caixa){
+    caixa.scrollTop = 0;
+    requestAnimationFrame(() => { caixa.scrollTop = 0; });
+  }
   repas.innerHTML = quizLlista.map(q => {
     const be = String(q.resposta) === String(q.bona);
     const teva = q.resposta === null ? 'sense respondre' : q.resposta;
@@ -5866,9 +5950,13 @@ function obrirNivell(quinJoc){
   else if (quinJoc === 'blanca') { llista = NIVELLS_BLANCA; triat = nivellBlanca; titol = 'Com de difícil?'; nomQuantitat = 'lliures'; formatSub = n => n.text; formatTitol = n => `${n.columnes} columnes`; }
   else if (quinJoc === 'piramide') { llista = NIVELLS_PIRAMIDE; triat = nivellPiramide; titol = 'Quantes cartes?'; nomQuantitat = 'parelles'; formatSub = n => n.text; formatTitol = n => `${n.parelles} parelles`; }
   else if (quinJoc === 'nback') { llista = NIVELLS_NBACK; triat = nivellNback; titol = 'Quant enrere?'; nomQuantitat = 'n'; formatSub = n => n.text; formatTitol = n => `${n.n} enrere`; }
-  else if (quinJoc === 'quiz') { llista = TEMES_PREGUNTA; triat = Math.max(0, TEMES_PREGUNTA.findIndex(t => t.id === temaQuiz)); titol = 'De què vols que et preguntem?'; nomQuantitat = 'id'; formatSub = n => n.sub; formatTitol = n => n.nom; }
+  else if (quinJoc === 'quiz') { llista = TEMES_PREGUNTA; triat = -1; titol = 'De què vols que et preguntem?'; nomQuantitat = 'id'; formatSub = n => n.sub; formatTitol = n => n.nom; }
 
   $('levelTitle').textContent = titol; levelGrid.innerHTML = '';
+  // Al quiz no hi ha res marcat: prémer un tema és el que engega la partida
+  const pista = $('levelPista');
+  pista.hidden = quinJoc !== 'quiz';
+  if (!pista.hidden) pista.textContent = 'Tria un tema i la partida comença.';
   llista.forEach((n, idx) => {
     const boto = document.createElement('button'); boto.type = 'button'; boto.className = 'size-option';
     boto.setAttribute('role', 'radio'); boto.setAttribute('aria-checked', idx === triat ? 'true' : 'false');
