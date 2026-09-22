@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.41
+    Version: 4.50
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,21 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.50
+    - JOC NOU, EN PROVES: "Pregunta't". Deu preguntes del tema i el nivell
+      que es triïn, i després de cada resposta l'explicació del perquè,
+      tant si s'encerta com si no. Al final, el repàs de les deu
+    - La targeta d'aquest joc NO es veu: cal fer doble clic al títol
+      "Memòria" per fer-la sortir, i un altre doble clic per amagar-la.
+      No es recorda enlloc, de manera que qui recarregui la pàgina torna a
+      no veure-la i ningú se la pot trobar per accident
+    - Sis temes (Barreja, Càlcul, Llengua, Natura i cos, Món, Història i
+      art) i els tres nivells de sempre
+    - Banc de 87 preguntes escrites a mà, cadascuna amb la seva explicació,
+      més les preguntes de càlcul, sèries i lletres, que ara també porten
+      l'explicació feta amb els seus propis números
+    - Les mini-preguntes de la piràmide surten del mateix motor
 
     CANVIS v4.41
     - El so de muntar la piràmide és ara UN sol so de 2 s, amb la cascada
@@ -202,7 +217,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <!-- Icones: afegits 'image' i 'brush' per al selector de gràfics 
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,accessibility_new,agriculture,air,airport_shuttle,album,anchor,architecture,arrow_back,arrow_forward,attractions,auto_awesome,auto_stories,backpack,badge,bakery_dining,bar_chart,bathtub,beach_access,bed,biotech,blender,bolt,bookmark,breakfast_dining,brunch_dining,brush,bug_report,cabin,cake,calculate,camera,camping,cancel,carpenter,casino,castle,category,celebration,chair,change_history,check_circle,checkroom,child_care,church,cleaning_services,close,cloud,coffee,color_lens,commute,computer,construction,cookie,cruelty_free,curtains,dark_mode,diamond,diamond_shine,dinner_dining,directions_boat,directions_bus,directions_car,directions_railway,directions_run,directions_walk,done_all,door_front,downhill_skiing,draw,ecg_heart,eco,edit,egg,elderly,electric_scooter,emoji_emotions,emoji_events,emoji_food_beverage,engineering,explore,extension,face,family_restroom,fastfood,favorite,festival,find_replace,fire_truck,fireplace,fitness_center,flag,flight,flight_takeoff,flood,foggy,folder,forest,format_paint,front_hand,gesture,grass,grid_view,handshake,handyman,hardware,headphones,health_and_safety,hearing,help,hexagon,hiking,history,history_edu,holiday_village,home,hotel,houseboat,icecream,image,info,iron,kayaking,kebab_dining,key,keyboard,kitchen,label,landscape,layers,light,light_mode,lightbulb,link,liquor,local_bar,local_cafe,local_drink,local_fire_department,local_florist,local_laundry_service,local_pizza,local_shipping,local_taxi,location_on,lock,luggage,lunch_dining,map,medication,menu_book,mic,military_tech,mosque,mouse,movie,museum,music_note,music_off,nightlife,nightlight,nutrition,palette,park,pedal_bike,pentagon,pets,photo_camera,piano,plumbing,pool,pregnant_woman,print,psychology,public,queue_music,radio,rainy,ramen_dining,raven,recycling,replay,restaurant,rice_bowl,rocket_launch,rowing,sailing,school,science,scuba_diving,self_improvement,sentiment_satisfied,sentiment_very_satisfied,set_meal,shield,shopping_basket,shopping_cart,shower,shuffle,sign_language,skateboarding,smartphone,snowboarding,snowmobile,soap,solar_power,soup_kitchen,spa,speaker,sports_baseball,sports_basketball,sports_esports,sports_football,sports_golf,sports_handball,sports_hockey,sports_martial_arts,sports_soccer,sports_tennis,sports_volleyball,stairs,star,stars,style,subway,sunny,surfing,synagogue,table_restaurant,takeout_dining,tapas,temple_buddhist,terrain,theater_comedy,thumb_up,thunderstorm,timer,touch_app,tour,toys,traffic,train,tram,translate,travel_explore,two_wheeler,umbrella,undo,vaccines,verified,videocam,villa,visibility,volcano,volume_off,volume_up,volunteer_activism,watch,water_drop,waves,waving_hand,weekend,window,wine_bar,work,workspace_premium,yard&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,0,1,0&icon_names=ac_unit,accessibility_new,agriculture,air,airport_shuttle,album,anchor,architecture,arrow_back,arrow_forward,attractions,auto_awesome,auto_stories,backpack,badge,bakery_dining,bar_chart,bathtub,beach_access,bed,biotech,blender,bolt,bookmark,breakfast_dining,brunch_dining,brush,bug_report,cabin,cake,calculate,camera,camping,cancel,carpenter,casino,castle,category,celebration,chair,change_history,check_circle,checkroom,child_care,church,cleaning_services,close,cloud,coffee,color_lens,commute,computer,construction,cookie,cruelty_free,curtains,dark_mode,diamond,diamond_shine,dinner_dining,directions_boat,directions_bus,directions_car,directions_railway,directions_run,directions_walk,done_all,door_front,downhill_skiing,draw,ecg_heart,eco,edit,egg,elderly,electric_scooter,emoji_emotions,emoji_events,emoji_food_beverage,engineering,explore,extension,face,family_restroom,fastfood,favorite,festival,find_replace,fire_truck,fireplace,fitness_center,flag,flight,flight_takeoff,flood,foggy,folder,forest,format_paint,front_hand,gesture,grass,grid_view,handshake,handyman,hardware,headphones,health_and_safety,hearing,help,hexagon,hiking,history,history_edu,holiday_village,home,hotel,houseboat,icecream,image,info,iron,kayaking,kebab_dining,key,keyboard,kitchen,label,landscape,layers,light,light_mode,lightbulb,link,liquor,local_bar,local_cafe,local_drink,local_fire_department,local_florist,local_laundry_service,local_pizza,local_shipping,local_taxi,location_on,lock,luggage,lunch_dining,map,medication,menu_book,mic,military_tech,mosque,mouse,movie,museum,music_note,music_off,nightlife,nightlight,nutrition,palette,park,pedal_bike,pentagon,pets,photo_camera,piano,plumbing,pool,pregnant_woman,print,psychology,public,quiz,queue_music,radio,rainy,ramen_dining,raven,recycling,replay,restaurant,rice_bowl,rocket_launch,rowing,sailing,school,science,scuba_diving,self_improvement,sentiment_satisfied,sentiment_very_satisfied,set_meal,shield,shopping_basket,shopping_cart,shower,shuffle,sign_language,skateboarding,smartphone,snowboarding,snowmobile,soap,solar_power,soup_kitchen,spa,speaker,sports_baseball,sports_basketball,sports_esports,sports_football,sports_golf,sports_handball,sports_hockey,sports_martial_arts,sports_soccer,sports_tennis,sports_volleyball,stairs,star,stars,style,subway,sunny,surfing,synagogue,table_restaurant,takeout_dining,tapas,temple_buddhist,terrain,theater_comedy,thumb_up,thunderstorm,timer,touch_app,tour,toys,traffic,train,tram,translate,travel_explore,two_wheeler,umbrella,undo,vaccines,verified,videocam,villa,visibility,volcano,volume_off,volume_up,volunteer_activism,watch,water_drop,waves,waving_hand,weekend,window,wine_bar,work,workspace_premium,yard&display=block" rel="stylesheet">
 -->
 <!-- Canvia la línia llarga de Material Symbols per aquesta: -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,600,1,0&display=block" rel="stylesheet">
@@ -843,6 +858,71 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
 .chip-boto:disabled{opacity:.45;cursor:default}
 
 /* ── So i efectes: interruptors grossos, fàcils de tocar ── */
+/* ── Pregunta't ─────────────────────────────────────────────────── */
+.quiz-wrap{align-items:flex-start;overflow-y:auto}
+.quiz-caixa{
+  width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:18px;
+}
+.quiz-pregunta{
+  font-family:'Baloo 2';font-weight:700;font-size:clamp(22px, 5.2vw, 30px);line-height:1.25;
+  color:var(--ink);text-align:center;margin:0;padding:22px 18px;border-radius:26px;
+  background:var(--card-face);border:3px solid var(--card-ring);
+  box-shadow:0 6px 18px rgba(0,0,0,.10);
+}
+.quiz-opcions{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:620px){ .quiz-opcions{grid-template-columns:1fr 1fr} }
+.quiz-btn{
+  width:100%;min-height:66px;padding:16px 20px;border-radius:22px;cursor:pointer;
+  font-family:'Fredoka';font-weight:500;font-size:clamp(18px, 4.4vw, 22px);line-height:1.2;
+  color:var(--ink);background:var(--card-face);border:3px solid var(--card-ring);
+  text-align:left;transition:transform .12s, border-color .15s, background .15s;
+}
+.quiz-btn:active{transform:scale(.97)}
+.quiz-btn.correcta{border-color:#16a34a;background:rgba(34,197,94,.20);font-weight:600}
+.quiz-btn.erronia{border-color:#dc2626;background:rgba(239,68,68,.18)}
+.quiz-opcions.resposta .quiz-btn{cursor:default}
+.quiz-explicacio{
+  padding:20px;border-radius:24px;background:var(--chip-bg);border:3px solid var(--card-ring);
+}
+.quiz-veredicte{
+  font-family:'Baloo 2';font-weight:700;font-size:22px;margin:0 0 8px;
+}
+.quiz-veredicte.be{color:#16a34a}
+.quiz-veredicte.mal{color:#dc2626}
+.quiz-text{
+  font-family:'Fredoka';font-size:clamp(17px, 4vw, 20px);line-height:1.45;color:var(--ink);margin:0;
+}
+.quiz-text em{font-style:italic;opacity:.9}
+/* El repàs del final */
+.repas-preguntes{width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.repas-preguntes[hidden]{display:none}
+.repas-p{
+  padding:16px 18px;border-radius:22px;background:var(--card-face);
+  border:3px solid var(--card-ring);border-left-width:10px;
+}
+.repas-p.be{border-left-color:#16a34a}
+.repas-p.mal{border-left-color:#dc2626}
+.repas-p b{display:block;font-family:'Baloo 2';font-size:19px;line-height:1.25;margin-bottom:6px;color:var(--ink)}
+.repas-p small{display:block;font-family:'Fredoka';font-size:16px;line-height:1.4;color:var(--ink);opacity:.85}
+.repas-p .resp{font-weight:600;opacity:1}
+/* La targeta del joc en proves */
+.game-card.en-proves{
+  position:relative;padding-top:26px;
+  outline:3px dashed rgba(124,58,237,.7);outline-offset:3px;
+}
+.marca-proves{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  font-family:'Fredoka';font-size:11px;font-weight:600;white-space:nowrap;
+  letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px;
+  background:#7c3aed;color:#fff;
+}
+.game-card[hidden]{display:none}
+.tema-mini{
+  display:flex;align-items:center;justify-content:center;
+  width:56px;height:56px;margin:0 auto 6px;border-radius:18px;background:var(--chip-bg);
+}
+.tema-mini .material-symbols-rounded{font-size:34px}
+
 /* Mig segon sense respostes, perquè no es premi res sense voler */
 .prova-opcions.esperant{opacity:0;pointer-events:none}
 .prova-opcions{transition:opacity .22s ease}
@@ -1491,6 +1571,16 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
             <small class="llarg">Passen imatges seguides. Prem el botó quan la d'ara sigui igual que la de fa una o dues.</small>
           </button>
 
+          <!-- En proves: no es veu fins que es fa doble clic al títol "Memòria" -->
+          <button class="game-card en-proves" data-joc="quiz" hidden
+                  style="--tint:#7c3aed;--tint-deep:#4c1d95">
+            <span class="marca-proves">en proves</span>
+            <span class="ico"><span class="material-symbols-rounded">quiz</span></span>
+            <b>Pregunta't</b>
+            <small class="curt">Preguntes i respostes</small>
+            <small class="llarg">Deu preguntes del tema que triïs. Després de cada resposta t'expliquem el perquè.</small>
+          </button>
+
         </div>
       </section>
 
@@ -1751,6 +1841,43 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
         </div>
       </section>
 
+      <!-- ══ Pantalla: Pregunta't (en proves) ══ -->
+      <section class="screen" id="quizScreen">
+        <div class="hud">
+          <span class="chip" id="quizTemaChip">
+            <span class="material-symbols-rounded" id="quizTemaIco" style="color:#8b5cf6">shuffle</span>
+            <b id="quizTemaNom">Barreja</b>
+          </span>
+          <span class="chip">
+            <span class="material-symbols-rounded" style="color:#0ea5e9">help</span>
+            Pregunta <b><span id="quizNum">1</span>/<span id="quizTotal">10</span></b>
+          </span>
+          <span class="chip">
+            <span class="material-symbols-rounded" style="color:#22c55e">check_circle</span>
+            Encerts <b id="quizEncerts">0</b>
+          </span>
+        </div>
+        <div class="board-wrap quiz-wrap">
+          <div class="quiz-caixa" id="quizCaixa">
+            <p class="quiz-pregunta" id="quizPregunta"></p>
+            <div class="quiz-opcions" id="quizOpcions"></div>
+            <div class="quiz-explicacio" id="quizExplicacio" hidden>
+              <p class="quiz-veredicte" id="quizVeredicte"></p>
+              <p class="quiz-text" id="quizText"></p>
+            </div>
+          </div>
+          <div class="repas-preguntes" id="quizRepas" hidden></div>
+        </div>
+        <div class="acciona">
+          <button class="btn-big" id="quizSeguent" hidden>
+            <span class="material-symbols-rounded">arrow_forward</span> Següent
+          </button>
+          <button class="btn-big" id="quizFiBtn" hidden>
+            <span class="material-symbols-rounded">done_all</span> He acabat de mirar-ho
+          </button>
+        </div>
+      </section>
+
     </div><!-- /play -->
   </div>
 
@@ -1761,7 +1888,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.41</span>
+      <span class="version" id="version">v4.50</span>
     </div>
   </footer>
 </div>
@@ -2354,7 +2481,7 @@ const NIVELLS_BLANCA = [
 ];
 
 const COLOR_TEMA = { dia:'#ff9f45', nit:'#14101c' };
-const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?', sequencia:'Seqüència', canvi:'Què ha canviat?', onera:'On era?', assoc:'Parelles impossibles', compta:'Compta-les', nback:'N-enrere', piramide:'La piràmide', blanca:'Carta blanca' };
+const TITOLS = { home:'Memòria', parelles:'Parelles', escena:'Què hi havia?', sequencia:'Seqüència', canvi:'Què ha canviat?', onera:'On era?', assoc:'Parelles impossibles', compta:'Compta-les', nback:'N-enrere', piramide:'La piràmide', blanca:'Carta blanca', quiz:"Pregunta't" };
 
 const AJUDA = {
   home: '<ul><li>Tria un joc de la llista.</li><li>Utilitza el botó del pinzell/imatge per alternar entre jugar amb icones o amb les nostres fotos.</li><li>La majoria de jocs tenen compte enrere: quan arriba a zero, s\'acaba.</li></ul>',
@@ -2367,6 +2494,7 @@ const AJUDA = {
   compta: '<ul><li>Primer et diem quina imatge has de comptar (la tens a dalt).</li><li>Van passant imatges d\'una en una.</li><li>Al final, digues quantes vegades ha sortit la teva.</li></ul>',
   blanca: '<ul><li>Hi ha 32 cartes: quatre colors i vuit valors, de la A a la H.</li><li>L\'objectiu és pujar-les totes a dalt a la dreta, per colors i de la A a la H.</li><li>Sobre una carta n\'hi pots posar una altra d\'un valor menys i de l\'altra família de colors (rosa i groc contra blau i verd).</li><li>Les caselles lliures de dalt a l\'esquerra guarden una carta cadascuna.</li><li>Toca una carta per triar-la i després toca on vols posar-la.</li></ul>',
   piramide: '<ul><li>Toca les cartes de dalt de tot: les que no estan tapades per cap altra.</li><li>Van a parar a la safata de sota.</li><li>Quan a la safata hi ha dues cartes iguals, marxen totes dues.</li><li>Si omples els sis llocs de la safata sense fer cap parella, s\'ha acabat.</li><li>Les cartes amb estrella, en fer parella, buiden la safata sencera.</li><li>De tant en tant sortirà una preguntona: si l\'encertes continues, i si falles et cauen dues cartes més.</li></ul>',
+  quiz: '<ul><li>Tria de què vols que et preguntin i com de difícil ho vols.</li><li>Deu preguntes, quatre respostes cadascuna.</li><li>Després de cada resposta t\'expliquem el perquè, tant si l\'has encertada com si no.</li><li>Al final tens el repàs de les deu, per rellegir-les amb calma.</li></ul>',
   nback: '<ul><li>Passen imatges seguides, sense parar.</li><li>Prem "És la mateixa!" quan la imatge d\'ara sigui igual que la de fa una, dues o tres imatges (segons el nivell).</li><li>Si la deixes passar o prems quan no toca, compta com a errada.</li></ul>'
 };
 
@@ -2396,6 +2524,11 @@ let nivellProva     = parseInt(localStorage.getItem('nivellProva')||0,10);
 const GRACIA_PROVA  = 500;    // mig segon abans de poder respondre
 let provaRespostes  = null;   // temporitzador d'aquest mig segon
 let provaObertaDes  = 0;
+/* Pregunta't (en proves): tema, nivell i marxa de la partida */
+let temaQuiz        = localStorage.getItem('temaQuiz') || 'barreja';
+let nivellQuiz      = parseInt(localStorage.getItem('nivellQuiz')||0,10);
+let quizLlista = [], quizIdx = 0, quizEncerts = 0, quizFet = false, quizRespost = false;
+let jocsEnProves    = false;   // la porta de darrere del menú
 let nivellBlanca    = parseInt(localStorage.getItem('nivellBlanca')||0,10);
 let nivellEditant   = 'parelles';
 
@@ -3287,7 +3420,7 @@ function aturarTot(){
 const PANTALLES = {
   home:'homeScreen', parelles:'parellesScreen', escena:'escenaScreen', sequencia:'sequenciaScreen',
   canvi:'canviScreen', onera:'oneraScreen', assoc:'assocScreen', compta:'comptaScreen', nback:'nbackScreen',
-  piramide:'piramideScreen', blanca:'blancaScreen'
+  piramide:'piramideScreen', blanca:'blancaScreen', quiz:'quizScreen'
 };
 
 function mostrarPantalla(nom){
@@ -4596,236 +4729,355 @@ const piramideBoard = $('piramideBoard');
    ═══════════════════════════════════════════════════════ */
 const ABECEDARI = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
 
+const BANC_PREGUNTES = [
+  {p:'Quantes potes té una aranya?', b:'8', o:['6', '10', '4'], e:'Les aranyes en tenen vuit; els insectes, com les formigues o les mosques, en tenen sis. Per això les aranyes no són insectes: són aràcnids.', t:'natura', n:0},
+  {p:'Quin animal fa la mel?', b:'L\'abella', o:['La vespa', 'La formiga', 'El borinot'], e:'Les abelles xuclen el nèctar de les flors i el transformen en mel dins del rusc, on la guarden com a reserva de menjar per a l\'hivern.', t:'natura', n:0},
+  {p:'De quin animal ve la llana?', b:'De l\'ovella', o:['De la vaca', 'Del porc', 'Del cavall'], e:'La llana és el pèl de l\'ovella. Se li talla a l\'estiu, no li fa cap mal i li torna a créixer per a l\'hivern.', t:'natura', n:0},
+  {p:'Quin òrgan bomba la sang pel cos?', b:'El cor', o:['El fetge', 'El pulmó', 'El ronyó'], e:'El cor és un múscul que es contrau tota la vida sense parar i empeny la sang per les artèries fins a l\'últim racó del cos.', t:'natura', n:0},
+  {p:'Què necessiten les plantes per créixer, a més d’aigua?', b:'Llum', o:['Sal', 'Sorra', 'Vent'], e:'Amb la llum les plantes fabriquen el seu propi aliment a les fulles. Per això una planta dins d\'un armari fosc s\'acaba morint encara que la reguis.', t:'natura', n:0},
+  {p:'Quants dits té una mà?', b:'5', o:['4', '6', '10'], e:'Cinc: polze, índex, mig, anular i petit. El polze és el que ens diferencia: es pot posar davant dels altres i ens deixa agafar coses.', t:'natura', n:0},
+  {p:'Quin és l’animal més gran del planeta?', b:'La balena blava', o:['L\'elefant', 'La girafa', 'El tauró blanc'], e:'La balena blava pot passar dels 25 metres i les 100 tones. L\'elefant, que és el més gran de terra ferma, no arriba ni a les 7 tones.', t:'natura', n:1},
+  {p:'Quin és l’animal terrestre més ràpid?', b:'El guepard', o:['El cavall', 'El lleó', 'La llebre'], e:'El guepard passa dels 100 km/h, però només durant uns segons: s\'escalfa tant que ha de parar de seguida.', t:'natura', n:1},
+  {p:'Quin metall és líquid a temperatura ambient?', b:'El mercuri', o:['El plom', 'L\'estany', 'El coure'], e:'És l\'únic metall que a temperatura normal és líquid; per això s\'utilitzava als termòmetres antics. La resta s\'han d\'escalfar centenars de graus per fondre\'ls.', t:'natura', n:1},
+  {p:'Quantes potes té un insecte?', b:'6', o:['4', '8', '10'], e:'Sis, sempre. És justament el que defineix un insecte, i el que el separa de les aranyes, que en tenen vuit.', t:'natura', n:1},
+  {p:'Què fa que les fulles siguin verdes?', b:'La clorofil·la', o:['La saba', 'El sol', 'L\'aigua'], e:'La clorofil·la és la substància que aprofita la llum per alimentar la planta. A la tardor la planta la deixa de fabricar, i llavors es veuen els grocs i els vermells que sempre hi eren a sota.', t:'natura', n:1},
+  {p:'Quants litres de sang té, aproximadament, una persona adulta?', b:'5', o:['1', '10', '20'], e:'Uns cinc litres, més o menys el que cabria en cinc cartrons de llet. Tota aquesta sang fa la volta al cos en menys d\'un minut.', t:'natura', n:1},
+  {p:'Quin gas necessitem per respirar?', b:'L\'oxigen', o:['El nitrogen', 'L\'hidrogen', 'El diòxid de carboni'], e:'Agafem oxigen de l\'aire i deixem anar diòxid de carboni. Les plantes fan exactament el contrari, i per això ens necessitem els uns als altres.', t:'natura', n:1},
+  {p:'Quin animal canvia de color per amagar-se?', b:'El camaleó', o:['La granota', 'La serp', 'El conill'], e:'El camaleó canvia de color movent uns cristalls que té a la pell. Ho fa per amagar-se, però també segons la temperatura i l\'estat d\'ànim.', t:'natura', n:1},
+  {p:'Quin gas absorbeixen les plantes per fer la fotosíntesi?', b:'El diòxid de carboni', o:['L\'oxigen', 'El nitrogen', 'L\'hidrogen'], e:'Agafen diòxid de carboni de l\'aire i, amb la llum del sol i l\'aigua, fabriquen el seu aliment. L\'oxigen que deixen anar és, de fet, un residu d\'aquest procés.', t:'natura', n:2},
+  {p:'Quin és l’os més llarg del cos humà?', b:'El fèmur', o:['L\'húmer', 'La tíbia', 'La clavícula'], e:'El fèmur és l\'os de la cuixa i fa aproximadament una quarta part de l\'alçada de la persona. També és el més resistent.', t:'natura', n:2},
+  {p:'Quina cèl·lula transporta l’oxigen per la sang?', b:'El glòbul vermell', o:['El glòbul blanc', 'La plaqueta', 'La neurona'], e:'Els glòbuls vermells porten l\'oxigen dels pulmons a tot el cos. Els blancs defensen de les infeccions i les plaquetes tapen les ferides.', t:'natura', n:2},
+  {p:'Quin element químic té el símbol Fe?', b:'El ferro', o:['El fòsfor', 'El fluor', 'El franci'], e:'Ve del llatí *ferrum*. Molts símbols vénen del llatí i per això no s\'assemblen al nom català: el plom és Pb (*plumbum*) i l\'or és Au (*aurum*).', t:'natura', n:2},
+  {p:'Quants ossos té, aproximadament, un adult?', b:'206', o:['106', '306', '406'], e:'Un nadó en té uns 300, però molts es van soldant mentre creix. Un adult en té uns 206, i més de la meitat són a les mans i als peus.', t:'natura', n:2},
+  {p:'Quina part de la cèl·lula guarda la informació genètica?', b:'El nucli', o:['La membrana', 'El citoplasma', 'El ribosoma'], e:'Al nucli hi ha l\'ADN, que és el manual d\'instruccions de l\'ésser viu. La membrana és la paret de la cèl·lula i el citoplasma, el que l\'omple.', t:'natura', n:2},
+  {p:'A quina temperatura bull l’aigua al nivell del mar?', b:'100 °C', o:['80 °C', '120 °C', '90 °C'], e:'A 100 graus, però només al nivell del mar. A la muntanya hi ha menys pressió i bull abans: per això a dalt les llegums triguen més a coure\'s.', t:'natura', n:2},
+  {p:'Quina és la capital de França?', b:'París', o:['Lió', 'Marsella', 'Niça'], e:'París és la capital i la ciutat més gran de França. Lió i Marsella són les dues següents en població.', t:'mon', n:0},
+  {p:'Quin mar banya Barcelona?', b:'El Mediterrani', o:['L\'Atlàntic', 'El Cantàbric', 'El mar del Nord'], e:'El Mediterrani és un mar gairebé tancat: només es comunica amb l\'Atlàntic per l\'estret de Gibraltar, que fa tot just 14 quilòmetres.', t:'mon', n:0},
+  {p:'Quin és l’oceà més gran del món?', b:'El Pacífic', o:['L\'Atlàntic', 'L\'Índic', 'L\'Àrtic'], e:'El Pacífic ell sol ocupa gairebé un terç de la superfície del planeta: hi cabrien tots els continents junts.', t:'mon', n:0},
+  {p:'Quantes estacions té l’any?', b:'4', o:['2', '3', '6'], e:'Primavera, estiu, tardor i hivern. Passen perquè la Terra està una mica inclinada, i per això quan aquí és estiu, a l\'altre hemisferi és hivern.', t:'mon', n:0},
+  {p:'En quin continent és Egipte?', b:'Àfrica', o:['Àsia', 'Europa', 'Amèrica'], e:'Egipte és al nord-est d\'Àfrica, tot i que un tros petit, la península del Sinaí, ja és a Àsia.', t:'mon', n:0},
+  {p:'Quin és el satèl·lit natural de la Terra?', b:'La Lluna', o:['Mart', 'Venus', 'El Sol'], e:'La Lluna dona voltes al voltant de la Terra. Mart i Venus són planetes que giren al voltant del Sol, i el Sol és un estel.', t:'mon', n:1},
+  {p:'Quin és el planeta més a prop del Sol?', b:'Mercuri', o:['Venus', 'Mart', 'La Terra'], e:'L\'ordre és Mercuri, Venus, la Terra i Mart. Curiosament el més calent no és Mercuri sinó Venus, perquè té una atmosfera espessa que hi reté la calor.', t:'mon', n:1},
+  {p:'Quin país té forma de bota?', b:'Itàlia', o:['Grècia', 'Portugal', 'Noruega'], e:'La península itàlica té forma de bota i sembla que doni una puntada de peu a Sicília, que és just davant de la punta.', t:'mon', n:1},
+  {p:'Quina és la muntanya més alta del món?', b:'L\'Everest', o:['El K2', 'El Mont Blanc', 'El Kilimanjaro'], e:'L\'Everest arriba als 8.849 metres, a l\'Himàlaia, entre el Nepal i el Tibet. El K2 és el segon, i molt més perillós de pujar.', t:'mon', n:1},
+  {p:'Quin és el país més extens del món?', b:'Rússia', o:['El Canadà', 'La Xina', 'El Brasil'], e:'Rússia ocupa més d\'una desena part de tota la terra ferma del planeta i té onze franges horàries: quan a un extrem es lleven, a l\'altre ja sopen.', t:'mon', n:1},
+  {p:'Quin desert càlid és el més extens del món?', b:'El Sàhara', o:['El Gobi', 'L\'Atacama', 'El Kalahari'], e:'El Sàhara travessa el nord d\'Àfrica i és gairebé tan gran com els Estats Units. (El desert més gran de tots és l\'Antàrtida, però aquell és de gel.)', t:'mon', n:2},
+  {p:'Quin estret separa Europa d’Àfrica?', b:'Gibraltar', o:['El Bòsfor', 'Ormuz', 'Malaca'], e:'A l\'estret de Gibraltar, Europa i Àfrica queden a 14 quilòmetres l\'una de l\'altra: des de la costa es veu perfectament l\'altre continent.', t:'mon', n:2},
+  {p:'Quina és la capital d\'Austràlia?', b:'Canberra', o:['Sydney', 'Melbourne', 'Perth'], e:'Sydney i Melbourne es barallaven per ser-ho, i la solució va ser construir una ciutat nova entre totes dues: Canberra.', t:'mon', n:2},
+  {p:'Quin planeta té els anells més visibles?', b:'Saturn', o:['Júpiter', 'Urà', 'Neptú'], e:'Els anells de Saturn es veuen amb un telescopi senzill i són fets de milions de trossos de gel i roca. Júpiter, Urà i Neptú també en tenen, però molt fins.', t:'mon', n:2},
+  {p:'Quina llengua té més parlants com a llengua materna?', b:'El xinès mandarí', o:['L\'anglès', 'L\'espanyol', 'L\'hindi'], e:'El mandarí és la llengua materna de molta més gent que cap altra. L\'anglès, en canvi, és la que més es parla com a segona llengua.', t:'mon', n:2},
+  {p:'Per quin país passa el riu Danubi?', b:'Hongria', o:['Portugal', 'Irlanda', 'Noruega'], e:'El Danubi travessa deu països i passa per quatre capitals: Viena, Bratislava, Budapest i Belgrad. Cap altre riu del món en toca tantes.', t:'mon', n:2},
+  {p:'Quina és la ciutat més poblada d’Espanya?', b:'Madrid', o:['Barcelona', 'València', 'Sevilla'], e:'Madrid és la primera i Barcelona la segona. Madrid, a més, és de les poques capitals europees que no és vora d\'un riu gran ni del mar.', t:'mon', n:1},
+  {p:'Qui va dissenyar la Sagrada Família?', b:'Antoni Gaudí', o:['Lluís Domènech i Montaner', 'Josep Puig i Cadafalch', 'Ildefons Cerdà'], e:'Gaudí hi va treballar més de quaranta anys i s\'hi va acabar instal·lant. Sabia que no la veuria acabada i va deixar maquetes perquè altres poguessin continuar.', t:'historia', n:0},
+  {p:'Qui va pintar el Guernica?', b:'Picasso', o:['Dalí', 'Miró', 'Velázquez'], e:'Picasso el va pintar el 1937, després del bombardeig del poble de Gernika. És tot en blanc, negre i gris, com les fotografies dels diaris de l\'època.', t:'historia', n:1},
+  {p:'Qui va escriure el Quixot?', b:'Cervantes', o:['Lope de Vega', 'Quevedo', 'Góngora'], e:'Miguel de Cervantes el va publicar en dues parts, el 1605 i el 1615. Està considerada la primera novel·la moderna.', t:'historia', n:1},
+  {p:'Quin instrument té 88 tecles?', b:'El piano', o:['L\'orgue', 'L\'acordió', 'El clavicèmbal'], e:'Un piano de cua en té 88: 52 de blanques i 36 de negres. És el recorregut que abasta pràcticament tots els sons que fa servir la música.', t:'historia', n:1},
+  {p:'En quin any va arribar l’home a la Lluna?', b:'1969', o:['1959', '1972', '1965'], e:'El 20 de juliol de 1969, amb l\'Apol·lo 11. Hi van tornar cinc vegades més, i des del 1972 no hi ha pujat ningú.', t:'historia', n:1},
+  {p:'Qui va escriure el Tirant lo Blanc?', b:'Joanot Martorell', o:['Ausiàs March', 'Ramon Llull', 'Jacint Verdaguer'], e:'És del segle XV i està escrit en català. Cervantes en parla dins del Quixot i el salva de la crema de llibres dient-ne meravelles.', t:'historia', n:2},
+  {p:'En quin any va caure el mur de Berlín?', b:'1989', o:['1979', '1991', '1985'], e:'El 9 de novembre de 1989. Havia partit la ciutat durant 28 anys i la seva caiguda va ser el senyal del final de la guerra freda.', t:'historia', n:2},
+  {p:'En quin segle va començar la Revolució Francesa?', b:'Al segle XVIII', o:['Al segle XVII', 'Al segle XIX', 'Al segle XVI'], e:'Va començar el 1789, que és segle XVIII: els anys que comencen per 17 pertanyen al segle divuit, perquè el segle I van ser els anys de l\'1 al 100.', t:'historia', n:2},
+  {p:'Qui va formular la teoria de la relativitat?', b:'Einstein', o:['Newton', 'Galileu', 'Bohr'], e:'Albert Einstein, entre el 1905 i el 1915. Va demostrar que el temps no passa igual a tot arreu: com més de pressa vas, més a poc a poc va el teu rellotge.', t:'historia', n:2},
+  {p:'Qui va compondre la Novena Simfonia, amb l’Himne a l’Alegria?', b:'Beethoven', o:['Mozart', 'Bach', 'Vivaldi'], e:'Beethoven la va acabar el 1824, quan ja era completament sord: la va escriure sentint-la només dins del cap.', t:'historia', n:2},
+  {p:'Quina civilització va construir les piràmides de Gizeh?', b:'L\'Antic Egipte', o:['Els romans', 'Els grecs', 'Els maies'], e:'Es van aixecar fa uns 4.500 anys com a tombes dels faraons. Són tan antigues que Cleòpatra en va viure més a prop del nostre temps que del seu.', t:'historia', n:1},
+  {p:'Quin poble va construir el Colosseu de Roma?', b:'Els romans', o:['Els grecs', 'Els etruscs', 'Els cartaginesos'], e:'El van acabar l\'any 80 i hi cabien unes 50.000 persones. Tenia un sistema de passadissos que permetia buidar-lo en pocs minuts.', t:'historia', n:1},
+  {p:'En quin país es va inventar el paper?', b:'A la Xina', o:['A Egipte', 'A Grècia', 'A l\'Índia'], e:'Els xinesos el van fabricar fa uns dos mil anys i en van guardar el secret durant segles. També van ser els primers a fer servir paper moneda.', t:'historia', n:2},
+  {p:'Quin pintor es va tallar part d’una orella?', b:'Van Gogh', o:['Monet', 'Cézanne', 'Gauguin'], e:'Vincent van Gogh, el 1888, en una crisi. Va vendre molt pocs quadres en vida i avui són dels més cars del món.', t:'historia', n:2},
+  {p:'Quantes lletres té l\'alfabet català?', b:'26', o:['24', '28', '30'], e:'Vint-i-sis. Grups com ny, ll o ss sonen com una sola lletra però no compten a part: són dues lletres escrites juntes.', t:'llengua', n:1},
+  {p:'Què és un sinònim?', b:'Una paraula que vol dir el mateix', o:['Una paraula que vol dir el contrari', 'Una paraula que sona igual', 'Una paraula inventada'], e:'Sinònim vol dir el mateix (content i alegre); antònim vol dir el contrari (content i trist).', t:'llengua', n:0},
+  {p:'Quantes vocals té el català?', b:'5', o:['3', '6', '8'], e:'Cinc vocals escrites: a, e, i, o, u. Una altra cosa és com sonen: la e i la o es pronuncien obertes o tancades segons la paraula.', t:'llengua', n:1},
+  {p:'Què és un verb?', b:'Una paraula que indica una acció', o:['Una paraula que anomena una cosa', 'Una paraula que descriu com és una cosa', 'Una paraula que uneix frases'], e:'El verb és el que es fa: córrer, menjar, pensar. El que anomena coses és el substantiu i el que descriu com són, l\'adjectiu.', t:'llengua', n:1},
+  {p:'Quina d’aquestes paraules és un adjectiu?', b:'Alt', o:['Taula', 'Córrer', 'Ràpidament'], e:'L\'adjectiu diu com és una cosa: una casa *alta*. Taula és un substantiu, córrer un verb i ràpidament un adverbi.', t:'llengua', n:2},
+  {p:'Què és una metàfora?', b:'Dir una cosa amb la imatge d’una altra', o:['Repetir una paraula', 'Exagerar una cosa', 'Escriure a l’inrevés'], e:'Quan dius "tens un cor d’or" no parles de metall: fas servir la imatge de l’or per dir que la persona és bona.', t:'llengua', n:2},
+  {p:'En quin signe s’acaba una pregunta escrita?', b:'Un signe d\'interrogació', o:['Un punt', 'Una coma', 'Un guionet'], e:'El signe d\'interrogació (?) tanca les preguntes. En català només se\'n posa al final, no al principi.', t:'llengua', n:0},
+  {p:'Quin és el plural de "llapis"?', b:'llapis', o:['llapissos', 'llapisos', 'llàpissos'], e:'Les paraules que ja acaben en essa i no porten accent a l\'última síl·laba no canvien en plural: un llapis, dos llapis. Igual que un dilluns, dos dilluns.', t:'llengua', n:2},
+  {p:'Què vol dir "matiner"?', b:'Que es lleva aviat', o:['Que arriba tard', 'Que dorm molt', 'Que treballa de nit'], e:'Ve de matí. Una persona matinera és la que es lleva d\'hora, tant si li agrada com si no li queda més remei.', t:'llengua', n:1},
+  {p:'Quina paraula és el contrari de "generós"?', b:'Garrepa', o:['Ric', 'Alegre', 'Prudent'], e:'Generós és qui dona fàcilment; garrepa, qui no vol deixar anar res. Ser ric o pobre no hi té res a veure.', t:'llengua', n:2},
+  {p:'Quin animal lladra?', b:'El gos', o:['El gat', 'El cavall', 'L\'ocell'], e:'El gos lladra; el gat miola, el cavall renilla i les ovelles belen. Cada animal té el seu so i la llengua té un verb per a cadascun.', t:'natura', n:0},
+  {p:'On viuen els peixos?', b:'A l\'aigua', o:['A l’arbre', 'Sota terra', 'Als núvols'], e:'Els peixos respiren l\'oxigen que hi ha dissolt a l\'aigua, a través de les brànquies. Fora de l\'aigua s\'ofeguen encara que hi hagi aire.', t:'natura', n:0},
+  {p:'Quin animal té trompa?', b:'L\'elefant', o:['El lleó', 'El camell', 'El ren'], e:'La trompa de l\'elefant és alhora nas i mà: hi respira, hi olora, beu, i pot agafar tant un tronc com una cacauet.', t:'natura', n:0},
+  {p:'Quantes ales té un ocell?', b:'2', o:['1', '4', '6'], e:'Dues. Els insectes, en canvi, en solen tenir quatre, encara que a les mosques el segon parell s\'ha convertit en dos balancins diminuts.', t:'natura', n:0},
+  {p:'Què surt d’un ou de gallina?', b:'Un pollet', o:['Un conill', 'Un peix', 'Una papallona'], e:'Si l\'ou està fecundat i la gallina el cova unes tres setmanes, en surt un pollet. Els ous que comprem no estan fecundats i no en sortiria res.', t:'natura', n:0},
+  {p:'De quin color és la neu?', b:'Blanca', o:['Blava', 'Verda', 'Groga'], e:'Els cristalls de gel reflecteixen tots els colors de la llum alhora, i la barreja de tots els colors és el blanc.', t:'natura', n:0},
+  {p:'Quin és l’astre que ens dona llum de dia?', b:'El Sol', o:['La Lluna', 'Mart', 'Venus'], e:'El Sol és un estel: fa llum pròpia. La Lluna no en fa, només reflecteix la del Sol, i per això de nit fa aquella claror tan fluixa.', t:'mon', n:0},
+  {p:'Quants dies té una setmana?', b:'7', o:['5', '6', '10'], e:'Set. És l\'única mesura del calendari que no ve del cel: els mesos vénen de la Lluna i els anys del Sol, però la setmana és un invent humà molt antic.', t:'mon', n:0},
+  {p:'Quin mes ve després del desembre?', b:'El gener', o:['El novembre', 'El febrer', 'L\'octubre'], e:'El gener, que ja és de l\'any següent. Es diu així per Janus, un déu romà amb dues cares: una mirava enrere i l\'altra endavant.', t:'mon', n:0},
+  {p:'Quantes hores té un dia?', b:'24', o:['12', '20', '36'], e:'Vint-i-quatre, que és el que triga la Terra a fer una volta sobre ella mateixa. Per això mentre aquí és de dia, a l\'altra banda del món és de nit.', t:'mon', n:0},
+  {p:'Quin idioma es parla al Brasil?', b:'El portuguès', o:['L\'espanyol', 'El brasiler', 'El francès'], e:'El Brasil va ser colònia de Portugal, i per això és l\'únic país gran d\'Amèrica del Sud que no parla espanyol.', t:'mon', n:1},
+  {p:'Quants minuts té una hora?', b:'60', o:['50', '100', '30'], e:'Seixanta, com els segons d\'un minut. Ve dels babilonis, que comptaven de seixanta en seixanta perquè el 60 es pot partir de moltes maneres.', t:'mon', n:0},
+  {p:'Quin invent serveix per saber l’hora?', b:'El rellotge', o:['El termòmetre', 'La brúixola', 'La balança'], e:'El termòmetre mesura la temperatura, la brúixola indica el nord i la balança pesa. Cada aparell, la seva mesura.', t:'historia', n:0},
+  {p:'Amb què escrivien els nens a l’escola fa cent anys?', b:'Amb guix i pissarra', o:['Amb ordinador', 'Amb retolador', 'Amb bolígraf'], e:'Cada nen tenia una pissarreta pròpia i un guix, perquè el paper era car. S\'escrivia, es mirava i s\'esborrava per tornar a començar.', t:'historia', n:0},
+  {p:'Qui va pintar la Gioconda?', b:'Leonardo da Vinci', o:['Miquel Àngel', 'Rafael', 'Botticelli'], e:'Leonardo la va començar cap al 1503 i la va anar retocant anys i panys. No la va lliurar mai: se la va endur a França i allà s\'ha quedat.', t:'historia', n:1},
+  {p:'Què és una catedral?', b:'Una església gran', o:['Un castell', 'Un mercat', 'Un teatre'], e:'És l\'església principal d\'una diòcesi, la que té la seu del bisbe. Per això a Barcelona, Girona o Tarragona també se\'n diu la Seu.', t:'historia', n:0},
+  {p:'Quin aparell va inventar Gutenberg?', b:'La impremta', o:['El telescopi', 'El telèfon', 'La bicicleta'], e:'Cap al 1450 va idear els tipus mòbils: lletres soltes de metall que es podien recol·locar. Fins llavors, cada llibre s\'havia de copiar a mà.', t:'historia', n:2},
+  {p:'Quin mitjà de transport va fer famós el Titanic?', b:'El vaixell', o:['L\'avió', 'El tren', 'El globus'], e:'El Titanic era un transatlàntic i es va enfonsar el 1912 en el seu primer viatge, en xocar amb un iceberg.', t:'historia', n:1},
+  {p:'Com es diu la primera lletra de l’abecedari?', b:'La a', o:['La be', 'La zeta', 'La ema'], e:'La a. La paraula *abecedari* és, de fet, el nom de les quatre primeres lletres seguides: a, be, ce, de.', t:'llengua', n:0},
+  {p:'Quantes paraules té la frase "el gat dorm"?', b:'3', o:['2', '4', '5'], e:'Tres: *el*, *gat* i *dorm*. Les paraules se separen amb espais, encara que siguin tan curtes com *el*.', t:'llengua', n:0},
+  {p:'Què és el contrari de "dia"?', b:'Nit', o:['Tarda', 'Hora', 'Sol'], e:'Dia i nit són contraris. Tarda i hora no ho són: la tarda és un tros del dia i l\'hora és una mesura.', t:'llengua', n:0},
+  {p:'Com es diu la persona que escriu llibres?', b:'Escriptor', o:['Lector', 'Llibreter', 'Impressor'], e:'L\'escriptor l\'escriu, l\'impressor l\'imprimeix, el llibreter el ven i el lector el llegeix. Cadascú té el seu nom.', t:'llengua', n:0},
+  {p:'Quantes síl·labes té la paraula "finestra"?', b:'3', o:['2', '4', '5'], e:'Tres: fi-nes-tra. Les síl·labes són els cops de veu; es poden comptar picant de mans mentre es diu la paraula a poc a poc.', t:'llengua', n:1},
+  {p:'Què és un refrany?', b:'Una dita curta amb una ensenyança', o:['Una cançó', 'Un conte llarg', 'Una pregunta'], e:'Com "qui no vol pols, que no vagi a l’era": una frase breu que guarda una experiència repetida durant generacions.', t:'llengua', n:1},
+  {p:'Què vol dir "matinar"?', b:'Llevar-se molt aviat', o:['Dinar tard', 'Dormir la migdiada', 'Sopar d’hora'], e:'Ve de matí, com matiner. El refrany diu que a qui matina, Déu l\'ajuda, que és una manera d\'animar a començar aviat.', t:'llengua', n:1}
+];
+
 /* ═══════════════════════════════════════════════════════
-   LES MINI-PREGUNTES DE LA PIRÀMIDE
+   LES PREGUNTES
 
-   Tres nivells, que es trien al pop-up de "Quantes cartes?" i es recorden
-   d'una partida a l'altra. La idea és que una persona gran triï "Fàcil"
-   una vegada i no hi hagi de tornar mai, i que qui en vulgui més triï
-   "Difícil" i tampoc. No hi ha cap ajust automàtic: pujar la dificultat a
-   qui encerta acaba castigant qui ho fa bé, i baixar-la a qui falla treu
-   la gràcia d'encertar.
+   Un sol motor per a dos jocs: les mini-preguntes de la piràmide i el joc
+   de Pregunta't. N'hi ha de dues menes:
 
-   Les preguntes de cultura general estan totes comprovades i no depenen
-   de l'actualitat: no hi ha res que caduqui ni res discutible.
+     · les CALCULADES, que es fabriquen cada vegada amb números nous
+       (sumes, sèries, lletres, contraris) i porten l'explicació feta amb
+       els seus propis números
+     · les del BANC, escrites a mà, amb la seva explicació
+
+   Tota pregunta, vingui d'on vingui, té la mateixa forma:
+     { pregunta, bona, opcions, explicacio, tema, nivell }
+
+   L'explicació és obligatòria. La idea del joc no és encertar-la: és
+   entendre per què, tant si s'ha encertat com si no.
    ═══════════════════════════════════════════════════════ */
+
+const TEMES_PREGUNTA = [
+  { id:'barreja',  nom:'Barreja',        sub:'De tot una mica',        icona:'shuffle',   color:'#8b5cf6' },
+  { id:'calcul',   nom:'Càlcul',         sub:'Números i sèries',       icona:'calculate', color:'#0ea5e9' },
+  { id:'llengua',  nom:'Llengua',        sub:'Paraules i lletres',     icona:'translate', color:'#eab308' },
+  { id:'natura',   nom:'Natura i cos',   sub:'Animals, plantes, cos',  icona:'eco',       color:'#22c55e' },
+  { id:'mon',      nom:'Món',            sub:'Geografia i planeta',    icona:'public',    color:'#f97316' },
+  { id:'historia', nom:'Història i art', sub:'Abans, art i música',    icona:'museum',    color:'#ec4899' }
+];
+
 const NIVELLS_PROVA = [
-  { nom:'Fàcil',   sub:'Sumes i lletres',        color:'#22c55e' },
-  { nom:'Mitjà',   sub:'Càlcul i cultura',       color:'#f59e0b' },
-  { nom:'Difícil', sub:'Per a qui vol pensar',   color:'#ef4444' }
+  { nom:'Fàcil',   sub:'Sense complicacions',  color:'#22c55e' },
+  { nom:'Mitjà',   sub:'Cal pensar-hi una mica', color:'#f59e0b' },
+  { nom:'Difícil', sub:'Per a qui vol pensar',  color:'#ef4444' }
 ];
 
-/* Cultura general de nivell mitjà: coses que tothom ha sentit alguna vegada */
-const CULTURA_MITJA = [
-  { p:'Quantes potes té una aranya?',                    b:'8',  o:['6','10','4'] },
-  { p:'Quin és el planeta més a prop del Sol?',          b:'Mercuri', o:['Venus','Mart','La Terra'] },
-  { p:'Quin color surt de barrejar blau i groc?',        b:'Verd', o:['Taronja','Lila','Marró'] },
-  { p:'Quantes cares té un dau?',                        b:'6',  o:['4','8','12'] },
-  { p:'Quin és l\'oceà més gran del món?',                b:'El Pacífic', o:['L\'Atlàntic','L\'Índic','L\'Àrtic'] },
-  { p:'Quin és l\'animal més gran del planeta?',          b:'La balena blava', o:['L\'elefant','La girafa','El tauró blanc'] },
-  { p:'Quina és la capital de França?',                  b:'París', o:['Lió','Marsella','Niça'] },
-  { p:'Quants minuts té una hora?',                      b:'60', o:['50','100','30'] },
-  { p:'Quantes hores té un dia?',                        b:'24', o:['12','20','36'] },
-  { p:'Quantes cordes té una guitarra clàssica?',        b:'6',  o:['4','8','12'] },
-  { p:'Quin mar banya Barcelona?',                       b:'El Mediterrani', o:['L\'Atlàntic','El Cantàbric','El mar del Nord'] },
-  { p:'Quin òrgan bomba la sang pel cos?',               b:'El cor', o:['El fetge','El pulmó','El ronyó'] },
-  { p:'Quin és l\'animal terrestre més ràpid?',           b:'El guepard', o:['El cavall','El lleó','La llebre'] },
-  { p:'Quin insecte fa la mel?',                         b:'L\'abella', o:['La vespa','La formiga','El borinot'] },
-  { p:'Quants dies té el febrer en un any de traspàs?',  b:'29', o:['28','30','31'] },
-  { p:'En quin mes comença la primavera aquí?',          b:'Al març', o:['Al gener','Al maig','Al juny'] },
-  { p:'Quantes lletres té l\'alfabet català?',            b:'26', o:['24','28','30'] },
-  { p:'Quin metall és líquid a temperatura ambient?',    b:'El mercuri', o:['El plom','L\'estany','El coure'] },
-  { p:'Quants costats té un hexàgon?',                   b:'6',  o:['5','7','8'] },
-  { p:'De quin animal ve la llana?',                     b:'De l\'ovella', o:['De la vaca','De la cabra','Del porc'] },
-  { p:'Quantes estacions té l\'any?',                     b:'4',  o:['2','3','6'] },
-  { p:'Quin és el satèl·lit natural de la Terra?',       b:'La Lluna', o:['Mart','Venus','El Sol'] },
-  { p:'Quina figura té tots els costats iguals i quatre angles rectes?', b:'El quadrat', o:['El rombe','El rectangle','El trapezi'] },
-  { p:'Quin instrument es toca amb un arquet?',          b:'El violí', o:['La flauta','El piano','La trompeta'] }
-];
-
-/* Cultura general de nivell difícil: cal saber-ho o deduir-ho */
-const CULTURA_DIFICIL = [
-  { p:'Qui va pintar el Guernica?',                      b:'Picasso', o:['Dalí','Miró','Velázquez'] },
-  { p:'En quin any va caure el mur de Berlín?',          b:'1989', o:['1979','1991','1985'] },
-  { p:'Quin element químic té el símbol Fe?',            b:'El ferro', o:['El fòsfor','El fluor','El franci'] },
-  { p:'Quin planeta té els anells més visibles?',        b:'Saturn', o:['Júpiter','Urà','Neptú'] },
-  { p:'Qui va escriure el Tirant lo Blanc?',             b:'Joanot Martorell', o:['Ausiàs March','Ramon Llull','Jacint Verdaguer'] },
-  { p:'Quina és la muntanya més alta del món?',          b:'L\'Everest', o:['El K2','El Mont Blanc','El Kilimanjaro'] },
-  { p:'Quants costats té un heptàgon?',                  b:'7',  o:['6','8','9'] },
-  { p:'Quin gas absorbeixen les plantes per fer la fotosíntesi?', b:'El diòxid de carboni', o:['L\'oxigen','El nitrogen','L\'hidrogen'] },
-  { p:'En quin segle va començar la Revolució Francesa?', b:'Al segle XVIII', o:['Al segle XVII','Al segle XIX','Al segle XVI'] },
-  { p:'Qui va dissenyar la Sagrada Família?',            b:'Antoni Gaudí', o:['Lluís Domènech i Montaner','Josep Puig i Cadafalch','Ildefons Cerdà'] },
-  { p:'Quin és el país més extens del món?',             b:'Rússia', o:['El Canadà','La Xina','El Brasil'] },
-  { p:'Quin instrument té 88 tecles?',                   b:'El piano', o:['L\'orgue','L\'acordió','El clavicèmbal'] },
-  { p:'Quina és la capital d\'Austràlia?',                b:'Canberra', o:['Sydney','Melbourne','Perth'] },
-  { p:'Qui va formular la teoria de la relativitat?',    b:'Einstein', o:['Newton','Galileu','Bohr'] },
-  { p:'Quin és l\'os més llarg del cos humà?',            b:'El fèmur', o:['L\'húmer','La tíbia','La columna'] },
-  { p:'En quin any va arribar l\'home a la Lluna?',       b:'1969', o:['1959','1972','1965'] },
-  { p:'Qui va escriure el Quixot?',                      b:'Cervantes', o:['Lope de Vega','Quevedo','Góngora'] },
-  { p:'Quin és el desert càlid més extens del món?',     b:'El Sàhara', o:['El Gobi','L\'Atacama','El Kalahari'] },
-  { p:'Quants graus fan els angles d\'un triangle sumats?', b:'180', o:['90','360','270'] },
-  { p:'Quina cèl·lula transporta l\'oxigen per la sang?',  b:'El glòbul vermell', o:['El glòbul blanc','La plaqueta','La neurona'] },
-  { p:'Quin país va ser el primer a fer servir el paper moneda?', b:'La Xina', o:['Egipte','Grècia','Itàlia'] },
-  { p:'Quina és la llengua amb més parlants com a llengua materna?', b:'El xinès mandarí', o:['L\'anglès','L\'espanyol','L\'hindi'] },
-  { p:'Quin és l\'estret que separa Europa d\'Àfrica?',    b:'Gibraltar', o:['Bòsfor','Ormuz','Malaca'] },
-  { p:'Quants elements té una octava musical?',          b:'8',  o:['5','7','12'] }
-];
-
-/* Paraules: contraris i sinònims, per no fer-ho tot de números */
 const CONTRARIS = [
   ['alt','baix'], ['ràpid','lent'], ['calent','fred'], ['ple','buit'],
   ['clar','fosc'], ['dur','tou'], ['llarg','curt'], ['ample','estret'],
-  ['pesat','lleuger'], ['humit','sec'], ['dolç','amarg'], ['fort','feble']
+  ['pesat','lleuger'], ['humit','sec'], ['dolç','amarg'], ['fort','feble'],
+  ['net','brut'], ['jove','vell'], ['dreta','esquerra'], ['damunt','sota']
 ];
 const SINONIMS = [
   ['content','alegre'], ['cansat','fatigat'], ['bonic','formós'],
   ['valent','coratjós'], ['tranquil','calmat'], ['antic','vell'],
-  ['begut','ebri'], ['llest','espavilat'], ['brut','endropit']
+  ['llest','espavilat'], ['begut','ebri'], ['pobre','indigent'],
+  ['estrany','rar'], ['començar','encetar'], ['acabar','enllestir']
 ];
 
-function generarProva(){
-  const dif = nivellProva;                    // 0 fàcil · 1 mitjà · 2 difícil
-  const enter = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
-  const tria = llista => llista[Math.floor(Math.random() * llista.length)];
+const enterAtzar = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const unDe = llista => llista[Math.floor(Math.random() * llista.length)];
 
-  /* ── FÀCIL: exactament com sempre ── */
-  if (dif === 0){
-    const tipus = Math.floor(Math.random() * 5);
-    if (tipus === 0){
-      const a = enter(7, 39), b = enter(4, 29);
-      return { pregunta:`Quant fan ${a} + ${b}?`, bona:a + b, numerica:true };
-    }
-    if (tipus === 1){
-      const a = enter(20, 60), b = enter(3, 19);
-      return { pregunta:`Quant fan ${a} − ${b}?`, bona:a - b, numerica:true };
-    }
-    if (tipus === 2){
-      const i = enter(0, ABECEDARI.length - 3);
-      const endavant = Math.random() < .6;
-      const j = endavant ? i + 1 : Math.max(0, i - 1);
-      return {
-        pregunta: endavant ? `Quina lletra va després de la ${ABECEDARI[i]}?`
-                           : `Quina lletra va abans de la ${ABECEDARI[i]}?`,
-        bona: ABECEDARI[j], lletres:true
-      };
-    }
-    if (tipus === 3){
-      const inici = enter(2, 15), pas = enter(2, 7);
-      const serie = [inici, inici + pas, inici + pas * 2];
-      return { pregunta:`${serie.join(', ')}… quin número ve ara?`, bona: inici + pas * 3, numerica:true };
-    }
-    const n = enter(11, 98);
-    const parell = Math.random() < .5;
-    return {
-      pregunta: parell ? `El ${n} és un número parell?` : `El ${n} es pot dividir entre 5?`,
-      bona: (parell ? (n % 2 === 0) : (n % 5 === 0)) ? 'Sí' : 'No', siono:true
-    };
-  }
-
-  /* ── MITJÀ ── */
-  if (dif === 1){
-    const tipus = Math.floor(Math.random() * 6);
-    if (tipus === 0){                                    // taula de multiplicar
-      const a = enter(3, 9), b = enter(3, 9);
-      return { pregunta:`Quant fan ${a} × ${b}?`, bona:a * b, numerica:true };
-    }
-    if (tipus === 1){                                    // dobles, meitats i percentatges rodons
-      const quin = Math.floor(Math.random() * 3);
-      if (quin === 0){ const n = enter(12, 48) * 2; return { pregunta:`Quina és la meitat de ${n}?`, bona:n / 2, numerica:true }; }
-      if (quin === 1){ const n = enter(14, 60); return { pregunta:`Quin és el doble de ${n}?`, bona:n * 2, numerica:true }; }
-      const n = enter(2, 18) * 10;
-      return { pregunta:`Quant és el 10 % de ${n}?`, bona:n / 10, numerica:true };
-    }
-    if (tipus === 2){                                    // sèries multiplicatives o alternades
-      if (Math.random() < .5){
-        const i = enter(2, 5), f = enter(2, 3);
-        const s = [i, i * f, i * f * f];
-        return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i * f * f * f, numerica:true };
-      }
-      const i = enter(4, 20), p = enter(3, 8);
-      const s = [i, i + p, i + p - 2, i + p * 2 - 2];
-      return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 2 - 4, numerica:true };
-    }
-    if (tipus === 3){                                    // contraris
-      const [a, b] = tria(CONTRARIS);
-      const altres = CONTRARIS.filter(c => c[1] !== b).map(c => c[1]);
-      return { pregunta:`Quin és el contrari de "${a}"?`, bona:b, opcions:barrejar(altres).slice(0, 3) };
-    }
-    if (tipus === 4){                                    // lletres, però saltant
-      const salt = enter(2, 3);
-      const i = enter(0, ABECEDARI.length - salt - 1);
-      return { pregunta:`Quina lletra hi ha ${salt} llocs després de la ${ABECEDARI[i]}?`,
-               bona:ABECEDARI[i + salt], lletres:true };
-    }
-    const q = tria(CULTURA_MITJA);                       // cultura general
-    return { pregunta:q.p, bona:q.b, opcions:q.o };
-  }
-
-  /* ── DIFÍCIL ── */
-  const tipus = Math.floor(Math.random() * 6);
-  if (tipus === 0){                                      // dues operacions
-    const a = enter(4, 12), b = enter(3, 9);
-    const c = enter(5, Math.max(6, a * b - 4));          // mai un resultat negatiu
-    return { pregunta:`Quant fan ${a} × ${b} − ${c}?`, bona:a * b - c, numerica:true };
-  }
-  if (tipus === 1){                                      // fraccions i percentatges
-    if (Math.random() < .5){
-      const n = enter(3, 15) * 4;
-      return { pregunta:`Quina és la quarta part de ${n}?`, bona:n / 4, numerica:true };
-    }
-    const n = enter(4, 20) * 5;
-    return { pregunta:`Quant és el 20 % de ${n}?`, bona:Math.round(n / 5), numerica:true };
-  }
-  if (tipus === 2){                                      // sèries de debò
+/* ── Preguntes de càlcul ─────────────────────────────────────── */
+function preguntaCalcul(nivell){
+  if (nivell === 0){
     const quina = Math.floor(Math.random() * 3);
-    if (quina === 0){                                    // quadrats
-      const i = enter(2, 7);
-      const s = [i * i, (i + 1) * (i + 1), (i + 2) * (i + 2)];
-      return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:(i + 3) * (i + 3), numerica:true };
+    if (quina === 0){                                   // suma
+      const a = enterAtzar(7, 39), b = enterAtzar(4, 29);
+      const desenes = Math.floor(b / 10) * 10, unitats = b % 10;
+      return { pregunta:`Quant fan ${a} + ${b}?`, bona:a + b, numerica:true,
+        explicacio: unitats
+          ? `Va bé sumar per parts: primer les desenes, ${a} + ${desenes} = ${a + desenes}, i després ${a + desenes} + ${unitats} = ${a + b}.`
+          : `${a} + ${b} = ${a + b}. Quan el segon número acaba en zero només cal sumar les desenes.` };
     }
-    if (quina === 1){                                    // Fibonacci
-      let a = enter(1, 5), b = a + enter(1, 4);
-      const s = [a, b, a + b, a + 2 * b];
-      return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:2 * a + 3 * b, numerica:true };
+    if (quina === 1){                                   // resta
+      const a = enterAtzar(20, 60), b = enterAtzar(3, 19);
+      return { pregunta:`Quant fan ${a} − ${b}?`, bona:a - b, numerica:true,
+        explicacio:`De ${a} en traiem ${b}. Comptant cap enrere: ${a} − 10 = ${a - 10}, i encara ${b - 10 >= 0 ? b - 10 : b} més fins a ${a - b}. També es pot comprovar al revés: ${a - b} + ${b} = ${a}.` };
     }
-    const i = enter(2, 6), p = enter(2, 4);              // salt que creix
-    const s = [i, i + p, i + p * 3, i + p * 6];
-    return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 10, numerica:true };
+    const n = enterAtzar(11, 98);                       // parell o múltiple de 5
+    const parell = Math.random() < .5;
+    const esParell = n % 2 === 0, esCinc = n % 5 === 0;
+    return parell
+      ? { pregunta:`El ${n} és un número parell?`, bona: esParell ? 'Sí' : 'No', siono:true,
+          explicacio:`Un número és parell si acaba en 0, 2, 4, 6 o 8. El ${n} acaba en ${n % 10}, per tant és ${esParell ? 'parell' : 'senar'}.` }
+      : { pregunta:`El ${n} es pot dividir entre 5?`, bona: esCinc ? 'Sí' : 'No', siono:true,
+          explicacio:`Es poden dividir entre 5 els números que acaben en 0 o en 5. El ${n} acaba en ${n % 10}, per tant ${esCinc ? 'sí que es pot' : 'no es pot'}.` };
   }
-  if (tipus === 3){                                      // sinònims
-    const [a, b] = tria(SINONIMS);
+
+  if (nivell === 1){
+    const quina = Math.floor(Math.random() * 4);
+    if (quina === 0){                                   // multiplicar
+      const a = enterAtzar(3, 9), b = enterAtzar(3, 9);
+      return { pregunta:`Quant fan ${a} × ${b}?`, bona:a * b, numerica:true,
+        explicacio:`${a} × ${b} vol dir ${b} vegades ${a}. Un truc: ${a} × ${b - 1} = ${a * (b - 1)}, i sumant-hi un ${a} més fan ${a * b}.` };
+    }
+    if (quina === 1){                                   // meitat
+      const n = enterAtzar(12, 48) * 2;
+      return { pregunta:`Quina és la meitat de ${n}?`, bona:n / 2, numerica:true,
+        explicacio:`La meitat de ${n} és ${n / 2}, perquè ${n / 2} + ${n / 2} = ${n}. Partir per la meitat i multiplicar per dos són operacions contràries.` };
+    }
+    if (quina === 2){                                   // doble
+      const n = enterAtzar(14, 60);
+      return { pregunta:`Quin és el doble de ${n}?`, bona:n * 2, numerica:true,
+        explicacio:`El doble és el mateix número dues vegades: ${n} + ${n} = ${n * 2}.` };
+    }
+    const n = enterAtzar(2, 18) * 10;                   // 10 %
+    return { pregunta:`Quant és el 10 % de ${n}?`, bona:n / 10, numerica:true,
+      explicacio:`El 10 % és una desena part del total. Per trobar-la n'hi ha prou de treure l'últim zero (o moure la coma un lloc): de ${n} en surt ${n / 10}.` };
+  }
+
+  const quina = Math.floor(Math.random() * 4);
+  if (quina === 0){                                     // dues operacions
+    const a = enterAtzar(4, 12), b = enterAtzar(3, 9);
+    const c = enterAtzar(5, Math.max(6, a * b - 4));
+    return { pregunta:`Quant fan ${a} × ${b} − ${c}?`, bona:a * b - c, numerica:true,
+      explicacio:`Primer la multiplicació i després la resta: ${a} × ${b} = ${a * b}, i ${a * b} − ${c} = ${a * b - c}. Quan hi ha multiplicacions i sumes barrejades, sempre es multiplica abans.` };
+  }
+  if (quina === 1){                                     // quarta part
+    const n = enterAtzar(3, 15) * 4;
+    return { pregunta:`Quina és la quarta part de ${n}?`, bona:n / 4, numerica:true,
+      explicacio:`Partir en quatre és partir per la meitat dues vegades: la meitat de ${n} és ${n / 2}, i la meitat de ${n / 2} és ${n / 4}.` };
+  }
+  if (quina === 2){                                     // 20 %
+    const n = enterAtzar(4, 20) * 5;
+    return { pregunta:`Quant és el 20 % de ${n}?`, bona:n / 5, numerica:true,
+      explicacio:`El 20 % és el doble del 10 %. El 10 % de ${n} és ${n / 10}, i el doble és ${n / 5}.` };
+  }
+  const a = enterAtzar(12, 40), b = enterAtzar(2, 9);   // divisió
+  return { pregunta:`Quant fan ${a * b} : ${b}?`, bona:a, numerica:true,
+    explicacio:`Dividir és preguntar-se quantes vegades hi cap: el ${b} cap ${a} vegades dins de ${a * b}. Es comprova multiplicant: ${a} × ${b} = ${a * b}.` };
+}
+
+/* ── Sèries de números ───────────────────────────────────────── */
+function preguntaSerie(nivell){
+  if (nivell === 0){
+    const inici = enterAtzar(2, 15), pas = enterAtzar(2, 7);
+    const s = [inici, inici + pas, inici + pas * 2];
+    return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:inici + pas * 3, numerica:true,
+      explicacio:`De cada número al següent hi ha sempre el mateix salt: +${pas}. Per tant, ${inici + pas * 2} + ${pas} = ${inici + pas * 3}.` };
+  }
+  if (nivell === 1){
+    if (Math.random() < .5){
+      const i = enterAtzar(2, 5), f = enterAtzar(2, 3);
+      const s = [i, i * f, i * f * f];
+      return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i * f * f * f, numerica:true,
+        explicacio:`Aquí no se suma: es multiplica. Cada número és l'anterior per ${f}. Per tant, ${i * f * f} × ${f} = ${i * f * f * f}.` };
+    }
+    const i = enterAtzar(4, 20), p = enterAtzar(3, 8);
+    const s = [i, i + p, i + p - 2, i + p * 2 - 2];
+    return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 2 - 4, numerica:true,
+      explicacio:`La sèrie fa un pas endavant i un de cap enrere: +${p}, −2, +${p}, −2… Toca restar 2: ${i + p * 2 - 2} − 2 = ${i + p * 2 - 4}.` };
+  }
+  const quina = Math.floor(Math.random() * 3);
+  if (quina === 0){                                     // quadrats
+    const i = enterAtzar(2, 7);
+    const s = [i * i, (i + 1) * (i + 1), (i + 2) * (i + 2)];
+    return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:(i + 3) * (i + 3), numerica:true,
+      explicacio:`Són els quadrats de ${i}, ${i + 1} i ${i + 2}: cada número multiplicat per ell mateix. El següent és ${i + 3} × ${i + 3} = ${(i + 3) * (i + 3)}.` };
+  }
+  if (quina === 1){                                     // Fibonacci
+    const a = enterAtzar(1, 5), b = a + enterAtzar(1, 4);
+    const s = [a, b, a + b, a + 2 * b];
+    return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:2 * a + 3 * b, numerica:true,
+      explicacio:`Cada número és la suma dels dos anteriors: ${a} + ${b} = ${a + b}, ${b} + ${a + b} = ${a + 2 * b}… i ara ${a + b} + ${a + 2 * b} = ${2 * a + 3 * b}.` };
+  }
+  const i = enterAtzar(2, 6), p = enterAtzar(2, 4);     // salt que creix
+  const s = [i, i + p, i + p * 3, i + p * 6];
+  return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 10, numerica:true,
+    explicacio:`El salt va creixent: +${p}, +${p * 2}, +${p * 3}… Ara toca un salt de +${p * 4}, i ${i + p * 6} + ${p * 4} = ${i + p * 10}.` };
+}
+
+/* ── Preguntes de llengua ────────────────────────────────────── */
+function preguntaLlengua(nivell){
+  if (nivell === 0){
+    const i = enterAtzar(0, ABECEDARI.length - 3);
+    const endavant = Math.random() < .6;
+    const j = endavant ? i + 1 : Math.max(0, i - 1);
+    const tros = ABECEDARI.slice(Math.max(0, i - 2), i + 3).split('').join(' · ');
+    return {
+      pregunta: endavant ? `Quina lletra va després de la ${ABECEDARI[i]}?`
+                         : `Quina lletra va abans de la ${ABECEDARI[i]}?`,
+      bona:ABECEDARI[j], lletres:true,
+      explicacio:`En aquest tros de l'abecedari les lletres van així: ${tros}. La que hi ha ${endavant ? 'just després' : 'just abans'} de la ${ABECEDARI[i]} és la ${ABECEDARI[j]}.` };
+  }
+  if (nivell === 1){
+    if (Math.random() < .5){
+      const [a, b] = unDe(CONTRARIS);
+      const altres = CONTRARIS.filter(c => c[1] !== b).map(c => c[1]);
+      return { pregunta:`Quin és el contrari de "${a}"?`, bona:b, opcions:barrejar(altres).slice(0, 3),
+        explicacio:`"${a}" i "${b}" són antònims: volen dir exactament el contrari l'un de l'altre. Una cosa no pot ser ${a} i ${b} alhora.` };
+    }
+    const salt = enterAtzar(2, 3);
+    const i = enterAtzar(0, ABECEDARI.length - salt - 1);
+    const tros = ABECEDARI.slice(i, i + salt + 1).split('').join(' · ');
+    return { pregunta:`Quina lletra hi ha ${salt} llocs després de la ${ABECEDARI[i]}?`, bona:ABECEDARI[i + salt], lletres:true,
+      explicacio:`Comptant a partir de la ${ABECEDARI[i]}: ${tros}. ${salt} llocs més enllà hi ha la ${ABECEDARI[i + salt]}.` };
+  }
+  if (Math.random() < .5){
+    const [a, b] = unDe(SINONIMS);
     const altres = SINONIMS.filter(c => c[1] !== b).map(c => c[1]);
-    return { pregunta:`Quina paraula vol dir el mateix que "${a}"?`, bona:b, opcions:barrejar(altres).slice(0, 3) };
+    return { pregunta:`Quina paraula vol dir el mateix que "${a}"?`, bona:b, opcions:barrejar(altres).slice(0, 3),
+      explicacio:`"${a}" i "${b}" són sinònims: volen dir el mateix i sovint es poden canviar l'una per l'altra dins d'una frase.` };
   }
-  if (tipus === 4){                                      // l\'abecedari a l\'inrevés
-    const salt = enter(2, 4);
-    const i = enter(salt, ABECEDARI.length - 1);
-    return { pregunta:`Quina lletra hi ha ${salt} llocs abans de la ${ABECEDARI[i]}?`,
-             bona:ABECEDARI[i - salt], lletres:true };
+  const salt = enterAtzar(2, 4);
+  const i = enterAtzar(salt, ABECEDARI.length - 1);
+  const tros = ABECEDARI.slice(i - salt, i + 1).split('').join(' · ');
+  return { pregunta:`Quina lletra hi ha ${salt} llocs abans de la ${ABECEDARI[i]}?`, bona:ABECEDARI[i - salt], lletres:true,
+    explicacio:`Anant cap enrere des de la ${ABECEDARI[i]}: ${tros}. ${salt} llocs abans hi ha la ${ABECEDARI[i - salt]}.` };
+}
+
+/* ── Les del banc ────────────────────────────────────────────── */
+function preguntaDelBanc(tema, nivell, evitades){
+  const delTema = q => tema === 'barreja' || q.t === tema;
+  let fons = BANC_PREGUNTES.filter(q => delTema(q) && q.n === nivell);
+
+  /* Si d'aquell tema i nivell no n'hi ha prou per omplir una partida sense
+     repetir-ne cap, s'estira als nivells del costat. Les del nivell demanat
+     hi entren dues vegades perquè continuïn sent les més probables. */
+  if (fons.length < QUIZ_QUANTES + 4){
+    const veines = BANC_PREGUNTES.filter(q => delTema(q) && Math.abs(q.n - nivell) === 1);
+    fons = fons.concat(fons, veines);
   }
-  const q = tria(CULTURA_DIFICIL);                       // cultura general
-  return { pregunta:q.p, bona:q.b, opcions:q.o };
+  if (!fons.length) return null;
+  const noves = fons.filter(q => !evitades.has(q.p));
+  const q = unDe(noves.length ? noves : fons);
+  return { pregunta:q.p, bona:q.b, opcions:q.o, explicacio:q.e, tema:q.t };
+}
+
+/* ── La porta d'entrada ──────────────────────────────────────── */
+function generarPregunta(tema, nivell, evitades){
+  evitades = evitades || new Set();
+  const calculada = () => (Math.random() < .5 ? preguntaCalcul(nivell) : preguntaSerie(nivell));
+
+  if (tema === 'calcul')  return { ...calculada(), tema:'calcul' };
+  if (tema === 'llengua'){
+    // La llengua té preguntes fabricades i preguntes del banc: es reparteix
+    const b = Math.random() < .45 ? preguntaDelBanc('llengua', nivell, evitades) : null;
+    return b || { ...preguntaLlengua(nivell), tema:'llengua' };
+  }
+  if (tema === 'barreja'){
+    const daus = Math.random();
+    if (daus < 0.25) return { ...calculada(), tema:'calcul' };
+    if (daus < 0.40) return { ...preguntaLlengua(nivell), tema:'llengua' };
+    return preguntaDelBanc('barreja', nivell, evitades) || { ...calculada(), tema:'calcul' };
+  }
+  return preguntaDelBanc(tema, nivell, evitades) || { ...calculada(), tema:'calcul' };
+}
+
+/* Les mini-preguntes de la piràmide: sempre de barreja, amb el nivell
+   que s'hagi triat al pop-up dels nivells */
+function generarProva(){
+  return generarPregunta('barreja', nivellProva, new Set());
 }
 
 function opcionsProva(prova){
   if (prova.siono) return ['Sí', 'No'];
-  // Les preguntes de cultura general porten les seves pròpies opcions
+  // Les preguntes escrites a mà porten les seves pròpies opcions
   if (prova.opcions) return barrejar([prova.bona, ...prova.opcions]);
 
   const opcions = new Set([prova.bona]);
   if (prova.lletres){
     const pos = ABECEDARI.indexOf(prova.bona);
-    while (opcions.size < 4){
-      const d = Math.floor(Math.random() * 7) - 3;
-      const k = pos + d;
+    for (let i = 0; opcions.size < 4 && i < 200; i++){
+      const k = pos + Math.floor(Math.random() * 7) - 3;
       if (k >= 0 && k < ABECEDARI.length) opcions.add(ABECEDARI[k]);
     }
+    let k = 0;
+    while (opcions.size < 4 && k < ABECEDARI.length) opcions.add(ABECEDARI[k++]);
   } else {
-    // Amb un límit d'intents: si la resposta és molt petita pot ser que no
-    // hi hagi prou números diferents a prop, i abans això es penjava
     for (let i = 0; opcions.size < 4 && i < 200; i++){
-      const d = Math.floor(Math.random() * 13) - 6;
-      const v = prova.bona + d;
+      const v = prova.bona + Math.floor(Math.random() * 13) - 6;
       if (v >= 0 && v !== prova.bona) opcions.add(v);
     }
     let seguent = prova.bona + 1;
@@ -5408,11 +5660,196 @@ function acabarPiramide(guanyat, motiu){
    FUNCIONS GLOBALS I REINICI
    ═══════════════════════════════════════════════════════ */
 /* Un sol lloc on es diu com arrenca cada joc */
+
+/* ═══════════════════════════════════════════════════════
+   JOC 11 — PREGUNTA'T   (en proves)
+
+   Deu preguntes del tema i el nivell que s'hagin triat. Després de cada
+   resposta surt l'explicació, encertis o no: la gràcia del joc és entendre
+   el perquè, no pas endevinar-la.
+
+   Encara és en proves i per això la targeta del menú no es veu: cal fer
+   doble clic al títol "Memòria" per fer-la sortir, i no es recorda d'una
+   visita a l'altra (vegeu obrirPortaEnProves, més avall).
+   ═══════════════════════════════════════════════════════ */
+const QUIZ_QUANTES = 10;
+
+/* Les explicacions poden portar *cursiva* entre asteriscs. Es passa a HTML
+   després d'escapar-ho tot, perquè el text mai no pugui injectar etiquetes. */
+function textExplicat(t){
+  const segur = String(t)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return segur.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+
+function iniciarQuiz(){
+  aturarTot(); mostrarPantalla('quiz');
+  quizFet = false; quizIdx = 0; quizEncerts = 0; quizRespost = false;
+
+  const tema = TEMES_PREGUNTA.find(t => t.id === temaQuiz) || TEMES_PREGUNTA[0];
+  $('quizTemaNom').textContent = tema.nom;
+  $('quizTemaIco').textContent = tema.icona;
+  $('quizTemaIco').style.color = tema.color;
+  $('quizTotal').textContent = QUIZ_QUANTES;
+  $('quizEncerts').textContent = '0';
+  $('quizRepas').hidden = true;
+  $('quizCaixa').hidden = false;
+  $('quizFiBtn').hidden = true;
+
+  /* Es preparen les deu d'una tirada, sense repetir-ne cap */
+  quizLlista = [];
+  const jaSortides = new Set();
+  for (let i = 0; i < QUIZ_QUANTES; i++){
+    let q = null;
+    // Fins a vint intents d'aconseguir-ne una de nova abans de conformar-s'hi
+    for (let intent = 0; intent < 20; intent++){
+      q = generarPregunta(temaQuiz, nivellQuiz, jaSortides);
+      if (q && !jaSortides.has(q.pregunta)) break;
+    }
+    if (!q) break;
+    jaSortides.add(q.pregunta);
+    quizLlista.push({ ...q, opcionsFetes:opcionsProva(q), resposta:null });
+  }
+
+  pintarPregunta();
+}
+
+function pintarPregunta(){
+  const q = quizLlista[quizIdx];
+  if (!q) return acabarQuiz();
+  quizRespost = false;
+
+  $('quizNum').textContent = quizIdx + 1;
+  $('quizPregunta').textContent = q.pregunta;
+  $('quizExplicacio').hidden = true;
+  $('quizSeguent').hidden = true;
+
+  const caixa = $('quizOpcions');
+  caixa.className = 'quiz-opcions';
+  caixa.innerHTML = '';
+  q.opcionsFetes.forEach(op => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'quiz-btn'; b.textContent = op;
+    b.addEventListener('click', () => respondreQuiz(b, op));
+    caixa.appendChild(b);
+  });
+  so('apareix');
+}
+
+function respondreQuiz(boto, resposta){
+  if (quizRespost || quizFet) return;
+  quizRespost = true;
+
+  const q = quizLlista[quizIdx];
+  const bo = String(resposta) === String(q.bona);
+  q.resposta = String(resposta);
+
+  const caixa = $('quizOpcions');
+  caixa.classList.add('resposta');
+  [...caixa.children].forEach(b => {
+    if (String(b.textContent) === String(q.bona)) b.classList.add('correcta');
+  });
+  if (!bo) boto.classList.add('erronia');
+
+  if (bo){
+    quizEncerts++;
+    $('quizEncerts').textContent = quizEncerts;
+    celebrar(boto, 40); so('parella');
+  } else {
+    so('error');
+  }
+
+  /* L'explicació, sempre: tant si s'ha encertat com si no */
+  const veredicte = $('quizVeredicte');
+  veredicte.className = 'quiz-veredicte ' + (bo ? 'be' : 'mal');
+  veredicte.textContent = bo ? 'Molt bé!' : `La resposta era: ${q.bona}`;
+  $('quizText').innerHTML = textExplicat(q.explicacio);
+  $('quizExplicacio').hidden = false;
+
+  const seguent = $('quizSeguent');
+  seguent.hidden = false;
+  seguent.innerHTML = quizIdx + 1 >= quizLlista.length
+    ? '<span class="material-symbols-rounded">emoji_events</span> Veure el resultat'
+    : '<span class="material-symbols-rounded">arrow_forward</span> Següent';
+  seguent.onclick = () => {
+    quizIdx++;
+    if (quizIdx >= quizLlista.length) acabarQuiz();
+    else pintarPregunta();
+  };
+  // Que es vegi l'explicació encara que la pregunta fos llarga
+  requestAnimationFrame(() => $('quizExplicacio').scrollIntoView({ behavior:'smooth', block:'nearest' }));
+}
+
+/* El repàs: les deu preguntes amb la seva explicació, per rellegir-les amb
+   calma. No marxa sol; se'n surt amb el botó. */
+function acabarQuiz(){
+  if (quizFet) return;
+  quizFet = true; aturarTot();
+
+  $('quizCaixa').hidden = true;
+  $('quizSeguent').hidden = true;
+  const repas = $('quizRepas');
+  repas.hidden = false;
+  repas.innerHTML = quizLlista.map(q => {
+    const be = String(q.resposta) === String(q.bona);
+    const teva = q.resposta === null ? 'sense respondre' : q.resposta;
+    return `<div class="repas-p ${be ? 'be' : 'mal'}">` +
+           `<b>${textExplicat(q.pregunta)}</b>` +
+           `<small class="resp">${be ? '✓ ' : '✗ '}${textExplicat(q.bona)}` +
+           (be ? '' : ` &nbsp;·&nbsp; vas dir: ${textExplicat(teva)}`) + `</small>` +
+           `<small>${textExplicat(q.explicacio)}</small></div>`;
+  }).join('');
+
+  const boto = $('quizFiBtn');
+  boto.hidden = false;
+  boto.onclick = () => {
+    boto.hidden = true;
+    const guanyat = quizEncerts >= Math.ceil(quizLlista.length * 0.6);
+    finalPartida(guanyat, guanyat ? null : 'Pots tornar-hi quan vulguis', null,
+                 `${quizEncerts} de ${quizLlista.length} encertades`);
+  };
+  so(quizEncerts >= Math.ceil(quizLlista.length * 0.6) ? 'victoria' : 'fi');
+}
+
+/* ── La porta de darrere ──────────────────────────────────────
+   Els jocs en proves no es veuen fins que es fa doble clic al títol
+   "Memòria". No es desa enlloc: qui recarregui la pàgina torna a no
+   veure'ls, de manera que ningú se'ls pot trobar per accident. */
+function pintarJocsEnProves(){
+  document.querySelectorAll('.game-card.en-proves').forEach(c => { c.hidden = !jocsEnProves; });
+}
+
+function obrirPortaEnProves(){
+  jocsEnProves = !jocsEnProves;
+  pintarJocsEnProves();
+  so(jocsEnProves ? 'estrella' : 'destriar');
+  if (joc === 'home') log(jocsEnProves ? 'Jocs en proves: a la vista' : 'Jocs en proves: amagats', 2200);
+  if (!jocsEnProves && joc === 'quiz'){ aturarTot(); mostrarPantalla('home'); }
+}
+
+/* Doble clic amb el ratolí i doble toc amb el dit: al mòbil el dblclick no
+   sempre arriba, així que es compten els tocs a mà */
+(function portaDelTitol(){
+  const titol = $('brandText');
+  if (!titol) return;
+  let ultim = 0;
+  titol.style.cursor = 'pointer';
+  titol.addEventListener('dblclick', obrirPortaEnProves);
+  titol.addEventListener('pointerup', ev => {
+    if (ev.pointerType === 'mouse') return;      // amb ratolí ja hi ha el dblclick
+    const ara = Date.now();
+    if (ara - ultim < 450){ ultim = 0; obrirPortaEnProves(); }
+    else ultim = ara;
+  });
+})();
+pintarJocsEnProves();
+
 const INICIAR = {
   parelles: () => iniciarParelles(), escena: () => iniciarEscena(),
   sequencia: () => iniciarSequencia(), canvi: () => iniciarCanvi(), onera: () => iniciarOnera(),
   assoc: () => iniciarAssoc(), compta: () => iniciarCompta(), nback: () => iniciarNback(),
-  piramide: () => iniciarPiramide(), blanca: () => iniciarBlanca()
+  piramide: () => iniciarPiramide(), blanca: () => iniciarBlanca(),
+  quiz: () => iniciarQuiz()
 };
 function jugarA(quinJoc){ if (INICIAR[quinJoc]) INICIAR[quinJoc](); }
 
@@ -5429,16 +5866,27 @@ function obrirNivell(quinJoc){
   else if (quinJoc === 'blanca') { llista = NIVELLS_BLANCA; triat = nivellBlanca; titol = 'Com de difícil?'; nomQuantitat = 'lliures'; formatSub = n => n.text; formatTitol = n => `${n.columnes} columnes`; }
   else if (quinJoc === 'piramide') { llista = NIVELLS_PIRAMIDE; triat = nivellPiramide; titol = 'Quantes cartes?'; nomQuantitat = 'parelles'; formatSub = n => n.text; formatTitol = n => `${n.parelles} parelles`; }
   else if (quinJoc === 'nback') { llista = NIVELLS_NBACK; triat = nivellNback; titol = 'Quant enrere?'; nomQuantitat = 'n'; formatSub = n => n.text; formatTitol = n => `${n.n} enrere`; }
+  else if (quinJoc === 'quiz') { llista = TEMES_PREGUNTA; triat = Math.max(0, TEMES_PREGUNTA.findIndex(t => t.id === temaQuiz)); titol = 'De què vols que et preguntem?'; nomQuantitat = 'id'; formatSub = n => n.sub; formatTitol = n => n.nom; }
 
   $('levelTitle').textContent = titol; levelGrid.innerHTML = '';
   llista.forEach((n, idx) => {
     const boto = document.createElement('button'); boto.type = 'button'; boto.className = 'size-option';
     boto.setAttribute('role', 'radio'); boto.setAttribute('aria-checked', idx === triat ? 'true' : 'false');
     const mini = document.createElement('div'); mini.className = 'mini';
+    if (quinJoc === 'quiz'){
+      // Cada tema, la seva icona i el seu color
+      mini.className = 'tema-mini';
+      mini.setAttribute('aria-hidden', 'true');
+      mini.innerHTML = '<span class="material-symbols-rounded">' + n.icona + '</span>';
+      mini.style.color = n.color;
+      boto.style.setProperty('--tint', n.color);
+    }
     const quantitat = Number(n[nomQuantitat]) || 1;
-    const cols = quantitat <= 4 ? 2 : 4; mini.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; mini.setAttribute('aria-hidden', 'true');
-    const cel = quinJoc === 'parelles' ? Math.min(quantitat * 2, 16) : Math.max(2, Math.min(quantitat, 16));
-    for (let i = 0; i < cel; i++) mini.appendChild(document.createElement('i'));
+    if (quinJoc !== 'quiz'){
+      const cols = quantitat <= 4 ? 2 : 4; mini.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; mini.setAttribute('aria-hidden', 'true');
+      const cel = quinJoc === 'parelles' ? Math.min(quantitat * 2, 16) : Math.max(2, Math.min(quantitat, 16));
+      for (let i = 0; i < cel; i++) mini.appendChild(document.createElement('i'));
+    }
     const titolSp = document.createElement('span'); titolSp.textContent = formatTitol ? formatTitol(n) : `${n[nomQuantitat]} ${nomQuantitat}`;
     const sub = document.createElement('small'); sub.textContent = formatSub(n);
     boto.append(mini, titolSp, sub);
@@ -5452,30 +5900,35 @@ function obrirNivell(quinJoc){
       else if (quinJoc === 'compta') nivellCompta = idx; else if (quinJoc === 'nback') nivellNback = idx;
       else if (quinJoc === 'piramide') nivellPiramide = idx;
       else if (quinJoc === 'blanca') nivellBlanca = idx;
-      localStorage.setItem('nivell' + quinJoc.charAt(0).toUpperCase() + quinJoc.slice(1), idx);
+      if (quinJoc === 'quiz'){ temaQuiz = TEMES_PREGUNTA[idx].id; localStorage.setItem('temaQuiz', temaQuiz); }
+      else localStorage.setItem('nivell' + quinJoc.charAt(0).toUpperCase() + quinJoc.slice(1), idx);
       tancarModal(levelOverlay);
       jugarA(quinJoc);
     });
     levelGrid.appendChild(boto);
   });
 
-  /* Només la piràmide fa preguntes: als altres jocs el bloc no surt */
+  /* Els dos jocs que fan preguntes trien també com de difícils les volen.
+     La piràmide desa la tria a nivellProva i Pregunta't a nivellQuiz. */
   const bloc = $('provaBloc'), caixa = $('provaNivells');
-  bloc.hidden = quinJoc !== 'piramide';
-  if (!bloc.hidden){
+  const ambPreguntes = quinJoc === 'piramide' || quinJoc === 'quiz';
+  bloc.hidden = !ambPreguntes;
+  if (ambPreguntes){
+    const esQuiz = quinJoc === 'quiz';
+    $('provaTitol').textContent = esQuiz ? 'Com de difícils?' : 'I les preguntes?';
     caixa.innerHTML = '';
     NIVELLS_PROVA.forEach((n, i) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'prova-nivell'; b.style.setProperty('--to', n.color);
       b.setAttribute('role', 'radio');
-      b.setAttribute('aria-checked', i === nivellProva ? 'true' : 'false');
+      b.setAttribute('aria-checked', i === (esQuiz ? nivellQuiz : nivellProva) ? 'true' : 'false');
       b.innerHTML = '<b>' + n.nom + '</b><small>' + n.sub + '</small>';
       b.addEventListener('click', () => {
-        nivellProva = i;
-        localStorage.setItem('nivellProva', i);
+        if (esQuiz){ nivellQuiz = i; localStorage.setItem('nivellQuiz', i); }
+        else { nivellProva = i; localStorage.setItem('nivellProva', i); }
         caixa.querySelectorAll('.prova-nivell').forEach((x, k) =>
           x.setAttribute('aria-checked', k === i ? 'true' : 'false'));
-        // No es tanca res: la partida comença en triar les cartes, no aquí
+        // No es tanca res: la partida comença en triar el tema o les cartes
       });
       caixa.appendChild(b);
     });
