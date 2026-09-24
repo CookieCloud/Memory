@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.90
+    Version: 4.91
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -14,6 +14,14 @@
     Viuen al fitxer preguntes.json, al costat d'aquest index.html. Per
     afegir-ne de noves n'hi ha prou de pujar aquell fitxer: no cal tocar
     l'index.html ni canviar de versió.
+
+    CANVIS v4.91
+    - En un telèfon petit (360x640) la pantalla de Pregunta't no cabia:
+      calia desplaçar-se per veure la quarta resposta en TOTES les
+      preguntes. La pregunta i els botons s'arrapen una mica en pantalles
+      curtes o estretes i ara hi caben les 659 sense desplaçar res
+    - El revisor de preguntes avisa quan una pregunta o una resposta són
+      massa llargues per a un telèfon petit
 
     CANVIS v4.90
     - Les 659 preguntes surten de l'index.html i passen a un fitxer a
@@ -973,6 +981,20 @@ body:not(.day) .ptile.especial.lliure{border-color:#f472b6;box-shadow:0 0 0 3px 
   font-family:'Fredoka';font-size:clamp(17px, 4vw, 20px);line-height:1.45;color:var(--ink);margin:0;
 }
 .quiz-text em{font-style:italic;opacity:.9}
+/* Pantalles curtes o estretes (telèfons petits i antics): la pregunta i
+   les respostes s'arrapen una mica perquè les quatre opcions hi càpiguen
+   senceres. Sense això, en un 360x640 calia desplaçar-se per veure
+   l'última resposta, i en un joc per a gent gran això és inacceptable. */
+@media (max-height:720px), (max-width:380px){
+  .quiz-caixa{gap:8px}
+  .quiz-pregunta{padding:13px 14px;font-size:clamp(18px, 4.6vw, 26px);border-radius:22px}
+  .quiz-opcions{gap:9px}
+  .quiz-btn{min-height:54px;padding:11px 15px;font-size:clamp(17px, 4.2vw, 20px);border-radius:18px}
+  .quiz-explicacio{padding:15px}
+  .quiz-veredicte{font-size:19px;margin-bottom:6px}
+  .quiz-text{font-size:clamp(16px, 3.8vw, 18px)}
+}
+
 /* El repàs del final */
 /* El repàs també s'escampa: una columna al telèfon, dues o tres al PC */
 .repas-preguntes{
@@ -2018,7 +2040,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.90</span>
+      <span class="version" id="version">v4.91</span>
     </div>
   </footer>
 </div>

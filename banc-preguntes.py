@@ -41,6 +41,17 @@ LA PAUTA D'UNA PREGUNTA AL preguntes.json
   · Una pregunta mal escrita no trenca el joc: el web l'aparta i
     continua amb la resta. Aquest revisor serveix per trobar-la.
 
+LLARGADES RECOMANADES (mesurades en un telèfon de 360x640, el més petit
+que es fa servir avui; en pantalles més grans hi cap molt més)
+
+  pregunta      fins a 100 lletres
+  respostes     fins a  40 lletres cadascuna. Se'n pot allargar UNA fins
+                a 80 si les altres tres són curtes, però no dues
+  explicació    fins a 220 lletres
+
+  Passar-se d'aquí no trenca res: la pregunta funciona igual, però en un
+  telèfon petit caldrà desplaçar-se per veure-ho tot. El revisor t'avisa.
+
 CONSELLS PER ESCRIURE-LES
   · només fets estables: res que depengui de l'actualitat
   · res discutible (s'eviten "el riu més llarg del món" i companyia)
@@ -2283,9 +2294,40 @@ def comprova(llista=None):
     return problemes
 
 
+# Llargades mesurades al navegador en un telèfon de 360x640, que és el més
+# petit que es fa servir avui. El que compta no és cada camp per separat
+# sinó el conjunt: les quatre respostes s'apilen l'una sobre l'altra, i
+# cadascuna que passa d'una línia empeny la següent fora de la pantalla.
+MAX_PREGUNTA = 100        # més enllà, la caixa de la pregunta ocupa massa
+RESPOSTA_UNA_LINIA = 40   # fins aquí, una resposta cap en una sola línia
+RESPOSTA_MAXIMA = 80      # i això només si la resta són curtes
+MAX_EXPLICACIO = 220      # més llarga, s'ha de desplaçar per llegir-la
+
+
+def avisos(llista=None):
+    """Coses que no trenquen res però que es veuran estretes al telèfon"""
+    fora = []
+    for i, (p, b, o, e, t, n) in enumerate(llista if llista is not None else BANC):
+        if len(p) > MAX_PREGUNTA:
+            fora.append(f'{i}: pregunta de {len(p)} lletres (el màxim còmode és {MAX_PREGUNTA}) — {p[:55]}…')
+
+        respostes = [b] + list(o)
+        llargues = [r for r in respostes if len(r) > RESPOSTA_UNA_LINIA]
+        if len(llargues) > 1:
+            fora.append(f'{i}: {len(llargues)} respostes de més de {RESPOSTA_UNA_LINIA} lletres '
+                        f'(només n\'hi hauria d\'haver una de llarga) — {p[:45]}…')
+        for r in respostes:
+            if len(r) > RESPOSTA_MAXIMA:
+                fora.append(f'{i}: resposta de {len(r)} lletres (el màxim és {RESPOSTA_MAXIMA}) — {r[:45]}…')
+
+        if len(e) > MAX_EXPLICACIO:
+            fora.append(f'{i}: explicació de {len(e)} lletres (el màxim còmode és {MAX_EXPLICACIO}) — {p[:45]}…')
+    return fora
+
+
 def js():
-    """Escriu el banc tal com ha d'anar dins l'index.html"""
-    def txt(s): return "'" + s.replace('\\', '\\\\').replace("'", "\\'") + "'"
+    """El banc amb el format que feia servir l'index.html (ja no cal)"""
+    def txt(x): return "'" + x.replace('\\', '\\\\').replace("'", "\\'") + "'"
     files = []
     for p, b, o, e, t, n in BANC:
         files.append('  {p:%s, b:%s, o:[%s], e:%s, t:%s, n:%d}'
@@ -2298,11 +2340,8 @@ def preguntes_del_json(cami):
     with open(cami, encoding='utf-8') as f:
         dades = json.load(f)
     llista = dades if isinstance(dades, list) else dades.get('preguntes', [])
-    fora = []
-    for q in llista:
-        fora.append((q.get('p', ''), q.get('b', ''), q.get('o', []),
-                     q.get('e', ''), q.get('t', ''), q.get('n', -1)))
-    return fora
+    return [(q.get('p', ''), q.get('b', ''), q.get('o', []),
+             q.get('e', ''), q.get('t', ''), q.get('n', -1)) for q in llista]
 
 
 def json_del_banc():
@@ -2325,8 +2364,15 @@ def json_del_banc():
 
 def informe(llista):
     mals = comprova(llista)
-    print('preguntes:', len(llista), '· problemes:', len(mals))
-    for m in mals: print('  ', m)
+    avis = avisos(llista)
+    print('preguntes:', len(llista), '· problemes:', len(mals), '· avisos de llargada:', len(avis))
+    for m in mals: print('   ERROR  ', m)
+    for a in avis[:20]: print('   avís   ', a)
+    if len(avis) > 20: print('   … i', len(avis) - 20, 'avisos més')
+    if avis:
+        print()
+        print('   (Els avisos no trenquen res: la pregunta funcionarà igual, però')
+        print('    en un telèfon petit caldrà desplaçar-se per veure-ho tot.)')
     print()
     print('per tema i nivell:')
     print('  %-10s %6s %6s %6s' % ('tema', 'fàcil', 'mitjà', 'difícil'))
