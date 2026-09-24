@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.60
+    Version: 4.80
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -9,6 +9,40 @@
       · el peu de pàgina  <span class="version" id="version">
       · la constant VERSIO del fitxer sw.js  (si no, el navegador continua
         servint la còpia antiga i no surt l'avís de "versió nova")
+
+    CANVIS v4.80
+    - El banc passa de 373 a 659 preguntes. Les 286 noves són de física i
+      química, univers i Terra, natura sorprenent, invents, art i llengua,
+      i totes porten la seva explicació
+    - El tema "Natura i cos" passa a dir-se "Natura i ciència" i "Món",
+      "Món i univers", perquè ara hi entren de ple la física, la química i
+      l'astronomia
+    - Les explicacions poden portar *cursiva* entre asteriscs
+
+    PARTIDES SEGUIDES SENSE REPETIR CAP PREGUNTA (mesurat)
+      Barreja          18-20  ->  29-37
+      Càlcul           28-31  ->  28-31
+      Natura i ciència  7-11  ->  14-23
+      Món i univers     7-10  ->  12-17
+      Història i art    7-10  ->  12-15
+      Llengua           9-12  ->  12-18
+
+    CANVIS v4.70
+    - El banc passa de 196 a 373 preguntes: ciència, astronomia, arbres i
+      plantes, animals, art i curiositats històriques, totes amb la seva
+      explicació i repartides pels sis temes i els tres nivells
+    - Les preguntes de càlcul tenien marges de números molt estrets (la
+      meitat només podia sortir de 37 valors i el 10 %, de 18). Ara són
+      molt més amples i, a més, les preguntes fabricades també van a la
+      bossa: es recorden les últimes 250 i, si en surt una de repetida,
+      se'n fabrica una altra
+    - Una resta podia donar un resultat negatiu; ja no
+
+    PARTIDES SEGUIDES SENSE REPETIR CAP PREGUNTA (mesurat)
+      Barreja           4-5  ->  18-20
+      Càlcul            2-3  ->  28-31
+      Natura, Món…      4-6  ->   7-11
+      Llengua           2-3  ->   9-12
 
     CANVIS v4.60
     - "Pregunta't" ja és públic: la targeta es veu al menú com la de
@@ -1968,7 +2002,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.60</span>
+      <span class="version" id="version">v4.80</span>
     </div>
   </footer>
 </div>
@@ -5005,7 +5039,470 @@ const BANC_PREGUNTES = [
   {p:'Què vol dir "tàcit"?', b:'Que s’entén sense dir-ho', o:['Que es diu molt fort', 'Que està escrit', 'Que és molt curt'], e:'Un acord tàcit és el que tothom dona per fet sense haver-lo parlat. Ve del llatí *tacere*, callar.', t:'llengua', n:2},
   {p:'Quin és el plural de "reflex"?', b:'reflexos', o:['reflexs', 'reflexes', 'reflex'], e:'Reflexos. Les paraules acabades en x precedida de vocal afegeixen -os: annex → annexos, complex → complexos.', t:'llengua', n:2},
   {p:'Què vol dir "perenne"?', b:'Que dura tot l’any o sempre', o:['Que dura un dia', 'Que floreix a la primavera', 'Que creix molt de pressa'], e:'Un arbre de fulla perenne no es queda pelat a l\'hivern, com el pi. El contrari és de fulla caduca, com el plàtan.', t:'llengua', n:2},
-  {p:'Què és una comparació en literatura?', b:'Dir que una cosa és com una altra', o:['Repetir una paraula', 'Dir el contrari del que es pensa', 'Escriure en vers'], e:'Fa servir un "com": *fort com un roure*. Si es treu el "com" i es diu directament que una cosa és l’altra, ja és una metàfora.', t:'llengua', n:2}
+  {p:'Què és una comparació en literatura?', b:'Dir que una cosa és com una altra', o:['Repetir una paraula', 'Dir el contrari del que es pensa', 'Escriure en vers'], e:'Fa servir un "com": *fort com un roure*. Si es treu el "com" i es diu directament que una cosa és l’altra, ja és una metàfora.', t:'llengua', n:2},
+  {p:'Quin fruit fa la vinya?', b:'El raïm', o:['La poma', 'La figa', 'L\'oliva'], e:'El raïm. De la vinya en surt el vi, però també el most, el vinagre i les panses, que són raïm assecat al sol.', t:'natura', n:0},
+  {p:'De quin arbre surten les olives?', b:'De l\'olivera', o:['De la figuera', 'Del cirerer', 'Del pi'], e:'De l\'olivera, un arbre que pot viure centenars d\'anys. Hi ha oliveres a Catalunya que ja eren velles abans de Colom.', t:'natura', n:0},
+  {p:'Quina part de la planta és a sota terra?', b:'L\'arrel', o:['La tija', 'La fulla', 'La flor'], e:'L\'arrel, que xucla aigua i sals del terra i, de passada, aguanta la planta perquè el vent no se l\'endugui.', t:'natura', n:0},
+  {p:'Quin arbre perd les fulles a la tardor?', b:'El plàtan', o:['El pi', 'L\'alzina', 'L\'avet'], e:'El plàtan, com el pollancre o el roure, és de fulla caduca. El pi, l\'alzina i l\'avet són de fulla perenne i es queden verds tot l\'any.', t:'natura', n:0},
+  {p:'Quina flor gira seguint el sol?', b:'El gira-sol', o:['La rosa', 'El clavell', 'El lliri'], e:'El gira-sol, quan és jove. Un cop la flor és gran i pesada, es queda quieta mirant cap a l\'est.', t:'natura', n:0},
+  {p:'Quin animal fa "cocorococ" de matinada?', b:'El gall', o:['La gallina', 'L\'ànec', 'El gall dindi'], e:'El gall. Ho fa per marcar el territori, i no només a l\'alba: canta a qualsevol hora si creu que algú l\'envaeix.', t:'natura', n:0},
+  {p:'Quin animal viu dins una closca i va molt a poc a poc?', b:'El cargol', o:['El conill', 'La rata', 'La granota'], e:'El cargol. Es desplaça llançant una bava que li fa de camí lliscant, i per això pot passar fins i tot per damunt d\'un tall.', t:'natura', n:0},
+  {p:'On fan el niu els ocells?', b:'Als arbres i als forats', o:['Sota terra', 'Dins l\'aigua', 'A la neu'], e:'Normalment als arbres, però també als penya-segats, als teulats i fins i tot a terra: cada espècie té el seu costum.', t:'natura', n:0},
+  {p:'Quantes potes té un cavall?', b:'4', o:['2', '6', '8'], e:'Quatre. Camina recolzant-se només en l\'última falange de cada pota, que està protegida per la peülla: va de puntetes tota la vida.', t:'natura', n:0},
+  {p:'Quin color tenen les fulles a l’estiu?', b:'Verd', o:['Blau', 'Vermell', 'Blanc'], e:'Verd, pel pigment que fa servir la planta per aprofitar la llum. A la tardor deixa de fabricar-lo i apareixen els grocs i els taronges.', t:'natura', n:0},
+  {p:'Quin animal dorm tot l’hivern?', b:'L\'ós', o:['El gos', 'El cavall', 'La vaca'], e:'L\'ós passa l\'hivern en un son profund del qual pot despertar-se. Altres animals, com el liró, fan una hibernació encara més fonda.', t:'natura', n:1},
+  {p:'De què està feta la fusta?', b:'De la tija de l’arbre', o:['De les arrels', 'De les fulles', 'De la saba'], e:'La fusta és el tronc i les branques. Cada any l\'arbre hi afegeix un anell, i comptant-los se sap quants anys té.', t:'natura', n:1},
+  {p:'Quin arbre fa les glans?', b:'El roure', o:['El pi', 'El plàtan', 'El til·ler'], e:'El roure i l\'alzina. Les glans han alimentat porcs i, en èpoques de fam, també persones.', t:'natura', n:1},
+  {p:'Què és la pol·linització?', b:'Portar el pol·len d’una flor a una altra', o:['Regar les plantes', 'Tallar les branques seques', 'Plantar llavors'], e:'Sense ella no hi hauria fruits. La fan sobretot les abelles i altres insectes, i també el vent.', t:'natura', n:1},
+  {p:'Quin animal té l’oïda tan fina que "veu" amb el so?', b:'El ratpenat', o:['El gat', 'L\'àguila', 'El cavall'], e:'El ratpenat. Fa crits molt aguts i escolta l\'eco: així sap on hi ha una paret o un mosquit, encara que sigui de nit tancada.', t:'natura', n:1},
+  {p:'Quants anys pot viure una tortuga gran?', b:'Més de cent', o:['Uns deu', 'Uns vint', 'Uns cinquanta'], e:'Algunes tortugues gegants passen dels cent anys, i se n\'han documentat de més de cent vuitanta.', t:'natura', n:1},
+  {p:'Quina planta es fa servir per fer el pa?', b:'El blat', o:['El cotó', 'L\'olivera', 'La patata'], e:'El blat. Se\'n mol el gra per fer farina, i amb aigua i llevat surt el pa. És un dels primers cultius de la humanitat.', t:'natura', n:1},
+  {p:'Quin animal canvia de pell sencera diverses vegades?', b:'La serp', o:['El gos', 'El cavall', 'L\'ocell'], e:'La serp. Com que la pell no li creix, se\'n desfà d\'una peça quan li queda petita, començant pel morro.', t:'natura', n:1},
+  {p:'Què són les anelles que es veuen en tallar un tronc?', b:'Els anys de l’arbre', o:['Les branques que ha tingut', 'Les vegades que ha florit', 'Els cops de vent'], e:'Cada any l\'arbre n\'afegeix una. Si l\'any ha estat plujós l\'anella surt ampla; si ha estat sec, estreta.', t:'natura', n:1},
+  {p:'Quin animal és el més sorollós del mar?', b:'La balena', o:['El dofí', 'El tauró', 'La foca'], e:'Els cants de la balena blava superen els 180 decibels i es poden sentir a centenars de quilòmetres sota l\'aigua.', t:'natura', n:1},
+  {p:'Què menja una papallona adulta?', b:'Nèctar', o:['Fulles', 'Insectes', 'Llavors'], e:'Nèctar, que xucla amb una trompa cargolada. Qui menja fulles és l\'eruga, que és la mateixa papallona abans de transformar-se.', t:'natura', n:1},
+  {p:'Quin és l’arbre més alt del món?', b:'La sequoia', o:['El baobab', 'L\'eucaliptus', 'El pi'], e:'La sequoia roja de Califòrnia passa dels 115 metres, més alt que un edifici de trenta pisos.', t:'natura', n:2},
+  {p:'Com es diu el procés pel qual l’eruga es torna papallona?', b:'Metamorfosi', o:['Fotosíntesi', 'Hibernació', 'Migració'], e:'Metamorfosi. Dins la crisàlide el cos de l\'eruga es desfà gairebé del tot i es torna a construir amb una altra forma.', t:'natura', n:2},
+  {p:'Quin animal té l’esquelet per fora del cos?', b:'L\'escarabat', o:['El peix', 'La granota', 'L\'ocell'], e:'Els insectes i els crustacis porten una closca dura per fora, l\'exoesquelet. Com que no creix, l\'han de mudar per fer-se grans.', t:'natura', n:2},
+  {p:'Quina part de la flor produeix el pol·len?', b:'L\'estam', o:['El pistil', 'El pètal', 'La tija'], e:'L\'estam. El pistil és la part femenina, que rep el pol·len; els pètals hi són sobretot per cridar l\'atenció dels insectes.', t:'natura', n:2},
+  {p:'Quin arbre té el tronc més gruixut del món?', b:'El baobab', o:['El pi', 'El roure', 'El xiprer'], e:'El baobab africà pot passar dels deu metres de diàmetre i guarda milers de litres d\'aigua a dins per aguantar la sequera.', t:'natura', n:2},
+  {p:'Què són els fongs: plantes o una cosa a part?', b:'Una cosa a part', o:['Plantes', 'Animals', 'Bacteris'], e:'Els fongs formen un regne propi. No fan fotosíntesi com les plantes: s\'alimenten del que troben al seu voltant, descomponent-lo.', t:'natura', n:2},
+  {p:'Quin animal marí té vuit braços?', b:'El pop', o:['El calamar', 'La sípia', 'L\'estrella de mar'], e:'El pop en té vuit. El calamar i la sípia en tenen vuit més dos tentacles llargs que fan servir per caçar.', t:'natura', n:2},
+  {p:'Com respiren les plantes per les fulles?', b:'Per uns porus diminuts', o:['Per les arrels', 'Per la saba', 'Per les flors'], e:'Per uns porus microscòpics anomenats estomes, que obren i tanquen segons la calor i l\'aigua que tenen.', t:'natura', n:2},
+  {p:'Quin animal terrestre viu més anys?', b:'La tortuga gegant', o:['L\'elefant', 'La balena', 'El cocodril'], e:'La tortuga gegant. Se n\'han conegut de més de 180 anys, que van néixer abans que existís la fotografia.', t:'natura', n:2},
+  {p:'Què és un animal invertebrat?', b:'Un animal sense columna vertebral', o:['Un animal sense potes', 'Un animal que no veu', 'Un animal que no té sang'], e:'Insectes, cucs, mol·luscs i meduses no tenen columna. Són la immensa majoria dels animals del planeta.', t:'natura', n:2},
+  {p:'Quina és la planta que creix més de pressa?', b:'El bambú', o:['El gira-sol', 'La mongetera', 'L\'ortiga'], e:'Algunes espècies de bambú creixen gairebé un metre en un sol dia: si t\'hi quedes una estona, pràcticament ho veus.', t:'natura', n:2},
+  {p:'Quin astre gira al voltant de la Terra?', b:'La Lluna', o:['El Sol', 'Mart', 'Venus'], e:'La Lluna. Triga uns 27 dies a fer la volta i sempre ens ensenya la mateixa cara, perquè gira sobre ella mateixa al mateix ritme.', t:'mon', n:0},
+  {p:'Quantes llunes té la Terra?', b:'1', o:['2', '4', 'Cap'], e:'Una de sola. Mart en té dues i Júpiter, més de noranta de conegudes.', t:'mon', n:0},
+  {p:'Què veiem al cel de nit que brilla i és molt lluny?', b:'Els estels', o:['Els avions', 'Els núvols', 'Els satèl·lits'], e:'Els estels són sols com el nostre, però tan lluny que els veiem com un punt. La llum d\'alguns fa milers d\'anys que viatja.', t:'mon', n:0},
+  {p:'Quin és l’astre més gran que veiem des de la Terra?', b:'El Sol', o:['La Lluna', 'Venus', 'L\'estel Polar'], e:'El Sol, encara que de lluny sembli igual de gran que la Lluna. La casualitat és que és 400 vegades més gran i també 400 vegades més lluny.', t:'mon', n:0},
+  {p:'Què passa quan la Lluna tapa el Sol?', b:'Un eclipsi', o:['Una tempesta', 'Un terratrèmol', 'Una aurora'], e:'Un eclipsi de sol. Es fa fosc en ple dia durant uns minuts i els animals es pensen que ja és de nit.', t:'mon', n:0},
+  {p:'Quants planetes té el sistema solar?', b:'8', o:['7', '9', '12'], e:'Vuit. Plutó en va ser el novè fins al 2006, quan es va decidir que era massa petit i que hi havia altres cossos semblants.', t:'mon', n:1},
+  {p:'Com es diu la nostra galàxia?', b:'La Via Làctia', o:['Andròmeda', 'Orió', 'La Nebulosa'], e:'La Via Làctia, que vol dir camí de llet: és la franja blanquinosa que es veu al cel en una nit ben fosca, i som a dins.', t:'mon', n:1},
+  {p:'Quin planeta és conegut com el planeta bessó de la Terra?', b:'Venus', o:['Mart', 'Mercuri', 'Neptú'], e:'Venus, per la mida. De bessó no en té gaire res més: hi fa 460 graus i plou àcid sulfúric.', t:'mon', n:1},
+  {p:'Què és un cometa?', b:'Una bola de gel i pols que volta el Sol', o:['Un estel que cau', 'Un planeta petit', 'Un tros de lluna'], e:'Quan s\'acosta al Sol, el gel s\'evapora i deixa una cua llarguíssima que és el que veiem des d\'aquí.', t:'mon', n:1},
+  {p:'Què són les estrelles fugaces?', b:'Grans de pols que es cremen a l’aire', o:['Estels que es moren', 'Satèl·lits que cauen', 'Llums de la Lluna'], e:'Són partícules, sovint més petites que un gra d\'arròs, que entren a l\'atmosfera a tanta velocitat que es cremen i deixen una ratlla de llum.', t:'mon', n:1},
+  {p:'Quant triga la llum del Sol a arribar a la Terra?', b:'Uns 8 minuts', o:['Un instant', 'Una hora', 'Un dia'], e:'Uns vuit minuts i mig. Si el Sol s\'apagués ara, encara el veuríem brillar una bona estona.', t:'mon', n:1},
+  {p:'Què marca el pas de les estacions?', b:'La inclinació de la Terra', o:['La distància al Sol', 'Les fases de la Lluna', 'Els vents'], e:'La Terra està inclinada, i per això cada hemisferi rep el sol més de ple mig any i més de gairell l\'altre mig.', t:'mon', n:1},
+  {p:'De què està feta principalment la Lluna?', b:'De roca', o:['De gel', 'De gas', 'De formatge'], e:'De roca, amb la superfície coberta d\'una pols fina i esmoladora que va donar molta feina als astronautes.', t:'mon', n:1},
+  {p:'Quin planeta gira ajagut de costat?', b:'Urà', o:['Saturn', 'Mart', 'Venus'], e:'Urà té l\'eix tan inclinat que roda de costat, probablement per un xoc antic. Allà cada estació dura vint-i-un anys.', t:'mon', n:2},
+  {p:'Què és un any llum?', b:'Una distància', o:['Un temps', 'Una velocitat', 'Una mida de planeta'], e:'És la distància que recorre la llum en un any: uns nou bilions de quilòmetres. Malgrat el nom, no mesura temps.', t:'mon', n:2},
+  {p:'Què és un forat negre?', b:'Un lloc amb una gravetat tan forta que ni la llum en surt', o:['Un forat a l’espai buit', 'Un planeta apagat', 'Un núvol de pols'], e:'És el que queda quan un estel molt gran s\'ensorra sobre ell mateix. Res del que hi entra en pot tornar a sortir, ni la llum.', t:'mon', n:2},
+  {p:'Quin planeta té el volcà més alt del sistema solar?', b:'Mart', o:['Venus', 'Júpiter', 'La Terra'], e:'El mont Olimp, a Mart, fa uns 22 quilòmetres d\'alçada: gairebé tres Everests l\'un damunt de l\'altre.', t:'mon', n:2},
+  {p:'Què són les aurores boreals?', b:'Llum que fa l’aire en rebre partícules del Sol', o:['Reflexos del gel', 'Núvols il·luminats per la Lluna', 'Incendis lluny'], e:'El Sol llança partícules que xoquen amb l\'atmosfera a prop dels pols i la fan brillar de verd, vermell i lila.', t:'mon', n:2},
+  {p:'Quin instrument va fer servir Galileu per mirar el cel?', b:'El telescopi', o:['El microscopi', 'El sextant', 'El periscopi'], e:'El telescopi, cap al 1609. Amb ell va veure els cràters de la Lluna i quatre llunes de Júpiter, i es va acabar la idea que tot voltava la Terra.', t:'mon', n:2},
+  {p:'Què és una nebulosa?', b:'Un núvol de gas i pols de l’espai', o:['Un estel apagat', 'Un planeta sense sol', 'Una galàxia petita'], e:'Són els bressols dels estels: dins d\'aquests núvols la matèria s\'apiloma fins que s\'encén i neix un sol nou.', t:'mon', n:2},
+  {p:'Quina força ens manté enganxats a terra?', b:'La gravetat', o:['El magnetisme', 'La pressió', 'L\'electricitat'], e:'La gravetat, que és la mateixa que manté la Lluna voltant la Terra i la Terra voltant el Sol.', t:'mon', n:2},
+  {p:'Quin planeta té el dia més llarg que el seu any?', b:'Venus', o:['Mercuri', 'Mart', 'Saturn'], e:'Venus gira tan a poc a poc sobre ell mateix que triga més a fer una volta sobre si mateix que a voltar el Sol.', t:'mon', n:2},
+  {p:'Quina és l’estrella més a prop de la Terra?', b:'El Sol', o:['Sírius', 'L\'estel Polar', 'Alfa Centauri'], e:'El Sol és un estel, i el tenim a vuit minuts llum. El següent més proper, Pròxima Centauri, és a més de quatre anys llum.', t:'mon', n:1},
+  {p:'Quin país té la ciutat de Nova York?', b:'Els Estats Units', o:['El Canadà', 'Mèxic', 'Austràlia'], e:'Els Estats Units, tot i que no n\'és la capital: la capital és Washington.', t:'mon', n:0},
+  {p:'Quin animal és el símbol d’Austràlia?', b:'El cangur', o:['L\'os panda', 'L\'àguila', 'El lleó'], e:'El cangur, que només viu allà de manera natural. Al continent australià hi ha animals que no hi ha enlloc més del món.', t:'mon', n:0},
+  {p:'Quin és el continent més gran?', b:'Àsia', o:['Àfrica', 'Amèrica', 'Europa'], e:'Àsia ocupa gairebé un terç de la terra ferma i hi viu més de la meitat de la població del planeta.', t:'mon', n:1},
+  {p:'Quina és la capital del Japó?', b:'Tòquio', o:['Kyoto', 'Osaka', 'Nagoya'], e:'Tòquio. Kyoto en va ser la capital durant més de mil anys, fins al 1868.', t:'mon', n:1},
+  {p:'Quin país és famós pels seus molins de vent i els tulipes?', b:'Els Països Baixos', o:['Bèlgica', 'Dinamarca', 'Suïssa'], e:'Els Països Baixos. Bona part del territori és per sota del nivell del mar i els molins servien justament per treure\'n l\'aigua.', t:'mon', n:1},
+  {p:'Quina illa és la més gran del món?', b:'Grenlàndia', o:['Madagascar', 'Borneo', 'Islàndia'], e:'Grenlàndia, gairebé tota coberta de gel. Austràlia és més gran encara, però es considera continent i no illa.', t:'mon', n:2},
+  {p:'Quin mar no té cap costa: és envoltat d’aigua?', b:'El mar dels Sargassos', o:['El mar Negre', 'El mar Roig', 'El mar Bàltic'], e:'El mar dels Sargassos, a l\'Atlàntic: els seus límits no són terra sinó corrents marins que el volten.', t:'mon', n:2},
+  {p:'Quina ciutat està construïda sobre canals en comptes de carrers?', b:'Venècia', o:['Nàpols', 'Lisboa', 'Marsella'], e:'Venècia, aixecada sobre milions de pilons de fusta clavats al fang d\'una llacuna per fugir de les invasions.', t:'mon', n:1},
+  {p:'Quin país té la Gran Muralla?', b:'La Xina', o:['El Japó', 'L\'Índia', 'Mongòlia'], e:'La Xina. No és un mur seguit sinó un conjunt de muralles construïdes al llarg de segles i de milers de quilòmetres.', t:'mon', n:0},
+  {p:'Amb què s’il·luminaven les cases abans de l’electricitat?', b:'Amb espelmes i llums d’oli', o:['Amb piles', 'Amb bombetes de gas butà', 'Amb miralls'], e:'Amb espelmes, teies i llums d\'oli. La llum era cara, i per això la gent es llevava i s\'ajaçava amb el sol.', t:'historia', n:0},
+  {p:'Com es conservava el menjar abans de la nevera?', b:'Amb sal, oli o assecant-lo', o:['Amb gel comprat cada dia', 'Amb plàstic', 'Amb aigua freda'], e:'Salant, assecant, fumant o cobrint de greix. D\'aquí vénen el pernil, el bacallà, les conserves en oli i les melmelades.', t:'historia', n:0},
+  {p:'Què feia servir la gent per rentar la roba abans de la rentadora?', b:'El safareig i les mans', o:['Un motor de vapor', 'Sabó en pols i prou', 'No es rentava'], e:'El safareig públic, aigua i sabó fet a casa amb cendra i greix. Era una feina duríssima que ocupava tot un dia.', t:'historia', n:0},
+  {p:'Quin animal portava el correu abans del telèfon?', b:'El colom', o:['El gos', 'El gat', 'El cavall de mar'], e:'El colom missatger, que sap tornar al seu colomar des de centenars de quilòmetres. Es va fer servir fins a les guerres mundials.', t:'historia', n:0},
+  {p:'Què és una muralla?', b:'Una paret que protegia una ciutat', o:['Un pont molt llarg', 'Un camí empedrat', 'Una torre de vigilància'], e:'Les ciutats antigues es tancaven amb muralles i portes que es barraven de nit. Moltes ciutats d\'avui encara en conserven trossos.', t:'historia', n:0},
+  {p:'Quin aparell es feia servir per escriure abans de l’ordinador?', b:'La màquina d\'escriure', o:['La impremta', 'El telègraf', 'La calculadora'], e:'La màquina d\'escriure. Com que els tipus s\'encallaven si anaves massa de pressa, es va inventar el teclat que encara fem servir.', t:'historia', n:0},
+  {p:'Què és un far?', b:'Una torre amb un llum per als vaixells', o:['Un molí de vent', 'Un pont sobre el mar', 'Un castell vora la costa'], e:'Un far avisa els vaixells d\'on és la costa. Cada far té el seu propi ritme de llampades perquè es pugui identificar.', t:'historia', n:0},
+  {p:'Quin esport és el més antic dels Jocs Olímpics?', b:'La cursa a peu', o:['El futbol', 'La natació', 'El tennis'], e:'A l\'antiga Olímpia la primera i durant temps única prova era una cursa a peu d\'uns 190 metres.', t:'historia', n:0},
+  {p:'Com es deia el vaixell que va portar Colom a Amèrica juntament amb la Pinta i la Nina?', b:'La Santa Maria', o:['La Victòria', 'La Trinitat', 'La Concepció'], e:'La Santa Maria, la més gran de les tres, va encallar el primer Nadal a Amèrica i amb la seva fusta es va fer un fortí.', t:'historia', n:1},
+  {p:'Què són els jeroglífics?', b:'L\'escriptura de l\'antic Egipte', o:['Uns dibuixos de les coves', 'Uns instruments de música', 'Unes eines de pedra'], e:'Els egipcis escrivien amb dibuixos. Es van poder desxifrar gràcies a la pedra de Rosetta, que duia el mateix text també en grec.', t:'historia', n:1},
+  {p:'Quin metall es va fer servir abans que el ferro?', b:'El bronze', o:['L\'alumini', 'L\'acer', 'El zinc'], e:'El bronze, barreja de coure i estany. Per això es parla d\'edat del bronze i, després, d\'edat del ferro.', t:'historia', n:1},
+  {p:'Qui va escriure l’Odissea?', b:'Homer', o:['Virgili', 'Sòfocles', 'Plató'], e:'S\'atribueix a Homer, i explica el retorn a casa d\'Ulisses després de la guerra de Troia, que li dura deu anys.', t:'historia', n:1},
+  {p:'Quina obra va pintar Botticelli amb una dona dins una petxina?', b:'El naixement de Venus', o:['La primavera', 'La Gioconda', 'Les menines'], e:'El naixement de Venus, cap al 1485. La deessa arriba a la costa dreta damunt d\'una petxina empesa pel vent.', t:'historia', n:1},
+  {p:'Què és una catedral gòtica?', b:'Una església amb finestrals alts i arcs apuntats', o:['Una església rodona', 'Una església de fusta', 'Una església sense sostre'], e:'El gòtic busca alçada i llum: arcs apuntats, voltes de creueria i vitralls enormes on abans hi havia paret.', t:'historia', n:1},
+  {p:'Quin pintor va fer les Menines?', b:'Velázquez', o:['Goya', 'El Greco', 'Murillo'], e:'Velázquez, el 1656. Ell mateix apareix al quadre pintant, i el rei i la reina només es veuen reflectits en un mirall del fons.', t:'historia', n:1},
+  {p:'Quin invent va canviar la manera de viatjar al segle XIX?', b:'El ferrocarril', o:['L\'avió', 'El cotxe', 'El metro'], e:'El tren. Va ser el primer cop que la gent es movia més de pressa que un cavall, i va obligar a posar hores iguals a tot un país.', t:'historia', n:1},
+  {p:'Quin instrument de corda es toca pinçant amb els dits i té forma de triangle?', b:'L\'arpa', o:['El violí', 'La guitarra', 'El piano'], e:'L\'arpa, un dels instruments més antics que es coneixen: n\'hi ha de representades a Egipte fa més de quatre mil anys.', t:'historia', n:1},
+  {p:'Quina malaltia va matar un terç d’Europa al segle XIV?', b:'La pesta negra', o:['La verola', 'El còlera', 'La grip'], e:'La pesta negra, entre el 1347 i el 1351. Va arribar amb els vaixells i va canviar del tot l\'economia i la societat europees.', t:'historia', n:2},
+  {p:'Qui va escriure Cien años de soledad?', b:'García Márquez', o:['Borges', 'Cortázar', 'Vargas Llosa'], e:'Gabriel García Márquez, el 1967. És l\'obra més coneguda del realisme màgic, on el que és fantàstic s\'explica com si fos normal.', t:'historia', n:2},
+  {p:'Quina dinastia va aixecar la Gran Muralla tal com es veu avui?', b:'La dinastia Ming', o:['La dinastia Han', 'La dinastia Tang', 'La dinastia Qing'], e:'Els Ming, entre els segles XIV i XVII. Abans ja hi havia muralles, però eren de terra piconada i molt més modestes.', t:'historia', n:2},
+  {p:'Quin científic va formular les lleis del moviment i la gravetat?', b:'Newton', o:['Galileu', 'Kepler', 'Copèrnic'], e:'Isaac Newton, el 1687. Va demostrar que la poma que cau i la Lluna que no cau obeeixen exactament la mateixa llei.', t:'historia', n:2},
+  {p:'Qui va descobrir la penicil·lina?', b:'Fleming', o:['Pasteur', 'Koch', 'Jenner'], e:'Alexander Fleming, el 1928, per casualitat: un fong havia contaminat un cultiu i al voltant no hi creixien bacteris.', t:'historia', n:2},
+  {p:'Quin arquitecte va dir que "menys és més"?', b:'Mies van der Rohe', o:['Le Corbusier', 'Gaudí', 'Frank Lloyd Wright'], e:'Mies van der Rohe. És el lema de l\'arquitectura moderna: línies netes, materials a la vista i res que no faci falta.', t:'historia', n:2},
+  {p:'Quin moviment pictòric va néixer amb el quadre Impressió, sol ixent?', b:'L\'impressionisme', o:['El cubisme', 'El romanticisme', 'El barroc'], e:'El quadre és de Monet, del 1872. El nom del moviment va sortir d\'un crític que se\'n burlava, i els pintors el van adoptar.', t:'historia', n:2},
+  {p:'Qui va inventar la impremta de tipus mòbils a Europa?', b:'Gutenberg', o:['Leonardo da Vinci', 'Marco Polo', 'Erasme'], e:'Johannes Gutenberg, cap al 1450. Un llibre que un copista trigava mesos a fer es podia imprimir en sèrie.', t:'historia', n:2},
+  {p:'Quin poble va inventar el zero tal com el fem servir?', b:'Els indis', o:['Els romans', 'Els grecs', 'Els egipcis'], e:'Els matemàtics de l\'Índia. Va arribar a Europa a través del món àrab, i per això parlem de xifres aràbigues.', t:'historia', n:2},
+  {p:'Quina va ser la primera dona a pilotar un avió sola per l’Atlàntic?', b:'Amelia Earhart', o:['Marie Curie', 'Valentina Tereixkova', 'Bessie Coleman'], e:'Amelia Earhart, el 1932. Cinc anys després va desaparèixer al Pacífic intentant fer la volta al món.', t:'historia', n:2},
+  {p:'Quin edifici de Roma era un temple de tots els déus i té un forat al sostre?', b:'El Panteó', o:['El Coliseu', 'El Fòrum', 'Les termes de Caracalla'], e:'El Panteó. La seva cúpula de formigó va ser la més gran del món durant més de mil tres-cents anys, i el forat del mig és l\'única finestra.', t:'historia', n:2},
+  {p:'Quin compositor era sord quan va escriure les seves últimes obres?', b:'Beethoven', o:['Mozart', 'Chopin', 'Schubert'], e:'Beethoven. Va anar perdent l\'oïda des dels vint-i-pocs anys i va compondre els últims quartets sense sentir-ne ni una nota.', t:'historia', n:1},
+  {p:'Què és el Renaixement?', b:'Una època que va recuperar l’art i el saber antics', o:['Una guerra europea', 'Un estil de música religiosa', 'Un descobriment científic'], e:'Als segles XV i XVI, Europa torna a mirar Grècia i Roma i canvia l\'art, la ciència i la manera d\'entendre la persona.', t:'historia', n:1},
+  {p:'Quin poble va inventar els Jocs Olímpics?', b:'Els grecs', o:['Els romans', 'Els egipcis', 'Els perses'], e:'Els grecs, a Olímpia, des del 776 aC. Durant els jocs s\'aturaven les guerres perquè tothom hi pogués anar.', t:'historia', n:0},
+  {p:'Què és una momia?', b:'Un cos conservat expressament', o:['Una estàtua de pedra', 'Un dibuix funerari', 'Un vas antic'], e:'Els egipcis conservaven el cos perquè creien que feia falta per a la vida del més enllà. El procés durava setanta dies.', t:'historia', n:0},
+  {p:'Quantes lletres té la paraula "arbre"?', b:'5', o:['4', '6', '7'], e:'Cinc: a-r-b-r-e. Es compten totes les lletres escrites, encara que la erra hi surti dues vegades.', t:'llengua', n:0},
+  {p:'Quin signe es posa al final d’una exclamació?', b:'Un signe d’admiració', o:['Un punt', 'Un signe d’interrogació', 'Dos punts'], e:'El signe d\'admiració (!). Serveix per a la sorpresa, l\'alegria, l\'ordre o el crit, i sempre va al final de la frase.', t:'llengua', n:0},
+  {p:'Quina d’aquestes paraules és un color?', b:'Blau', o:['Taula', 'Córrer', 'Ahir'], e:'Blau és un adjectiu de color. Taula és un nom, córrer un verb i ahir un adverbi de temps.', t:'llengua', n:0},
+  {p:'Què és el contrari de "obrir"?', b:'Tancar', o:['Empènyer', 'Pujar', 'Portar'], e:'Obrir i tancar són accions contràries. Empènyer, pujar i portar són accions diferents, però no contràries d\'obrir.', t:'llengua', n:0},
+  {p:'Com es diu la persona que ensenya a l’escola?', b:'El mestre', o:['L\'alumne', 'El director', 'El bidell'], e:'El mestre o la mestra. L\'alumne és qui aprèn, i el director s\'ocupa de l\'organització del centre.', t:'llengua', n:0},
+  {p:'Quina paraula té més síl·labes?', b:'Bicicleta', o:['Cotxe', 'Tren', 'Vaixell'], e:'Bicicleta en té quatre: bi-ci-cle-ta. Cotxe i vaixell en tenen dues i tren només una.', t:'llengua', n:0},
+  {p:'Com es diu un llibre que explica què vol dir cada paraula?', b:'Un diccionari', o:['Una novel·la', 'Una enciclopèdia', 'Un atles'], e:'El diccionari dona el significat de les paraules; l\'enciclopèdia explica els temes, i l\'atles recull mapes.', t:'llengua', n:0},
+  {p:'Què és un nom propi?', b:'El nom particular d’algú o d’un lloc', o:['Un nom de cosa', 'Un nom curt', 'Un nom estranger'], e:'Anna, Girona o Mediterrani són noms propis i per això s\'escriuen amb majúscula. Nena, ciutat o mar són noms comuns.', t:'llengua', n:0},
+  {p:'Què vol dir "endreçar"?', b:'Posar cada cosa al seu lloc', o:['Comprar coses noves', 'Netejar amb aigua', 'Llençar el que sobra'], e:'Endreçar és ordenar. Netejar és treure la brutícia: es poden fer totes dues coses, però no són el mateix.', t:'llengua', n:0},
+  {p:'Quin és el plural de "mà"?', b:'mans', o:['màs', 'manes', 'mà'], e:'Mans. Algunes paraules curtes recuperen en plural una consonant que havien perdut: mà i mans, pa i pans.', t:'llengua', n:1},
+  {p:'Què és un pronom?', b:'Una paraula que substitueix un nom', o:['Una paraula que descriu', 'Una paraula que indica acció', 'Una paraula que uneix'], e:'En lloc de repetir el nom, hi posem un pronom: en comptes de dir dues vegades l\'Anna, la segona vegada diem ella.', t:'llengua', n:1},
+  {p:'Quantes síl·labes té "papallona"?', b:'4', o:['3', '5', '2'], e:'Quatre: pa-pa-llo-na. El grup ll compta com un sol so, encara que s\'escrigui amb dues lletres.', t:'llengua', n:1},
+  {p:'Què és una frase feta?', b:'Un conjunt de paraules amb un sentit propi', o:['Una frase molt llarga', 'Una frase sense verb', 'Una frase copiada'], e:'Fer campana no té res a veure amb campanes: vol dir no anar a classe. El sentit no surt de sumar les paraules una per una.', t:'llengua', n:1},
+  {p:'Quin és el femení de "amic"?', b:'amiga', o:['amica', 'amique', 'amig'], e:'Amiga. Molts masculins acabats en consonant fan el femení afegint una a, i alguns canvien la consonant final.', t:'llengua', n:1},
+  {p:'Què és un adjectiu qualificatiu?', b:'Una paraula que diu com és una cosa', o:['Una paraula que compta coses', 'Una paraula que indica lloc', 'Una paraula que substitueix un nom'], e:'Diu la qualitat: una casa *gran*, un dia *fred*. Els que compten (dos, molts) són quantificadors.', t:'llengua', n:1},
+  {p:'Què vol dir "quotidià"?', b:'De cada dia', o:['De fa molt temps', 'Molt estrany', 'Molt car'], e:'Ve del llatí *quotidie*, cada dia. La vida quotidiana és la de sempre, la que no té res d\'excepcional.', t:'llengua', n:1},
+  {p:'Quina d’aquestes paraules porta accent?', b:'camí', o:['cami', 'cámi', 'camii'], e:'Camí, accent tancat a la i. Les paraules agudes acabades en vocal porten accent.', t:'llengua', n:1},
+  {p:'Què és una síl·laba tònica?', b:'La síl·laba que es diu més forta', o:['La primera síl·laba', 'La que porta accent escrit', 'L’última síl·laba'], e:'És on recau la força de la veu. Totes les paraules en tenen una, encara que no totes portin accent escrit.', t:'llengua', n:1},
+  {p:'Què és un sinònim de "començar"?', b:'Encetar', o:['Acabar', 'Repetir', 'Aturar'], e:'Encetar, iniciar o emprendre volen dir el mateix. Acabar i aturar en són el contrari.', t:'llengua', n:1},
+  {p:'Què és una paraula esdrúixola?', b:'La que té la força a l’antepenúltima síl·laba', o:['La que té la força al final', 'La que té la força al mig', 'La que no té accent'], e:'Música, màquina, làmpada. En català totes les esdrúixoles porten accent escrit, sense excepció.', t:'llengua', n:2},
+  {p:'Què és una paraula polisèmica?', b:'La que té diversos significats', o:['La que té moltes síl·labes', 'La que ve d’una altra llengua', 'La que ja no es fa servir'], e:'Banc pot ser un seient, una entitat de crèdit o un banc de peixos. El context és el que diu quin significat toca.', t:'llengua', n:2},
+  {p:'Què és la ironia?', b:'Dir el contrari del que es vol dir', o:['Exagerar una cosa', 'Repetir una paraula', 'Parlar molt a poc a poc'], e:'Dir que quin dia més bo quan plou a bots i barrals és ironia. Funciona perquè tots dos sabem que no és veritat.', t:'llengua', n:2},
+  {p:'Quin és el plural de "text"?', b:'textos', o:['texts', 'textes', 'text'], e:'Textos. Com passa amb annexos o complexos, les acabades en consonant dura hi afegeixen -os.', t:'llengua', n:2},
+  {p:'Què és un arcaisme?', b:'Una paraula antiga que ja no es fa servir', o:['Una paraula estrangera', 'Una paraula inventada', 'Una paraula molt llarga'], e:'Paraules com \'hom\' o \'ensems\' avui sonen antigues. El contrari és un neologisme: una paraula nova.', t:'llengua', n:2},
+  {p:'Què és un hiat?', b:'Dues vocals seguides en síl·labes diferents', o:['Dues vocals en la mateixa síl·laba', 'Dues consonants juntes', 'Una vocal muda'], e:'A di-a les dues vocals se separen en síl·labes diferents: és un hiat. A cai-xa van juntes en una de sola: és un diftong.', t:'llengua', n:2},
+  {p:'Què vol dir "alba"?', b:'La primera claror del dia', o:['La foscor de la nit', 'El moment de la posta', 'La boira del matí'], e:'L\'alba és quan comença a clarejar, abans de sortir el sol. El moment contrari, quan es pon, és el crepuscle.', t:'llengua', n:2},
+  {p:'Quin és el contrari de "humil"?', b:'Arrogant', o:['Tranquil', 'Generós', 'Prudent'], e:'Humil i arrogant són contraris: un no es dona importància i l\'altre se\'n dona massa.', t:'llengua', n:2},
+  {p:'Què és una hipèrbole?', b:'Una exageració a posta', o:['Una comparació', 'Una repetició', 'Una pregunta sense resposta'], e:'Dir que has trucat un milió de vegades és una hipèrbole: ningú s\'ho creu literalment i justament per això funciona.', t:'llengua', n:2},
+  {p:'Què vol dir "vetllar"?', b:'Passar la nit despert tenint cura d’algú', o:['Dormir profundament', 'Llevar-se aviat', 'Descansar al migdia'], e:'Vetllar és estar despert a la nit, sovint per acompanyar algú malalt. També vol dir vigilar que una cosa vagi bé.', t:'llengua', n:2},
+  {p:'Quina paraula vol dir el mateix que "abundant"?', b:'Copiós', o:['Escàs', 'Exacte', 'Lleuger'], e:'Copiós, nombrós o generós volen dir que n\'hi ha molt. Escàs és justament el contrari.', t:'llengua', n:2},
+  {p:'Quin animal té ratlles blanques i negres?', b:'La zebra', o:['El lleó', 'La girafa', 'L\'hipopòtam'], e:'La zebra. Les ratlles de cada zebra són diferents, com les empremtes dactilars de les persones.', t:'natura', n:0},
+  {p:'Quin animal viu al desert i aguanta molts dies sense beure?', b:'El camell', o:['El cocodril', 'La foca', 'El cigne'], e:'El camell. El gep no és aigua sinó greix, que li serveix de reserva d\'energia i de menjar.', t:'natura', n:0},
+  {p:'Què surt de la llavor quan la plantes i la regues?', b:'Una planta', o:['Una pedra', 'Un bolet', 'Un insecte'], e:'Una planta. La llavor porta a dins un embrió adormit i prou reserves per començar a créixer fins que surt a la llum.', t:'natura', n:0},
+  {p:'Quin animal fa la seva casa amb fang i pals al riu?', b:'El castor', o:['La llúdriga', 'La rata', 'El cigne'], e:'El castor. Talla arbres amb les dents i construeix dics que canvien el curs dels rius i creen basses.', t:'natura', n:0},
+  {p:'Quantes ales té una abella?', b:'4', o:['2', '6', '8'], e:'Quatre, en dos parells que s\'enganxen mentre vola perquè funcionin com si fossin dues de soles.', t:'natura', n:1},
+  {p:'Quin òrgan tenim per pensar i recordar?', b:'El cervell', o:['El cor', 'El fetge', 'El pulmó'], e:'El cervell. Pesa poc més d\'un quilo però gasta una cinquena part de tota l\'energia del cos.', t:'natura', n:1},
+  {p:'Quin animal té la llengua més llarga en proporció al cos?', b:'El camaleó', o:['La girafa', 'El gos', 'La serp'], e:'El camaleó la dispara més llarga que tot el seu cos i en una centèsima de segon, per atrapar insectes al vol.', t:'natura', n:1},
+  {p:'Com es diu la cria de la granota abans de tenir potes?', b:'Capgròs', o:['Cuc', 'Larva de mosca', 'Eruga'], e:'El capgròs neix dins l\'aigua amb cua i brànquies. A poc a poc li surten potes, perd la cua i comença a respirar aire.', t:'natura', n:1},
+  {p:'Quin animal és el més verinós per a la seva mida?', b:'La granota dardo', o:['La serp de cascavell', 'L\'escorpí', 'L\'aranya'], e:'Les granotes dardo d\'Amèrica central tenen prou verí a la pell per ser mortals, i el color viu és justament un avís.', t:'natura', n:2},
+  {p:'Quina és la part més dura del cos humà?', b:'L\'esmalt de les dents', o:['El fèmur', 'El crani', 'L\'ungla'], e:'L\'esmalt de les dents. És tan dur que no es regenera: quan es fa malbé, el cos no el pot tornar a fabricar.', t:'natura', n:2},
+  {p:'Quantes cambres té el cor humà?', b:'4', o:['2', '3', '6'], e:'Quatre: dues aurícules i dos ventricles. Funciona com dues bombes en paral·lel, una per als pulmons i l\'altra per a la resta del cos.', t:'natura', n:2},
+  {p:'Quin sentit perdem primer quan ens refredem?', b:'El gust', o:['L\'oïda', 'La vista', 'El tacte'], e:'El gust, però indirectament: és l\'olfacte el que es tapa, i sense olfacte gairebé tot té el mateix gust.', t:'natura', n:2},
+  {p:'Quin arbre és el símbol de la pau?', b:'L\'olivera', o:['El pi', 'El roure', 'El xiprer'], e:'L\'olivera, i la branca d\'olivera com a senyal de treva ve de molt antic: apareix ja als relats del diluvi.', t:'natura', n:1},
+  {p:'Quina planta menja insectes?', b:'La dionea', o:['El gira-sol', 'El cactus', 'L\'heura'], e:'La dionea o atrapamosques tanca les fulles de cop quan un insecte en toca els pèls. Viu en terres tan pobres que necessita aquest suplement.', t:'natura', n:2},
+  {p:'Quina és la flor nacional dels Països Baixos?', b:'El tulipa', o:['La rosa', 'El clavell', 'El gira-sol'], e:'El tulipa, tot i que ve de Turquia. Al segle XVII els bulbs es van arribar a pagar més cars que una casa.', t:'natura', n:2},
+  {p:'Quin animal pot regenerar una pota tallada?', b:'La salamandra', o:['El gat', 'El conill', 'L\'ocell'], e:'La salamandra i l\'axolot poden refer una pota sencera, amb ossos i nervis inclosos. És un dels grans misteris de la biologia.', t:'natura', n:2},
+  {p:'Quin gas fa pujar els globus?', b:'L\'heli', o:['L\'oxigen', 'El nitrogen', 'El vapor'], e:'L\'heli, perquè pesa molt menys que l\'aire. Abans es feia servir hidrogen, més barat però perillosament inflamable.', t:'natura', n:1},
+  {p:'Quin animal no té cervell però caça igualment?', b:'La medusa', o:['El pop', 'El peix', 'El cranc'], e:'La medusa té una xarxa de nervis repartida pel cos en comptes de cervell, i li basta per moure\'s i capturar preses.', t:'natura', n:2},
+  {p:'Quantes dents té un adult?', b:'32', o:['20', '24', '40'], e:'Trenta-dues, comptant-hi els queixals del seny. Els nens en tenen vint de llet, que van caient a partir dels sis anys.', t:'natura', n:1},
+  {p:'De quin color és la sang dins les venes?', b:'Vermella', o:['Blava', 'Verda', 'Transparent'], e:'Sempre vermella, més fosca quan porta poc oxigen. Les venes es veuen blavoses per com la pell reparteix la llum, no per la sang.', t:'natura', n:2},
+  {p:'Quin animal viu més a prop nostre i menja formigues amb la llengua?', b:'L\'ós formiguer', o:['El talp', 'L\'eriçó', 'La mostela'], e:'L\'ós formiguer no té dents: trenca el formiguer amb les urpes i recull les formigues amb una llengua enganxosa de mig metre.', t:'natura', n:1},
+  {p:'Què és la saba?', b:'El líquid que alimenta la planta', o:['La resina de les ferides', 'L\'aigua de la pluja', 'El sucre de les flors'], e:'La saba puja de les arrels a les fulles portant aigua i sals, i en baixa carregada del menjar que la fulla ha fabricat.', t:'natura', n:1},
+  {p:'Quants continents hi ha al planeta, segons el model més estès a Europa?', b:'5', o:['3', '7', '9'], e:'A l\'escola europea se n\'ensenyen cinc, com els cinc anells olímpics. En altres països se\'n compten sis o set, separant Amèrica o Europa i Àsia.', t:'mon', n:1},
+  {p:'Quin país té la torre de Pisa?', b:'Itàlia', o:['Grècia', 'França', 'Espanya'], e:'Itàlia. Es va començar a inclinar quan encara s\'estava construint, perquè el terreny de sota cedia per un costat.', t:'mon', n:0},
+  {p:'Quin color té el mar en un dia clar?', b:'Blau', o:['Verd fosc', 'Vermell', 'Gris'], e:'Blau, perquè l\'aigua absorbeix els vermells i deixa passar i escampar els blaus. Als llocs poc fondos tira a verd o turquesa.', t:'mon', n:0},
+  {p:'Quin és el continent més fred?', b:'L\'Antàrtida', o:['Europa', 'L\'Àsia', 'L\'Amèrica del Nord'], e:'L\'Antàrtida, on s\'han mesurat menys de vuitanta graus sota zero. És alhora el lloc més sec del planeta: gairebé no hi neva.', t:'mon', n:1},
+  {p:'Quina és la moneda de la major part d’Europa occidental?', b:'L\'euro', o:['La lliura', 'El franc', 'La pesseta'], e:'L\'euro, en circulació des del 2002. Uns quants països de la Unió Europea encara mantenen la seva moneda pròpia.', t:'mon', n:0},
+  {p:'Quin país és alhora un continent?', b:'Austràlia', o:['Rússia', 'El Canadà', 'L\'Índia'], e:'Austràlia. És l\'únic país que ocupa tot un continent, i alhora és l\'illa més gran si no la comptéssim com a continent.', t:'mon', n:1},
+  {p:'Quin riu travessa Egipte?', b:'El Nil', o:['El Tigris', 'L\'Èufrates', 'El Jordà'], e:'El Nil. Tota la vida del país es concentra a la seva vora: fora d\'aquella franja verda, és desert.', t:'mon', n:1},
+  {p:'Quina ciutat té la Torre de Londres i el Big Ben?', b:'Londres', o:['Dublín', 'Edimburg', 'Cardiff'], e:'Londres. El Big Ben, de fet, és el nom de la campana; la torre es diu Elisabet des del 2012.', t:'mon', n:0},
+  {p:'Quin oceà banya la costa de Califòrnia?', b:'El Pacífic', o:['L\'Atlàntic', 'L\'Índic', 'El Mediterrani'], e:'El Pacífic, que banya tota la costa oest d\'Amèrica. La costa est dels Estats Units dona a l\'Atlàntic.', t:'mon', n:1},
+  {p:'Quina cadena muntanyosa separa Europa d’Àsia?', b:'Els Urals', o:['Els Alps', 'Els Balcans', 'El Caucas'], e:'Els Urals, que travessen Rússia de nord a sud. És una frontera de conveni: geològicament, Europa i Àsia són una sola massa.', t:'mon', n:2},
+  {p:'Quin país té més veïns al món?', b:'La Xina', o:['Rússia', 'El Brasil', 'L\'Índia'], e:'La Xina i Rússia en tenen catorze cadascun, més que cap altre país del planeta.', t:'mon', n:2},
+  {p:'En quina ciutat hi ha la Ciutat Prohibida?', b:'Pequín', o:['Xangai', 'Hong Kong', 'Tòquio'], e:'A Pequín. Va ser el palau dels emperadors durant cinc segles i s\'hi entrava només amb permís: d\'aquí el nom.', t:'mon', n:2},
+  {p:'Què és un fiord?', b:'Una entrada estreta de mar entre muntanyes', o:['Un llac de muntanya', 'Una platja de sorra negra', 'Un riu glaçat'], e:'Un fiord és una vall excavada per una glacera que després s\'ha omplert de mar. N\'hi ha de famosos a Noruega i a Xile.', t:'mon', n:2},
+  {p:'Quin mar és tan salat que s’hi flota sense esforç?', b:'El mar Mort', o:['El mar Negre', 'El Bàltic', 'El Caspi'], e:'El mar Mort té gairebé deu vegades més sal que el Mediterrani. Per això no hi viuen peixos i el cos hi sura sol.', t:'mon', n:2},
+  {p:'Amb quin material es feien les primeres monedes?', b:'Metall', o:['Paper', 'Fusta', 'Vidre'], e:'Les primeres monedes, fa uns dos mil set-cents anys, eren d\'una barreja natural d\'or i plata. El paper moneda va arribar molt més tard.', t:'historia', n:0},
+  {p:'Què és un cavaller medieval?', b:'Un guerrer que combatia a cavall', o:['Un pagès amb cavall', 'Un comerciant de cavalls', 'Un monjo que muntava'], e:'Un guerrer d\'armadura al servei d\'un senyor. L\'equip i el cavall eren caríssims, i per això era un ofici de gent rica.', t:'historia', n:0},
+  {p:'Què feia un ferrer?', b:'Treballava el ferro', o:['Feia pa', 'Cosia roba', 'Construïa cases'], e:'Escalfava el ferro fins que es podia doblegar i el treballava a cops de martell: eines, claus, reixes i ferradures.', t:'historia', n:0},
+  {p:'Què és un aqüeducte?', b:'Una construcció per portar aigua', o:['Un pont per a carros', 'Una torre de guaita', 'Un dipòsit de gra'], e:'Porta aigua d\'un lloc a un altre amb un pendent suavíssim. El de Segòvia, romà, encara s\'aguanta sense ciment.', t:'historia', n:1},
+  {p:'Quin poble va inventar l’alfabet que fem servir, en origen?', b:'Els fenicis', o:['Els romans', 'Els egipcis', 'Els grecs'], e:'Els fenicis van fer el primer alfabet de consonants. Els grecs hi van afegir les vocals i els romans hi van donar la forma que coneixem.', t:'historia', n:2},
+  {p:'Quin pintor català és famós pels rellotges tous?', b:'Salvador Dalí', o:['Joan Miró', 'Antoni Tàpies', 'Isidre Nonell'], e:'Dalí, a La persistència de la memòria (1931). Ell deia que la idea li va venir mirant un formatge camembert fos.', t:'historia', n:1},
+  {p:'Què és un mosaic?', b:'Un dibuix fet amb petites peces de colors', o:['Una pintura sobre fusta', 'Un gravat sobre metall', 'Un teixit brodat'], e:'Milers de peces petites de pedra o vidre formen la imatge. Els romans n\'omplien els terres de les cases i molts encara es conserven.', t:'historia', n:1},
+  {p:'Qui va escriure la Divina Comèdia?', b:'Dante', o:['Petrarca', 'Boccaccio', 'Virgili'], e:'Dante Alighieri, cap al 1320. Narra un viatge per l\'infern, el purgatori i el paradís, i va fixar l\'italià com a llengua literària.', t:'historia', n:2},
+  {p:'Quin material van fer servir els primers homes per fer eines?', b:'La pedra', o:['El ferro', 'El bronze', 'El vidre'], e:'La pedra, sobretot el sílex, que en trencar-se deixa vores esmoladíssimes. D\'aquí ve el nom d\'edat de pedra.', t:'historia', n:0},
+  {p:'Quin va ser el primer animal a viatjar a l’espai i tornar-ne informació?', b:'La gossa Laika', o:['Un mico', 'Un ratolí', 'Un gos anomenat Rex'], e:'Laika, el 1957, a bord del Spútnik 2. No va sobreviure al viatge, i la seva història va obrir el debat sobre els animals en la recerca.', t:'historia', n:2},
+  {p:'Què és el Renaixement català conegut com la Renaixença?', b:'La recuperació de la literatura en català', o:['Una guerra', 'Un estil de pintura', 'Una època de fam'], e:'Al segle XIX el català torna a la literatura culta després de segles de decadència, amb els Jocs Florals i autors com Verdaguer.', t:'historia', n:2},
+  {p:'Quin instrument marca el ritme a una orquestra?', b:'La batuta del director', o:['El violí', 'El piano', 'L\'arpa'], e:'El director marca el ritme amb la batuta. No fa cap so, però és qui decideix la velocitat, la força i el caràcter de l\'obra.', t:'historia', n:1},
+  {p:'Què és una òpera?', b:'Una obra de teatre cantada', o:['Un concert sense veu', 'Un ball de saló', 'Un poema recitat'], e:'Tot es canta, amb orquestra, decorats i vestuari. L\'òpera neix a Itàlia cap al 1600, i la primera que encara es representa sovint és l\'Orfeo de Monteverdi.', t:'historia', n:1},
+  {p:'Quin poble va portar el paper a Europa?', b:'Els àrabs', o:['Els víkings', 'Els romans', 'Els grecs'], e:'Els àrabs el van aprendre dels xinesos i el van introduir a la península Ibèrica entre els segles XI i XII, molt abans que a la resta d\'Europa.', t:'historia', n:2},
+  {p:'Quin edifici va ser la seu dels Jocs Olímpics de Barcelona del 1992?', b:'L\'Estadi Olímpic de Montjuïc', o:['El Camp Nou', 'El Palau Sant Jordi', 'L\'Estadi de Sarrià'], e:'L\'Estadi de Montjuïc, construït el 1929 i reformat per als Jocs. El Palau Sant Jordi, del costat, es va fer nou per a l\'ocasió.', t:'historia', n:1},
+  {p:'Què pesa més: un quilo de ferro o un quilo de plomes?', b:'Pesen igual', o:['El ferro', 'Les plomes', 'Depèn del dia'], e:'Un quilo és un quilo. El que canvia és el lloc que ocupen: les plomes n\'omplirien una habitació i el ferro cabria a la mà.', t:'natura', n:0},
+  {p:'Què passa amb un glaçó dins d’un got d’aigua?', b:'Sura', o:['Se n va al fons', 'Es queda al mig', 'Es dissol de cop'], e:'El gel sura perquè, en congelar-se, l\'aigua ocupa més lloc i per tant pesa menys per cada tros. És un cas rar: gairebé tot s\'encongeix en refredar-se.', t:'natura', n:0},
+  {p:'Què passa si barreges aigua i oli?', b:'Se separen', o:['Es barregen del tot', 'Es tornen sòlids', 'Fan escuma'], e:'L\'oli sura perquè és menys dens i, a més, les seves molècules no s\'enganxen amb les de l\'aigua. Per molt que remenis, al cap d\'una estona tornen a separar-se.', t:'natura', n:0},
+  {p:'Què és més calent: el gel o l’aigua bullint?', b:'L\'aigua bullint', o:['El gel', 'Són iguals', 'Depèn del got'], e:'El gel és a zero graus o menys i l\'aigua bull a cent. Entre l\'un i l\'altre hi ha tota la diferència que fa servir la cuina.', t:'natura', n:0},
+  {p:'Què surt d’un llamp abans, la llum o el so?', b:'La llum', o:['El so', 'Alhora', 'Depèn de la tempesta'], e:'La llum viatja un milió de vegades més de pressa que el so. Comptant els segons entre el llampec i el tro i dividint per tres, tens els quilòmetres de distància.', t:'natura', n:0},
+  {p:'Què fa que les coses caiguin a terra?', b:'La gravetat', o:['El vent', 'El pes de l’aire', 'El magnetisme'], e:'La gravetat atrau tots els cossos els uns cap als altres. La Terra és tan gran que la seva atracció guanya sempre.', t:'natura', n:0},
+  {p:'De quin color és la llum del sol, en realitat?', b:'De tots els colors barrejats', o:['Groga', 'Blanca i prou', 'Transparent'], e:'Conté tots els colors alhora. Un prisma o una gota de pluja els separa, i això és exactament el que és un arc de Sant Martí.', t:'natura', n:1},
+  {p:'Per què el cel es veu blau?', b:'Perquè l\'aire escampa més el blau', o:['Perquè el mar s\'hi reflecteix', 'Perquè el Sol és blau', 'Perquè hi ha vapor d\'aigua'], e:'Les molècules de l\'aire desvien molt més els colors blaus que els vermells, i per això ens arriba blau de tot arreu del cel.', t:'natura', n:1},
+  {p:'Per què la posta de sol és vermella?', b:'Perquè la llum travessa molt més aire', o:['Perquè el Sol es refreda', 'Perquè hi ha més pols', 'Perquè el mar la tenyeix'], e:'Amb el Sol baix, la llum ha de travessar molt més aire, i pel camí es perd el blau. Només arriben els vermells i els taronges.', t:'natura', n:1},
+  {p:'Què és el so?', b:'Aire que vibra', o:['Llum que no es veu', 'Calor que es mou', 'Electricitat de l\'aire'], e:'El so és una vibració que es propaga per l\'aire, l\'aigua o els sòlids. A l\'espai, on no hi ha aire, no se sent absolutament res.', t:'natura', n:1},
+  {p:'Per què un imant enganxa una cullera de ferro i no una d’alumini?', b:'Perquè només alguns metalls són magnètics', o:['Perquè l\'alumini és més lleuger', 'Perquè l\'alumini està pintat', 'Perquè la cullera és massa petita'], e:'El ferro, el níquel i el cobalt responen als imants; l\'alumini, el coure i l\'or, no. No té res a veure amb el pes.', t:'natura', n:1},
+  {p:'Què passa amb l’aigua quan bull?', b:'Es converteix en vapor', o:['Es torna més freda', 'Es fa més pesada', 'Perd la sal'], e:'Passa de líquid a gas. Mentre bull, la temperatura ja no puja: tota la calor que hi poses se n va a transformar-la en vapor.', t:'natura', n:1},
+  {p:'Què és una palanca?', b:'Una barra que multiplica la força', o:['Una màquina de vapor', 'Un tipus de corriola', 'Un engranatge'], e:'Amb un punt de suport i una barra prou llarga es pot aixecar molt de pes. Arquimedes deia que, amb una palanca prou llarga, mouria la Terra.', t:'natura', n:1},
+  {p:'Què és l’electricitat estàtica?', b:'Càrrega acumulada que salta de cop', o:['Un corrent que va molt a poc a poc', 'Electricitat de les piles', 'Un imant molt fluix'], e:'És el que et fa una guspira en tocar un pom després de caminar per una catifa: has anat acumulant càrrega i es descarrega tota de cop.', t:'natura', n:1},
+  {p:'Quin gas fa que el pa creixi al forn?', b:'El diòxid de carboni', o:['L\'oxigen', 'El nitrogen', 'El vapor i prou'], e:'El llevat es menja els sucres de la farina i deixa anar diòxid de carboni. Les bombolles queden atrapades a la massa i la inflen.', t:'natura', n:1},
+  {p:'Què és un àtom?', b:'La peça més petita d’un element', o:['Una molècula gran', 'Una cèl·lula petita', 'Un tros de metall'], e:'Tot el que toquem és fet d\'àtoms. Si un àtom fos com un camp de futbol, el nucli seria una pilota al mig i la resta, buit.', t:'natura', n:2},
+  {p:'Quants elements químics hi ha a la taula periòdica?', b:'118', o:['92', '64', '150'], e:'Cent divuit de reconeguts. Els noranta-dos primers es troben a la natura i la resta s\'han fabricat en laboratoris, sovint per uns instants.', t:'natura', n:2},
+  {p:'Quina és la fórmula química de l’aigua?', b:'H2O', o:['CO2', 'O2', 'NaCl'], e:'Dos àtoms d\'hidrogen i un d\'oxigen. CO2 és el diòxid de carboni i NaCl, la sal de cuina.', t:'natura', n:2},
+  {p:'Quin és l’element més abundant de l’univers?', b:'L\'hidrogen', o:['L\'oxigen', 'El carboni', 'El ferro'], e:'L\'hidrogen, de bon tros: és el combustible dels estels. La resta d\'elements s\'han anat fabricant dins dels estels al llarg de milers de milions d\'anys.', t:'natura', n:2},
+  {p:'Què és el pH?', b:'Una mesura d’àcid o de base', o:['Una mesura de temperatura', 'Una mesura de pes', 'Una mesura de llum'], e:'Va de 0 a 14: per sota de 7 és àcid, per sobre és bàsic i 7 és neutre. El llimona ronda el 2 i el sabó, el 9 o el 10.', t:'natura', n:2},
+  {p:'Per què es rovella el ferro?', b:'Perquè reacciona amb l\'oxigen i l\'aigua', o:['Perquè s\'escalfa', 'Perquè el toca la llum', 'Perquè es refreda massa'], e:'El rovell és òxid de ferro. Si no hi ha aigua o no hi ha oxigen, el ferro es manté net: per això les eines es guarden seques i untades.', t:'natura', n:2},
+  {p:'Què és la velocitat de la llum?', b:'Uns 300.000 km per segon', o:['Uns 300 km per segon', 'Uns 30.000 km per hora', 'Un milió de km per minut'], e:'Gairebé tres-cents mil quilòmetres cada segon. En un segon, la llum faria set voltes i mitja a la Terra.', t:'natura', n:2},
+  {p:'Què passa amb la sal quan la poses a l’aigua?', b:'Es dissol però no desapareix', o:['Desapareix del tot', 'Es converteix en aigua', 'Es torna gas'], e:'Les molècules de sal se separen i queden repartides entre les d\'aigua. Si evapores l\'aigua, la sal torna a aparèixer tota.', t:'natura', n:1},
+  {p:'Què és la pressió atmosfèrica?', b:'El pes de l’aire sobre nosaltres', o:['La força del vent', 'La humitat de l\'aire', 'La temperatura de l\'aire'], e:'Sobre cada persona hi ha una columna d\'aire que pesa tones. No ho notem perquè empeny igual per tots costats, també des de dins.', t:'natura', n:2},
+  {p:'Per què un vaixell de ferro sura?', b:'Perquè desplaça molta aigua', o:['Perquè el ferro és lleuger', 'Perquè va buit de motor', 'Perquè l\'aigua salada aguanta més'], e:'El casc tanca molt aire a dins, de manera que el conjunt pesa menys que l\'aigua que desplaça. Si s\'omple d\'aigua, s\'enfonsa de seguida.', t:'natura', n:2},
+  {p:'Què és un mirall?', b:'Una superfície que retorna la llum', o:['Un vidre que deixa passar la llum', 'Un vidre pintat de gris', 'Un cristall que fa ombra'], e:'Un vidre amb una capa metàl·lica al darrere. La llum hi rebota amb el mateix angle amb què hi arriba, i per això et veus.', t:'natura', n:1},
+  {p:'Per què sentim el tro després de veure el llamp?', b:'Perquè el so va molt més a poc a poc', o:['Perquè el tro es fa després', 'Perquè el núvol l\'atura', 'Perquè el llamp és més fort'], e:'El so fa uns 340 metres per segon; la llum, tres-cents mil quilòmetres. El tro i el llamp es fan alhora, però el so arriba tard.', t:'natura', n:1},
+  {p:'Quin és el metall més lleuger?', b:'El liti', o:['L\'alumini', 'El magnesi', 'El titani'], e:'El liti és tan lleuger que sura a l\'aigua. Justament per això és al cor de les bateries dels telèfons i dels cotxes elèctrics.', t:'natura', n:2},
+  {p:'Què és la calor, físicament?', b:'Moviment de les partícules', o:['Un gas invisible', 'Un tipus de llum', 'Una forma d\'electricitat'], e:'Com més de pressa es mouen les partícules d\'una cosa, més calenta és. El zero absolut seria l\'aturada total, i no s\'ha arribat mai a tocar.', t:'natura', n:2},
+  {p:'Quin material condueix millor l’electricitat?', b:'El coure', o:['La fusta', 'El plàstic', 'El vidre'], e:'El coure, i per això n\'estan fets els cables. La plata condueix encara una mica millor, però és massa cara per estirar-ne quilòmetres.', t:'natura', n:1},
+  {p:'Què és una molècula?', b:'Un grup d’àtoms enganxats', o:['Un àtom molt gran', 'Una cèl·lula petita', 'Un tros de mineral'], e:'Dos o més àtoms units. La d\'aigua en té tres; la de l\'ADN, milers de milions.', t:'natura', n:2},
+  {p:'Per què les bombolles de sabó són rodones?', b:'Perquè és la forma que ocupa menys superfície', o:['Perquè el sabó és rodó', 'Perquè hi ha aire calent a dins', 'Perquè giren'], e:'La pel·lícula de sabó s\'encongeix tant com pot, i l\'esfera és la forma que tanca un volum amb menys pell possible.', t:'natura', n:2},
+  {p:'Què passa a l’aigua quan hi tires sal i la vols congelar?', b:'Es congela a una temperatura més baixa', o:['Es congela abans', 'No canvia res', 'Es torna més calenta'], e:'Per això es tira sal a les carreteres quan gela: amb sal, l\'aigua necessita arribar a uns quants graus sota zero per fer-se gel.', t:'natura', n:2},
+  {p:'Quin és l’estat de l’aigua a menys de zero graus?', b:'Sòlid', o:['Líquid', 'Gasós', 'Cap dels tres'], e:'Gel. Els tres estats de l\'aigua són gel, aigua líquida i vapor, i és de les poques substàncies que veiem cada dia en tots tres.', t:'natura', n:0},
+  {p:'Què és més ràpid: el so a l’aire o a l’aigua?', b:'A l\'aigua', o:['A l\'aire', 'Igual', 'El so no passa per l\'aigua'], e:'A l\'aigua va més de quatre vegades més de pressa, perquè les partícules hi són més juntes i es passen la vibració abans.', t:'natura', n:2},
+  {p:'Què és l’energia solar?', b:'Energia que ve de la llum del Sol', o:['Energia del vent', 'Energia de l\'aigua', 'Energia de la calor de la terra'], e:'Les plaques solars converteixen la llum directament en electricitat. En una hora, la Terra rep del Sol més energia de la que gasta la humanitat en un any.', t:'natura', n:1},
+  {p:'Quin gas apaga el foc?', b:'El diòxid de carboni', o:['L\'oxigen', 'L\'hidrogen', 'El metà'], e:'El diòxid de carboni desplaça l\'oxigen, i sense oxigen no hi pot haver flama. Els extintors vermells en van plens.', t:'natura', n:1},
+  {p:'Què necessita el foc per cremar?', b:'Oxigen', o:['Aigua', 'Nitrogen', 'Llum'], e:'Combustible, calor i oxigen: si en treus un dels tres, s\'apaga. Per això tapar una paella encesa amb una tapa funciona.', t:'natura', n:0},
+  {p:'Què és l’efecte hivernacle?', b:'Gasos que retenen la calor a l’atmosfera', o:['El forat de la capa d\'ozó', 'La calor dels volcans', 'La pol·lució de les ciutats'], e:'Alguns gasos deixen entrar la llum del Sol però frenen la sortida de la calor. Sense gens d\'efecte hivernacle, la Terra seria una bola de gel.', t:'natura', n:2},
+  {p:'Quina part de l\'ou sura si està passat?', b:'L\'ou sencer', o:['El rovell', 'La clara', 'Cap'], e:'Un ou fresc s\'enfonsa i un de passat sura, perquè amb el temps hi entra aire per la closca. És una prova casolana que funciona.', t:'natura', n:1},
+  {p:'Què és el zero absolut?', b:'La temperatura més baixa possible', o:['La temperatura del gel', 'La temperatura de l\'espai', 'La temperatura del pol Sud'], e:'Són uns 273 graus sota zero. És on les partícules es quedarien quietes del tot, i no s\'ha pogut assolir mai exactament.', t:'natura', n:2},
+  {p:'Per què l’arc de Sant Martí té forma d’arc?', b:'Perquè les gotes retornen la llum en un angle fix', o:['Perquè el sol és rodó', 'Perquè el cel és corb', 'Perquè el vent el doblega'], e:'Cada gota desvia la llum uns 42 graus, i totes les que ho fan cap als teus ulls dibuixen un cercle. Des d\'un avió se n pot veure la rodona sencera.', t:'natura', n:2},
+  {p:'Quina és la substància més dura que es coneix a la natura?', b:'El diamant', o:['L\'acer', 'El granit', 'El vidre'], e:'El diamant, que és carboni pur amb els àtoms col·locats d\'una manera molt travada. El grafit del llapis és el mateix carboni mal col·locat.', t:'natura', n:1},
+  {p:'Què passa si escalfes molt la sorra?', b:'Es pot convertir en vidre', o:['Es torna pols', 'Es torna metall', 'No passa res'], e:'El vidre es fa fonent sorra a uns 1.700 graus. Els llamps que cauen a la platja deixen de vegades tubs de vidre a la sorra.', t:'natura', n:2},
+  {p:'Quin instrument mesura la temperatura?', b:'El termòmetre', o:['El baròmetre', 'L\'higròmetre', 'El pluviòmetre'], e:'El termòmetre. El baròmetre mesura la pressió de l\'aire, l\'higròmetre la humitat i el pluviòmetre la pluja caiguda.', t:'natura', n:0},
+  {p:'Què és l’oxigen per a nosaltres?', b:'Un gas que necessitem per viure', o:['Un líquid del cos', 'Un metall de la sang', 'Un aliment'], e:'És un gas incolor i sense olor que forma una cinquena part de l\'aire. Sense ell, el cos no pot treure energia del menjar.', t:'natura', n:0},
+  {p:'Què és un aliatge?', b:'Una barreja de metalls', o:['Un metall pur', 'Una pedra preciosa', 'Un tipus de plàstic'], e:'El bronze és coure amb estany i l\'acer és ferro amb una mica de carboni. Barrejant-los s\'obtenen materials millors que els originals.', t:'natura', n:2},
+  {p:'Quin és el líquid més abundant de la superfície de la Terra?', b:'L\'aigua del mar', o:['L\'aigua dolça', 'El petroli', 'La lava'], e:'L\'aigua salada és el 97 % de tota l\'aigua del planeta. De l\'aigua dolça, la major part és gel als pols.', t:'natura', n:1},
+  {p:'Què fa que una pilota reboti?', b:'Que recupera la seva forma', o:['Que és rodona', 'Que és lleugera', 'Que té aire calent'], e:'En xocar s\'aixafa i, en tornar a la seva forma, empeny contra el terra i surt disparada. Una bola de fang no rebota perquè es queda aixafada.', t:'natura', n:1},
+  {p:'Quin astre és més gran, el Sol o la Terra?', b:'El Sol', o:['La Terra', 'Són iguals', 'Depèn de l\'època'], e:'El Sol és tan gran que hi cabrien més d\'un milió de Terres a dins. El veiem petit perquè és a 150 milions de quilòmetres.', t:'mon', n:0},
+  {p:'De quin color és el Sol vist des de l\'espai?', b:'Blanc', o:['Groc', 'Taronja', 'Vermell'], e:'Blanc. El veiem groc des de terra perquè l\'atmosfera ens desvia els blaus, i per això el cel és blau i el Sol queda groguenc.', t:'mon', n:1},
+  {p:'Quantes vegades cau un llamp al planeta cada segon?', b:'Unes cent', o:['Un', 'Deu', 'Mil'], e:'Al planeta sencer hi cauen prop de cent llamps cada segon, uns vuit milions cada dia.', t:'mon', n:2},
+  {p:'Què hi ha entre els planetes?', b:'Pràcticament buit', o:['Aire molt fred', 'Aigua gelada', 'Pols espessa'], e:'L\'espai és gairebé buit del tot. Per això no s\'hi sent res: sense aire, el so no té per on propagar-se.', t:'mon', n:1},
+  {p:'Quin planeta suraria si el poguessis posar en una banyera prou gran?', b:'Saturn', o:['Mart', 'Mercuri', 'La Terra'], e:'Saturn és tan poc dens, perquè és gairebé tot gas, que pesa menys que l\'aigua.', t:'mon', n:2},
+  {p:'Què és la Lluna plena?', b:'Quan veiem tota la cara il·luminada', o:['Quan la Lluna és més a prop', 'Quan la Lluna és més gran', 'Quan el Sol l\'escalfa'], e:'La Lluna sempre té mitja cara il·luminada; el que canvia és quanta en veiem des d\'aquí segons on és respecte del Sol.', t:'mon', n:0},
+  {p:'Quant triga la Terra a fer la volta al Sol?', b:'Un any', o:['Un mes', 'Un dia', 'Deu anys'], e:'Un any, que són uns 365 dies i un quart. Aquest quart de dia és el que s\'acumula i ens dona el 29 de febrer cada quatre anys.', t:'mon', n:0},
+  {p:'Per què sempre veiem la mateixa cara de la Lluna?', b:'Perquè gira al mateix ritme que volta la Terra', o:['Perquè no gira', 'Perquè l\'altra cara és fosca', 'Perquè està quieta'], e:'Triga el mateix a girar sobre ella mateixa que a fer la volta a la Terra, i el resultat és que sempre ens ensenya el mateix costat.', t:'mon', n:2},
+  {p:'Què és una constel·lació?', b:'Un grup d\'estels que dibuixen una figura vista des d\'aquí', o:['Un grup d\'estels que són a prop', 'Una galàxia petita', 'Un conjunt de planetes'], e:'Els estels d\'una constel·lació poden estar lluny els uns dels altres: el dibuix només existeix des del nostre punt de vista.', t:'mon', n:1},
+  {p:'Quantes estrelles té la Via Làctia, aproximadament?', b:'Centenars de milers de milions', o:['Uns milers', 'Uns quants milions', 'Unes deu mil'], e:'Se n\'estimen entre cent mil i quatre-cents mil milions. Si en comptessis una cada segon, no acabaries en tota una vida.', t:'mon', n:2},
+  {p:'Què és un asteroide?', b:'Una roca que volta el Sol', o:['Un estel apagat', 'Un planeta amb gel', 'Un tros de lluna'], e:'La majoria són entre Mart i Júpiter. Un d\'uns deu quilòmetres va caure fa 66 milions d\'anys i va acabar amb els dinosaures.', t:'mon', n:1},
+  {p:'Què hi ha al centre de la Terra?', b:'Un nucli de ferro molt calent', o:['Una cova buida', 'Aigua', 'Roca freda'], e:'Un nucli de ferro i níquel a més de cinc mil graus, tan calent com la superfície del Sol. És el que ens dona el camp magnètic.', t:'mon', n:1},
+  {p:'Què és la lava?', b:'Roca fosa que surt d\'un volcà', o:['Fang bullint', 'Cendra mullada', 'Sofre líquid'], e:'Mentre és sota terra se\'n diu magma; quan surt a l\'aire, lava. Pot passar dels mil graus i avança més a poc a poc del que sembla.', t:'mon', n:0},
+  {p:'Què provoca un terratrèmol?', b:'El moviment de les plaques de l\'escorça', o:['El vent fort', 'La pluja', 'La Lluna'], e:'L\'escorça terrestre és partida en plaques que es mouen uns centímetres l\'any. Quan s\'encallen i de cop cedeixen, tremola.', t:'mon', n:1},
+  {p:'Què és un tsunami?', b:'Una onada gegant provocada per un moviment del fons marí', o:['Una tempesta molt forta', 'Una marea alta', 'Un corrent d\'aigua calenta'], e:'En mar obert és una onada baixa però llarguíssima que viatja a la velocitat d\'un avió; en arribar a la costa es fa alta de cop.', t:'mon', n:2},
+  {p:'Per què hi ha marees?', b:'Per l\'atracció de la Lluna i el Sol', o:['Pel vent', 'Pels rius que hi desemboquen', 'Per la rotació de la Terra i prou'], e:'La Lluna estira l\'aigua cap a ella. Com que la Terra gira, cada lloc passa dues vegades al dia per la zona estirada.', t:'mon', n:2},
+  {p:'Quina part del planeta és coberta d\'aigua?', b:'Prop de tres quartes parts', o:['Una quarta part', 'La meitat', 'Nou desenes parts'], e:'Un 71 % de la superfície. Vist des de l\'espai, el nostre és sobretot un planeta blau amb algunes taques de terra.', t:'mon', n:1},
+  {p:'Què és l\'atmosfera?', b:'La capa d\'aire que envolta la Terra', o:['El cel de nit', 'La capa de núvols', 'El camp magnètic'], e:'Ens dona aire per respirar, ens protegeix de la radiació i crema els meteorits abans que arribin a terra.', t:'mon', n:1},
+  {p:'Què és la capa d\'ozó?', b:'Una capa que ens protegeix de la radiació del Sol', o:['Un núvol de contaminació', 'La capa més freda de l\'aire', 'El lloc on volen els avions'], e:'És a uns 25 quilòmetres d\'alçada i filtra la radiació ultraviolada. El forat que s\'hi va obrir als anys vuitanta s\'ha anat tancant.', t:'mon', n:2},
+  {p:'Quin és el lloc més sec del món?', b:'El desert d\'Atacama', o:['El Sàhara', 'L\'Antàrtida', 'Austràlia'], e:'A alguns punts de l\'Atacama, a Xile, no s\'hi ha registrat mai pluja. S\'hi assagen els robots que després van a Mart.', t:'mon', n:2},
+  {p:'On és el gel més gruixut del planeta?', b:'A l\'Antàrtida', o:['Al pol Nord', 'A Grenlàndia', 'Als Alps'], e:'A l\'Antàrtida el gel arriba a passar dels quatre quilòmetres de gruix. Si es fongués tot, el mar pujaria desenes de metres.', t:'mon', n:2},
+  {p:'Què hi ha sota el pol Nord?', b:'Mar gelat', o:['Un continent', 'Una illa de roca', 'Un volcà'], e:'El pol Nord és gel flotant sobre l\'oceà Àrtic. El pol Sud, en canvi, és un continent de roca cobert de gel.', t:'mon', n:1},
+  {p:'Què és un huracà?', b:'Una tempesta enorme que gira sobre ella mateixa', o:['Un vent molt fred', 'Una pluja de pedra', 'Un núvol de pols'], e:'Es forma sobre mar càlid i pot fer centenars de quilòmetres. Al mig té un ull sense vent on fins i tot es veu el sol.', t:'mon', n:1},
+  {p:'Per què bufa el vent?', b:'Perquè l\'aire es mou d\'on hi ha més pressió a on n\'hi ha menys', o:['Perquè la Terra gira', 'Perquè els arbres es mouen', 'Perquè el mar empeny l\'aire'], e:'El sol escalfa l\'aire desigualment; l\'aire calent puja i el fred ocupa el seu lloc. Aquest anar i venir és el vent.', t:'mon', n:2},
+  {p:'Quin és el volcà més famós que va sepultar Pompeia?', b:'El Vesuvi', o:['L\'Etna', 'L\'Stromboli', 'El Teide'], e:'El Vesuvi, l\'any 79. La cendra va conservar la ciutat sencera i avui s\'hi pot passejar com si el temps s\'hi hagués aturat.', t:'mon', n:2},
+  {p:'Quants anys té la Terra, aproximadament?', b:'Uns 4.500 milions', o:['Uns 6.000', 'Uns 10 milions', 'Uns 100.000 milions'], e:'Uns quatre mil cinc-cents milions d\'anys. Si tota la història del planeta fos un any, l\'ésser humà hi seria des de fa uns minuts.', t:'mon', n:2},
+  {p:'Què són els fòssils?', b:'Restes d\'éssers vius conservades a la roca', o:['Pedres de colors', 'Minerals rars', 'Restes de meteorits'], e:'Amb el temps, els minerals substitueixen l\'os o la fusta i en queda una còpia de pedra amb la forma exacta.', t:'mon', n:1},
+  {p:'Què separa el dia de la nit?', b:'La rotació de la Terra', o:['El moviment del Sol', 'Els núvols', 'La Lluna'], e:'La Terra gira sobre ella mateixa cada 24 hores. El Sol no es mou: som nosaltres els que passem de la llum a l\'ombra.', t:'mon', n:0},
+  {p:'Quin és el continent amb menys habitants?', b:'L\'Antàrtida', o:['Oceania', 'Amèrica del Sud', 'Àfrica'], e:'L\'Antàrtida no té població estable: només científics que hi passen temporades, entre mil i cinc mil segons l\'època de l\'any.', t:'mon', n:1},
+  {p:'Què és el permafrost?', b:'Terra que està gelada tot l\'any', o:['Una glacera que es mou', 'La neu de les muntanyes', 'El gel del mar'], e:'Hi ha terres de Sibèria i el Canadà que fa milers d\'anys que no es desglacen. Quan es desglacen, en surten mamuts sencers.', t:'mon', n:2},
+  {p:'Quina és la muntanya més alta mesurada des de la seva base?', b:'El Mauna Kea', o:['L\'Everest', 'El K2', 'L\'Aconcagua'], e:'El Mauna Kea, a Hawaii, fa més de 10.000 metres des del fons del mar, però només 4.200 sobresurten de l\'aigua.', t:'mon', n:2},
+  {p:'Quin és el país amb més volcans actius?', b:'Indonèsia', o:['Islàndia', 'El Japó', 'Itàlia'], e:'Indonèsia, amb més de cent trenta. És just damunt del cinturó de foc del Pacífic, on xoquen diverses plaques.', t:'mon', n:2},
+  {p:'Què són les plaques tectòniques?', b:'Els grans trossos en què està partida l\'escorça', o:['Capes de gel', 'Zones de deserts', 'Corrents marins'], e:'Suren sobre roca calenta i es mouen com les ungles: uns centímetres l\'any. Africa i Amèrica van estar enganxades.', t:'mon', n:2},
+  {p:'Quin oceà està envoltat pel cinturó de foc?', b:'El Pacífic', o:['L\'Atlàntic', 'L\'Índic', 'L\'Àrtic'], e:'El Pacífic. Al seu voltant hi ha la major part dels volcans i terratrèmols del planeta, del Japó a Xile.', t:'mon', n:2},
+  {p:'Quina és l\'època de l\'any amb el dia més llarg aquí?', b:'L\'estiu', o:['L\'hivern', 'La tardor', 'La primavera'], e:'Al voltant del 21 de juny. Al mateix moment, a l\'hemisferi sud tenen el dia més curt de l\'any.', t:'mon', n:0},
+  {p:'Què és una glacera?', b:'Un riu de gel que baixa a poc a poc', o:['Un llac gelat', 'Un iceberg gran', 'Una tempesta de neu'], e:'La neu que no es fon s\'acumula, es compacta i comença a lliscar muntanya avall. Pel camí excava les valls en forma d\'U.', t:'mon', n:1},
+  {p:'Què és un iceberg?', b:'Un tros de gel que sura al mar', o:['Una illa de neu', 'Un glaçó de riu', 'Una platja gelada'], e:'Se\'n veu només una novena part: la resta és sota l\'aigua. D\'aquí ve l\'expressió de la punta de l\'iceberg.', t:'mon', n:1},
+  {p:'Què és l\'equador?', b:'La línia que divideix la Terra en dos hemisferis', o:['Una serralada', 'Un corrent marí', 'El punt més alt del planeta'], e:'És la circumferència més ampla del planeta, uns 40.000 quilòmetres. Allà el dia i la nit duren gairebé el mateix tot l\'any.', t:'mon', n:1},
+  {p:'Per què a les muntanyes fa més fred?', b:'Perquè l\'aire és més prim i reté menys calor', o:['Perquè hi ha més neu', 'Perquè són més a prop del pol', 'Perquè hi toca menys el sol'], e:'Cada cent metres d\'alçada la temperatura baixa mig grau llarg, encara que a dalt siguis més a prop del Sol.', t:'mon', n:2},
+  {p:'Quin fenomen fa que vegem la Lluna vermella en un eclipsi?', b:'La llum del Sol filtrada per l\'atmosfera', o:['L\'ombra de Mart', 'La pols de l\'espai', 'La calor de la Terra'], e:'A l\'ombra de la Terra només hi arriba la llum que ha travessat la nostra atmosfera, i per tant la vermella: és com veure totes les postes de sol del món alhora.', t:'mon', n:2},
+  {p:'Quin és el nom de la primera sonda que va sortir del sistema solar?', b:'La Voyager 1', o:['L\'Apol·lo 11', 'El Sputnik', 'El Hubble'], e:'La Voyager 1, llançada el 1977. Porta un disc daurat amb sons i imatges de la Terra per si algú la troba mai.', t:'mon', n:2},
+  {p:'Què és l\'horitzó?', b:'La línia on sembla que el cel toca la terra', o:['El punt on surt el sol', 'El límit de l\'atmosfera', 'La distància màxima que es pot caminar'], e:'Des de la platja, l\'horitzó és a uns cinc quilòmetres. Com més amunt et poses, més lluny el veus: per això hi ha vigies a les torres.', t:'mon', n:1},
+  {p:'Quin planeta té més llunes conegudes?', b:'Saturn', o:['La Terra', 'Mart', 'Mercuri'], e:'Saturn i Júpiter se\'n van disputant el rècord a mesura que se\'n descobreixen de noves; tots dos en passen de noranta.', t:'mon', n:2},
+  {p:'Què és un meteorit?', b:'Una roca de l\'espai que arriba a terra', o:['Un estel que cau', 'Un tros de coet', 'Una pedra volcànica'], e:'Mentre travessa l\'atmosfera i es crema se\'n diu meteor; si arriba a tocar terra, meteorit.', t:'mon', n:1},
+  {p:'On és l\'aigua dolça de la Terra, majoritàriament?', b:'Gelada als pols', o:['Als rius', 'Als llacs', 'Als núvols'], e:'Gairebé el 70 % de l\'aigua dolça és gel. La que hi ha a rius i llacs, la que fem servir cada dia, és una part minúscula del total.', t:'mon', n:2},
+  {p:'Quin és el nucli del Sol?', b:'Un forn on l\'hidrogen es converteix en heli', o:['Una bola de foc', 'Un nucli de ferro', 'Un forat negre'], e:'A quinze milions de graus, els nuclis d\'hidrogen es fusionen i alliberen l\'energia que ens arriba com a llum i calor.', t:'mon', n:2},
+  {p:'Què passaria si la Terra deixés de girar de cop?', b:'Tot el que hi ha a sobre sortiria disparat', o:['Res', 'Es faria de nit per sempre', 'Cauríem cap avall'], e:'A l\'equador girem a més de mil quilòmetres per hora sense notar-ho, perquè tot gira alhora. Si s\'aturés de cop, l\'aire i el mar continuarien.', t:'mon', n:2},
+  {p:'Quin animal es va fer servir per orientar-se al mar abans de la brúixola?', b:'Els ocells', o:['Els dofins', 'Les balenes', 'Els peixos voladors'], e:'Els navegants portaven ocells i els deixaven anar: si tornaven, no hi havia terra a prop; si marxaven, els seguien.', t:'mon', n:2},
+  {p:'Quants quilòmetres fa la volta a la Terra per l\'equador?', b:'Uns 40.000', o:['Uns 4.000', 'Uns 400.000', 'Uns 100.000'], e:'Uns quaranta mil. El metre es va definir justament a partir d\'aquesta mesura: la deumilionèsima part del quart de meridià.', t:'mon', n:2},
+  {p:'Quin animal no pot treure la llengua?', b:'El cocodril', o:['El gos', 'La girafa', 'El gat'], e:'El cocodril té la llengua enganxada al paladar i no la pot treure de la boca.', t:'natura', n:1},
+  {p:'Quantes hores dorm una girafa al dia?', b:'Menys de dues', o:['Vuit', 'Dotze', 'Vint'], e:'Dorm molt poc i sovint dreta, en becaines de pocs minuts: ajaguda trigaria massa a aixecar-se si arribés un depredador.', t:'natura', n:2},
+  {p:'Quin animal té les empremtes més semblants a les humanes?', b:'El coala', o:['El mico', 'El gat', 'L\'ós'], e:'Les empremtes del coala són tan semblants a les nostres que s\'han arribat a confondre en escenes de crims.', t:'natura', n:2},
+  {p:'Quin animal pot sobreviure sense cap durant dies?', b:'La panerola', o:['La formiga', 'L\'aranya', 'El cuc'], e:'La panerola respira per forats del cos i no depèn del cap per fer-ho. Acaba morint de set, no per la decapitació.', t:'natura', n:2},
+  {p:'Quin ocell pot volar cap enrere?', b:'El colibrí', o:['L\'àguila', 'El pardal', 'El corb'], e:'El colibrí bat les ales unes cinquanta vegades per segon i és l\'únic ocell que pot volar endarrere i quedar-se immòbil a l\'aire.', t:'natura', n:1},
+  {p:'De quin color té la llengua la girafa?', b:'Blavosa', o:['Rosa', 'Blanca', 'Verda'], e:'És fosca, gairebé blava, i fa mig metre. Es creu que el color la protegeix del sol mentre menja hores i hores.', t:'natura', n:1},
+  {p:'Quin animal té el cor més gran del món?', b:'La balena blava', o:['L\'elefant', 'La girafa', 'El cavall'], e:'El cor d\'una balena blava pot pesar com un cotxe petit i batega només unes poques vegades per minut.', t:'natura', n:1},
+  {p:'Quants ulls té una aranya, normalment?', b:'8', o:['2', '4', '12'], e:'La majoria en tenen vuit, però moltes hi veuen malament: es refien més de les vibracions de la teranyina.', t:'natura', n:1},
+  {p:'Quin animal dorm amb un ull obert?', b:'El dofí', o:['El gat', 'El cavall', 'L\'ocell'], e:'El dofí dorm amb mitja part del cervell desperta i l\'ull d\'aquell costat obert, perquè ha de pujar a respirar.', t:'natura', n:2},
+  {p:'Quin animal és capaç de detectar la por per l\'olor?', b:'El gos', o:['El gat', 'El cavall', 'El conill'], e:'L\'olfacte del gos és desenes de milers de vegades més fi que el nostre i capta les substàncies que suem quan estem nerviosos.', t:'natura', n:1},
+  {p:'Quantes espècies d\'insectes es coneixen?', b:'Més d\'un milió', o:['Unes mil', 'Unes deu mil', 'Unes cent mil'], e:'Se n\'han descrit més d\'un milió i se\'n calculen molts més per descobrir. Són més de la meitat de tots els éssers vius coneguts.', t:'natura', n:2},
+  {p:'Quin animal pot aguantar més temps sense menjar?', b:'El cocodril', o:['El gos', 'El cavall', 'L\'ocell'], e:'Un cocodril adult pot passar-se un any sense menjar: té el metabolisme tan lent que gasta poquíssima energia.', t:'natura', n:2},
+  {p:'Quin animal marí pot canviar de sexe?', b:'El peix pallasso', o:['El dofí', 'La balena', 'El cranc'], e:'En un grup de peixos pallasso, si mor la femella, el mascle dominant es converteix en femella.', t:'natura', n:2},
+  {p:'Per què els flamencs són rosats?', b:'Pel menjar', o:['Pel sol', 'Per l\'aigua salada', 'Per l\'edat'], e:'Neixen grisos i es tornen rosats pels pigments dels petits crustacis i les algues que mengen. En captivitat, sense aquesta dieta, s\'esblaimen.', t:'natura', n:1},
+  {p:'Quin animal té la mossegada més forta?', b:'El cocodril', o:['El lleó', 'El tauró', 'L\'hipopòtam'], e:'El cocodril marí tanca la boca amb una força enorme, però els músculs per obrir-la són tan febles que una mà els pot mantenir tancats.', t:'natura', n:2},
+  {p:'Quin animal produeix el fil més resistent?', b:'L\'aranya', o:['El cuc de seda', 'L\'abella', 'La formiga'], e:'El fil d\'aranya, a igualtat de gruix, aguanta més estirada que l\'acer i alhora es pot allargar sense trencar-se.', t:'natura', n:2},
+  {p:'Quantes vegades batega el cor d\'un ratolí per minut?', b:'Uns 600', o:['Uns 70', 'Uns 150', 'Uns 2.000'], e:'Uns sis-cents cops per minut, deu per segon. En general, com més petit és un mamífer, més de pressa li va el cor i menys viu.', t:'natura', n:2},
+  {p:'Quin animal té tres parpelles?', b:'El camell', o:['El gos', 'El cavall', 'La vaca'], e:'El camell té una tercera parpella transparent que li neteja la sorra dels ulls sense haver de deixar de veure-hi.', t:'natura', n:2},
+  {p:'Què fan els arbres de nit?', b:'Deixen anar diòxid de carboni', o:['Dormen del tot', 'Creixen més', 'Absorbeixen més llum'], e:'Sense llum no poden fer fotosíntesi, però continuen respirant, i per tant consumeixen oxigen i alliberen diòxid de carboni.', t:'natura', n:2},
+  {p:'Quin és l\'ésser viu més gran del món?', b:'Un bosc de fongs', o:['La balena blava', 'La sequoia', 'L\'elefant'], e:'A Oregon hi ha un fong que s\'estén per més de nou quilòmetres quadrats sota terra, tot ell un sol individu.', t:'natura', n:2},
+  {p:'Quants cors té un cuc de terra?', b:'Cinc', o:['Un', 'Dos', 'Cap'], e:'En té cinc parells d\'arcs que fan de cor i que empenyen la sang pel cos. També respira per la pell.', t:'natura', n:2},
+  {p:'Per què els gats ronquen?', b:'Quan estan a gust i també quan es curen', o:['Només quan tenen gana', 'Quan tenen por', 'Quan volen caçar'], e:'Ronquen de plaer, però també quan estan ferits: es creu que la vibració els ajuda a recuperar-se.', t:'natura', n:1},
+  {p:'Quantes llavors té una maduixa a fora?', b:'Unes dues-centes', o:['Cap', 'Unes deu', 'Unes mil'], e:'Els puntets grocs de fora són els fruits de debò. El que ens mengem és la tija inflada de la planta.', t:'natura', n:2},
+  {p:'Quin animal se sap orientar amb el camp magnètic de la Terra?', b:'L\'ocell migrador', o:['El gos', 'El gat', 'La vaca'], e:'Molts ocells duen una mena de brúixola interna que els permet travessar continents i tornar al mateix niu.', t:'natura', n:2},
+  {p:'Quin animal no beu mai aigua directament?', b:'El cangur roig', o:['El camell', 'El lleó', 'L\'elefant'], e:'El cangur roig del desert australià pot viure només amb l\'aigua que treu de les plantes que menja.', t:'natura', n:2},
+  {p:'Quin animal té la pell tan gruixuda que li fa d\'armadura?', b:'El rinoceront', o:['La vaca', 'El cavall', 'El porc senglar'], e:'La pell del rinoceront pot fer cinc centímetres de gruix. Tot i així és sensible al sol, i per això es rebolca en el fang.', t:'natura', n:1},
+  {p:'Què és una simbiosi?', b:'Dos éssers vius que viuen junts i se\'n beneficien', o:['Un animal que en caça un altre', 'Un animal que viu sol', 'Una planta que creix sobre una altra'], e:'El liquen és un fong i una alga vivint junts: el fong li dona casa i l\'alga li fa el menjar. Cap dels dos podria viure allà tot sol.', t:'natura', n:2},
+  {p:'Per què ploren les cebes?', b:'Perquè deixen anar una substància irritant', o:['Perquè tenen aigua salada', 'Perquè són àcides', 'Perquè fan pols'], e:'En tallar-la, la ceba allibera un compost de sofre que, en contacte amb l\'ull, es converteix en un àcid suau. Refredar-la abans ho redueix.', t:'natura', n:1},
+  {p:'Quin arbre pot viure més de quatre mil anys?', b:'El pi de Bristlecone', o:['El pi blanc', 'El roure', 'El plàtan'], e:'Als Estats Units hi ha pins d\'aquesta espècie de més de 4.800 anys: ja eren arbres quan es construïen les piràmides.', t:'natura', n:2},
+  {p:'Quina planta s\'obre de nit i es tanca de dia?', b:'La flor de la lluna', o:['El gira-sol', 'La rosa', 'El tulipa'], e:'Algunes plantes floreixen de nit per atraure insectes nocturns i ratpenats en comptes d\'abelles.', t:'natura', n:2},
+  {p:'Quin animal viu més temps?', b:'Certes meduses i cucs', o:['L\'elefant', 'La balena', 'La tortuga'], e:'Hi ha una medusa que pot tornar a la seva forma juvenil i començar de nou, i per tant no envelleix de la manera habitual.', t:'natura', n:2},
+  {p:'Quants músculs mou una trompa d\'elefant?', b:'Desenes de milers', o:['Una dotzena', 'Un centenar', 'Cap'], e:'La trompa no té ni un sol os i es mou amb desenes de milers de feixos musculars. Pot arrencar un arbre i agafar una moneda.', t:'natura', n:2},
+  {p:'Què són els corals?', b:'Animals que viuen en colònia', o:['Plantes marines', 'Pedres de mar', 'Algues dures'], e:'Cada coral és una colònia de milers d\'animalons diminuts. L\'esquelet que deixen és el que forma els esculls.', t:'natura', n:2},
+  {p:'Quin animal té la vista més aguda?', b:'L\'àguila', o:['El gat', 'El gos', 'L\'home'], e:'Una àguila pot veure una llebre a més de tres quilòmetres. La seva vista és unes quatre vegades més fina que la nostra.', t:'natura', n:1},
+  {p:'Quants pèls té un cap humà, aproximadament?', b:'Uns 100.000', o:['Uns 1.000', 'Uns 10.000', 'Un milió'], e:'Uns cent mil, i és normal perdre\'n entre cinquanta i cent cada dia: la majoria tornen a créixer.', t:'natura', n:1},
+  {p:'Quin animal pot veure colors que nosaltres no veiem?', b:'L\'abella', o:['El gos', 'El gat', 'El cavall'], e:'L\'abella veu l\'ultraviolat, i moltes flors hi tenen dibuixos que li marquen el camí cap al nèctar i que nosaltres no percebem.', t:'natura', n:2},
+  {p:'Per què les fulles de molts arbres són planes?', b:'Per rebre com més llum millor', o:['Per pesar menys', 'Per aguantar el vent', 'Per recollir la pluja'], e:'Com més superfície exposada al sol, més aliment pot fabricar la planta. Als llocs secs, en canvi, es transformen en agulles o espines.', t:'natura', n:1},
+  {p:'Quin animal pot regenerar el cos sencer a partir d\'un tros?', b:'L\'estrella de mar', o:['El peix', 'El cranc', 'La granota'], e:'D\'un braç amb un tros de centre, una estrella de mar pot refer l\'animal sencer.', t:'natura', n:2},
+  {p:'Quin és el mamífer més petit del món?', b:'El musaranyó nan', o:['El ratolí', 'El ratpenat comú', 'La mostela'], e:'Pesa menys de dos grams. Per no morir de fred ha de menjar cada poques hores, fins i tot de nit.', t:'natura', n:2},
+  {p:'Quin animal es passa la vida dormint gairebé tot el dia?', b:'El coala', o:['El gos', 'La vaca', 'El cavall'], e:'El coala dorm fins a vint hores al dia: les fulles d\'eucaliptus que menja donen molt poca energia i són tòxiques per a gairebé tothom.', t:'natura', n:1},
+  {p:'Quantes potes té un centpeus, de debò?', b:'Depèn de l\'espècie', o:['Sempre cent', 'Sempre cinquanta', 'Sempre dues-centes'], e:'Malgrat el nom, en tenen des d\'una trentena fins a més de tres-centes, i sempre en nombre senar de parells.', t:'natura', n:2},
+  {p:'Què fa que una poma es torni marró un cop tallada?', b:'Una reacció amb l\'oxigen', o:['El fred', 'La llum del sol', 'L\'aigua'], e:'En trencar les cèl·lules, unes substàncies de la poma reaccionen amb l\'aire. Un raig de llimona ho atura, perquè l\'àcid frena la reacció.', t:'natura', n:1},
+  {p:'Quin és el fruit sec que en realitat és una llavor de dins d\'un fruit?', b:'L\'ametlla', o:['L\'avellana', 'El cacauet', 'La nou'], e:'L\'ametlla és el pinyol d\'un fruit semblant al préssec. El cacauet, encara més curiós, ni és fruit sec ni creix a l\'arbre: és un llegum que madura sota terra.', t:'natura', n:2},
+  {p:'Quants litres d\'aire respirem cada dia?', b:'Uns 11.000', o:['Uns 100', 'Uns 1.000', 'Un milió'], e:'Unes vint mil respiracions al dia, que sumen uns onze mil litres d\'aire: ompliríem una habitació petita.', t:'natura', n:2},
+  {p:'Quin animal sua per les potes?', b:'El gos', o:['El cavall', 'La vaca', 'El porc'], e:'El gos només té glàndules de suor als coixinets. Per refrescar-se, el que fa sobretot és panteixar.', t:'natura', n:1},
+  {p:'Quin animal diu miau?', b:'El gat', o:['El gos', 'La vaca', 'El cavall'], e:'El gat. Curiosament, els gats adults gairebé només miolen per parlar amb les persones, no entre ells.', t:'natura', n:0},
+  {p:'De quin animal ve la llet que bevem?', b:'De la vaca', o:['Del gos', 'Del gat', 'De la gallina'], e:'Sobretot de la vaca, però també de la cabra i l\'ovella, amb què es fan molts formatges.', t:'natura', n:0},
+  {p:'Quin animal pon els ous que mengem?', b:'La gallina', o:['L\'ovella', 'La vaca', 'El porc'], e:'La gallina. Una gallina de granja pot pondre uns tres-cents ous l\'any.', t:'natura', n:0},
+  {p:'Què necessita un peix per viure?', b:'Aigua', o:['Sorra', 'Sol', 'Vent'], e:'L\'aigua, d\'on treu l\'oxigen amb les brànquies. Fora de l\'aigua, tot i haver-hi aire, no el pot aprofitar.', t:'natura', n:0},
+  {p:'Quin color fan el blau i el vermell barrejats?', b:'Lila', o:['Verd', 'Taronja', 'Marró'], e:'Lila o morat. Amb pintures, els tres colors bàsics són el vermell, el blau i el groc, i barrejant-los surt tota la resta.', t:'natura', n:0},
+  {p:'Per què els ocells poden volar tot i tenir esquelet?', b:'Perquè tenen els ossos buits per dins', o:['Perquè pesen molt poc menjar', 'Perquè tenen les ales grosses', 'Perquè tenen el cos calent'], e:'Els ossos dels ocells són buits i reforçats per dins amb una mena de bigues: molt lleugers i alhora resistents.', t:'natura', n:1},
+  {p:'Què fa créixer les plantes, a part de l\'aigua i la llum?', b:'La terra', o:['El vent', 'La neu', 'El soroll'], e:'La terra, d\'on treuen les sals minerals que necessiten. Per això la terra dels testos s\'acaba esgotant i s\'ha de renovar.', t:'natura', n:0},
+  {p:'Quina fruita és groga i llarga?', b:'El plàtan', o:['La poma', 'La pera', 'La taronja'], e:'El plàtan, que creix en penjolls d\'una planta enorme que, malgrat la mida, no és un arbre sinó una herba.', t:'natura', n:0},
+  {p:'Quin animal té banyes i dona llet?', b:'La vaca', o:['El gos', 'El porc', 'La gallina'], e:'La vaca, i també la cabra. No totes les vaques tenen banyes: depèn de la raça.', t:'natura', n:0},
+  {p:'Amb què respiren les persones?', b:'Amb els pulmons', o:['Amb l\'estómac', 'Amb el cor', 'Amb el fetge'], e:'Amb els pulmons. Si els desplegués del tot, la superfície interior d\'un parell de pulmons cobriria mitja pista de tennis.', t:'natura', n:0},
+  {p:'Què surt al cel quan plou i fa sol alhora?', b:'L\'arc de Sant Martí', o:['La lluna', 'Un estel', 'Una estrella fugaç'], e:'L\'arc de Sant Martí: la llum del sol es divideix en colors en travessar les gotes de pluja.', t:'natura', n:0},
+  {p:'Quin animal viu a la selva i és molt gran i gris?', b:'L\'elefant', o:['El conill', 'La rata', 'El gat'], e:'L\'elefant, el més gran dels animals de terra. Les orelles li serveixen sobretot per refrescar-se.', t:'natura', n:0},
+  {p:'Quantes potes té una taula, normalment?', b:'4', o:['2', '3', '6'], e:'Quatre, tot i que amb tres ja no cauria mai: tres punts sempre toquen el terra alhora, encara que sigui desigual.', t:'mon', n:0},
+  {p:'De quin color és la neu quan es fon?', b:'Es torna aigua', o:['Blanca', 'Blava', 'Grisa'], e:'La neu és aigua congelada en cristalls. Quan es fon, torna a ser aigua líquida i transparent.', t:'natura', n:0},
+  {p:'Quants ulls tenim les persones?', b:'2', o:['1', '3', '4'], e:'Dos, i és tenir-ne dos el que ens permet calcular distàncies: cada ull veu una imatge lleugerament diferent.', t:'natura', n:0},
+  {p:'Què és el matí?', b:'La part del dia després de llevar-se', o:['La part de la nit', 'El moment de sopar', 'La part més fosca'], e:'El matí va des que es fa de dia fins al migdia. Després vénen la tarda, el vespre i la nit.', t:'llengua', n:0},
+  {p:'Quantes lletres té la paraula sol?', b:'3', o:['2', '4', '5'], e:'Tres: s-o-l. És una paraula curta però amb molts significats: l\'astre, la nota musical i el terra.', t:'llengua', n:0},
+  {p:'Quina paraula és el contrari de fred?', b:'Calent', o:['Humit', 'Suau', 'Fosc'], e:'Fred i calent són contraris. Humit i sec també ho són entre ells, però no tenen a veure amb la temperatura.', t:'llengua', n:0},
+  {p:'Com es diu la persona que cura els malalts?', b:'El metge', o:['El mestre', 'El bomber', 'El pagès'], e:'El metge o la metgessa. La infermera també en té cura, i cadascú té la seva feina dins d\'un hospital.', t:'llengua', n:0},
+  {p:'Quina d\'aquestes paraules és un menjar?', b:'Pa', o:['Cadira', 'Núvol', 'Sabata'], e:'El pa és un aliment; els altres són objectes o coses del cel. Classificar paraules per famílies és el primer pas de la gramàtica.', t:'llengua', n:0},
+  {p:'Amb què s\'escriu al paper?', b:'Amb un bolígraf', o:['Amb una forquilla', 'Amb un martell', 'Amb una clau'], e:'Amb bolígraf, llapis o ploma. El bolígraf porta una boleta minúscula a la punta que fa rodar la tinta sobre el paper.', t:'llengua', n:0},
+  {p:'Quantes síl·labes té la paraula casa?', b:'2', o:['1', '3', '4'], e:'Dues: ca-sa. Dient-la a poc a poc i picant de mans se senten els dos cops de veu.', t:'llengua', n:0},
+  {p:'Com es diu el contrari d\'entrar?', b:'Sortir', o:['Pujar', 'Córrer', 'Seure'], e:'Entrar i sortir són moviments contraris. Pujar i baixar també ho són, però en vertical.', t:'llengua', n:0},
+  {p:'Què fem amb un llibre?', b:'El llegim', o:['El bevem', 'El cuinem', 'El conduïm'], e:'El llegim. Llegir és passar de les lletres al significat, i és una de les coses més complicades que aprèn el cervell.', t:'llengua', n:0},
+  {p:'Quina lletra va després de la A?', b:'La B', o:['La C', 'La Z', 'La M'], e:'La B. L\'abecedari comença a, be, ce, de, e, efa… i acaba amb la zeta.', t:'llengua', n:0},
+  {p:'Com es diu on es guarda la roba?', b:'L\'armari', o:['La nevera', 'El forn', 'La pica'], e:'L\'armari. La nevera és per al menjar, el forn per cuinar i la pica per rentar.', t:'llengua', n:0},
+  {p:'Quina paraula vol dir el mateix que content?', b:'Alegre', o:['Trist', 'Cansat', 'Enfadat'], e:'Alegre. Trist i enfadat en són el contrari, i cansat és una altra cosa: parla de les forces, no de l\'humor.', t:'llengua', n:0},
+  {p:'Quin és el primer dia de la setmana laboral?', b:'El dilluns', o:['El dimarts', 'El divendres', 'El diumenge'], e:'El dilluns. Els noms dels dies vénen dels astres: la Lluna, Mart, Mercuri, Júpiter i Venus.', t:'mon', n:0},
+  {p:'Quantes cares té un full de paper?', b:'2', o:['1', '3', '4'], e:'Dues: el davant i el darrere. Es diuen anvers i revers, i a les monedes, cara i creu.', t:'mon', n:0},
+  {p:'Amb què es fa el pa?', b:'Amb farina', o:['Amb sorra', 'Amb sucre i prou', 'Amb oli'], e:'Amb farina, aigua, sal i llevat. La farina es fa moltant els grans de blat.', t:'historia', n:0},
+  {p:'Què feia servir la gent per anar a buscar aigua abans de l\'aixeta?', b:'Una galleda i la font', o:['Una mànega', 'Una bomba elèctrica', 'Una ampolla comprada'], e:'S\'anava a la font o al pou amb galledes i càntirs. Portar l\'aigua a casa era una de les feines diàries de moltes famílies.', t:'historia', n:0},
+  {p:'Quin animal estirava el carro abans dels cotxes?', b:'El cavall', o:['El gos', 'El gat', 'La gallina'], e:'El cavall, la mula o el bou. Fins fa poc més d\'un segle, la força de tot el transport eren animals.', t:'historia', n:0},
+  {p:'On es guardaven els diners abans dels bancs, a casa?', b:'En una caixa o amagats', o:['A la nevera', 'A l\'ordinador', 'En un compte'], e:'En caixes, matalassos o parets. Els primers bancs, a Itàlia, van néixer justament perquè guardar-los a casa era arriscat.', t:'historia', n:0},
+  {p:'Quin esport es juga amb una pilota i una porteria?', b:'El futbol', o:['El tennis', 'La natació', 'El golf'], e:'El futbol, el joc més practicat del món. Les regles modernes es van fixar a Anglaterra el 1863.', t:'historia', n:0},
+  {p:'Què és una cançó?', b:'Una música amb lletra per cantar', o:['Un poema sense música', 'Un ball sense música', 'Un instrument'], e:'La música i la lletra junts. La memòria les recorda molt millor que un text sol: per això aprenem els números cantant.', t:'historia', n:0},
+  {p:'Quin dia de l\'any comença l\'any nou?', b:'L\'1 de gener', o:['El 31 de desembre', 'El 24 de desembre', 'El 6 de gener'], e:'L\'1 de gener. No sempre ha estat així: a l\'edat mitjana, a molts llocs l\'any començava per Nadal o per Pasqua.', t:'mon', n:0},
+  {p:'Quin és el color de l\'herba?', b:'Verd', o:['Blau', 'Groc', 'Vermell'], e:'Verd, pel pigment que aprofita la llum del sol. Quan s\'asseca i el perd, es torna groguenca.', t:'natura', n:0},
+  {p:'Quantes rodes té una bicicleta?', b:'2', o:['1', '3', '4'], e:'Dues. S\'aguanta dreta perquè, en moviment, les rodes que giren es resisteixen a caure de costat.', t:'mon', n:0},
+  {p:'Què hi ha dins d\'un ou?', b:'Clara i rovell', o:['Aigua i sal', 'Llet', 'Farina'], e:'La clara és sobretot aigua i proteïna, i el rovell és la reserva de menjar per al pollet.', t:'natura', n:0},
+  {p:'Quin mes ve després del març?', b:'L\'abril', o:['El maig', 'El febrer', 'El juny'], e:'L\'abril. La primavera va del març al juny a l\'hemisferi nord.', t:'mon', n:0},
+  {p:'Què fem a la cuina?', b:'Cuinar el menjar', o:['Dormir', 'Rentar la roba', 'Aparcar el cotxe'], e:'Cuinar. La cuina amb foc és una de les coses que ens ha fet diferents: permet aprofitar molt millor els aliments.', t:'llengua', n:0},
+  {p:'Quin animal té la cua més llarga i s\'enfila als arbres?', b:'El mico', o:['El gos', 'La vaca', 'El porc'], e:'Molts micos fan servir la cua com si fos una cinquena mà per agafar-se a les branques.', t:'natura', n:0},
+  {p:'Què veiem al cel de dia?', b:'El Sol', o:['La Lluna plena', 'Els estels', 'Els planetes'], e:'El Sol. La Lluna també es veu de dia sovint, però els estels queden amagats per la llum.', t:'mon', n:0},
+  {p:'Quantes hores té mig dia?', b:'12', o:['6', '10', '24'], e:'Dotze. Per això els rellotges d\'agulles han de fer dues voltes per completar un dia sencer.', t:'mon', n:0},
+  {p:'Què és una illa?', b:'Un tros de terra envoltat d\'aigua', o:['Una muntanya alta', 'Una platja llarga', 'Un llac petit'], e:'Terra envoltada d\'aigua per tots costats. Si és molt gran, com Austràlia, se\'n diu continent.', t:'mon', n:0},
+  {p:'Quin és el menjar típic que es fa amb tomàquet i pa?', b:'El pa amb tomàquet', o:['La truita', 'La sopa', 'L\'amanida'], e:'El pa amb tomàquet. És més modern del que sembla: el tomàquet va arribar d\'Amèrica i no es va menjar a Europa fins molt més tard.', t:'historia', n:0},
+  {p:'Quin aparell serveix per veure coses molt petites?', b:'El microscopi', o:['El telescopi', 'La brúixola', 'El termòmetre'], e:'El microscopi. Amb el telescopi es mira lluny; amb el microscopi, petit. Gràcies a ell es van descobrir els microbis.', t:'natura', n:0},
+  {p:'On viuen els ossos polars?', b:'Al pol Nord', o:['Al pol Sud', 'A la selva', 'Al desert'], e:'Al pol Nord i a l\'Àrtic. Els pingüins viuen al pol Sud: no es troben mai els uns amb els altres.', t:'mon', n:0},
+  {p:'De quin color són els pingüins?', b:'Blancs i negres', o:['Grocs', 'Blaus', 'Grisos'], e:'Blancs per sota i negres per sobre. Dins l\'aigua això els camufla: des de baix es confonen amb la llum i des de dalt amb el fons.', t:'natura', n:0},
+  {p:'Què fa un bomber?', b:'Apaga incendis', o:['Cuina', 'Ensenya a l\'escola', 'Ven roba'], e:'Apaga incendis i ajuda en accidents i inundacions. També rescaten persones i animals atrapats.', t:'llengua', n:0},
+  {p:'Quina és la peça de roba que es posa als peus abans de la sabata?', b:'El mitjó', o:['El barret', 'El guant', 'La bufanda'], e:'El mitjó. Protegeix el peu del frec i recull la suor, i per això s\'ha de canviar cada dia.', t:'llengua', n:0},
+  {p:'Què és el desert?', b:'Un lloc molt sec on gairebé no plou', o:['Un lloc molt fred', 'Un bosc molt gran', 'Una platja molt llarga'], e:'Un desert és un lloc on hi ha molt poca pluja. N\'hi ha de calents, com el Sàhara, i de gelats, com l\'Antàrtida.', t:'mon', n:0},
+  {p:'Quin és el so que fa una campana?', b:'Un dring', o:['Un miol', 'Un lladruc', 'Un xiulet'], e:'La campana dringa o repica. Abans dels rellotges, les campanes marcaven les hores de tot un poble.', t:'historia', n:0},
+  {p:'Quants dits té un peu?', b:'5', o:['3', '4', '6'], e:'Cinc, com la mà. El dit gros del peu és clau per mantenir l\'equilibri en caminar.', t:'natura', n:0},
+  {p:'Quin és l\'animal de companyia més comú a casa?', b:'El gos i el gat', o:['El cavall', 'La vaca', 'El conill salvatge'], e:'Gossos i gats. El gos fa desenes de milers d\'anys que viu amb nosaltres; el gat s\'hi va acostar amb l\'agricultura, seguint els ratolins.', t:'natura', n:0},
+  {p:'Quin invent va permetre saber l\'hora al mar i calcular la posició?', b:'El cronòmetre marí', o:['La brúixola', 'El telescopi', 'El sextant'], e:'John Harrison va construir al segle XVIII un rellotge prou precís per funcionar en un vaixell. Sense ell no es podia saber la longitud.', t:'historia', n:2},
+  {p:'Qui va ser el primer ésser humà a viatjar a l\'espai?', b:'Iuri Gagarin', o:['Neil Armstrong', 'Alan Shepard', 'Valentina Tereixkova'], e:'Iuri Gagarin, el 12 d\'abril de 1961. Va fer una sola volta a la Terra i el viatge va durar menys de dues hores.', t:'historia', n:2},
+  {p:'Qui va ser la primera dona a l\'espai?', b:'Valentina Tereixkova', o:['Sally Ride', 'Marie Curie', 'Amelia Earhart'], e:'Valentina Tereixkova, el 1963, dos anys després de Gagarin. Va passar tres dies en òrbita, més que tots els astronautes americans junts fins llavors.', t:'historia', n:2},
+  {p:'Quin invent va fer possible guardar el menjar molt més temps a casa?', b:'La nevera', o:['El microones', 'El forn', 'La batedora'], e:'La nevera elèctrica, que es popularitza a mitjan segle XX. Va canviar del tot la manera de comprar i de cuinar.', t:'historia', n:1},
+  {p:'Quin material van fer servir els egipcis per escriure?', b:'El papir', o:['El paper', 'La seda', 'El pergamí'], e:'El papir, fet amb la tija d\'una planta del Nil enganxada en capes creuades. El pergamí, de pell, va venir després.', t:'historia', n:1},
+  {p:'Quin edifici antic és la meravella més ben conservada de les set del món antic?', b:'La piràmide de Gizeh', o:['El far d\'Alexandria', 'El colós de Rodes', 'Els jardins de Babilònia'], e:'És l\'única de les set que encara és dempeus. La resta van caure per terratrèmols, incendis o simplement pel temps.', t:'historia', n:2},
+  {p:'Qui va escriure la música de La flauta màgica?', b:'Mozart', o:['Beethoven', 'Bach', 'Haydn'], e:'Mozart, el 1791, l\'any que va morir. És una òpera en alemany i pensada per al públic popular, no per a la cort.', t:'historia', n:2},
+  {p:'Quin pintor va pintar el sostre d\'una capella estirat d\'esquena durant anys?', b:'Miquel Àngel', o:['Leonardo', 'Rafael', 'Ticià'], e:'Miquel Àngel, a la Capella Sixtina. Va acabar amb problemes de coll i de vista de tant mirar amunt.', t:'historia', n:1},
+  {p:'Quina ciutat va ser destruïda per un incendi el 1666?', b:'Londres', o:['París', 'Roma', 'Lisboa'], e:'El Gran Incendi de Londres va cremar la major part de la ciutat medieval, però va acabar amb l\'epidèmia de pesta de l\'any anterior.', t:'historia', n:2},
+  {p:'Quina catàstrofe va destruir Lisboa el 1755?', b:'Un terratrèmol i un tsunami', o:['Un incendi', 'Una erupció', 'Una inundació de riu'], e:'El terratrèmol, el tsunami i els incendis van arrasar la ciutat. El fet va sacsejar el pensament europeu sobre el mal i la natura.', t:'historia', n:2},
+  {p:'Quin invent va acostar la lectura a la gent gran del segle XIII?', b:'Les ulleres', o:['La impremta', 'El paper', 'La llum de gas'], e:'Les primeres ulleres apareixen a Itàlia cap al 1280. Van allargar dècades la vida útil de copistes i artesans.', t:'historia', n:2},
+  {p:'Qui va pintar el quadre El crit?', b:'Munch', o:['Van Gogh', 'Picasso', 'Dalí'], e:'Edvard Munch, el 1893. Ell explicava que un capvespre va veure el cel vermell sang i va sentir un crit infinit de la natura.', t:'historia', n:2},
+  {p:'Quin estil arquitectònic té arcs de mig punt i murs gruixuts?', b:'El romànic', o:['El gòtic', 'El barroc', 'El modernisme'], e:'El romànic, dels segles XI i XII: parets massisses, finestres petites i poca llum. El gòtic, després, buscarà justament el contrari.', t:'historia', n:2},
+  {p:'Quin músic va escriure els Concerts de Brandenburg?', b:'Bach', o:['Handel', 'Vivaldi', 'Mozart'], e:'Johann Sebastian Bach, cap al 1721. Els va enviar a un marquès buscant feina i sembla que ni els va fer tocar.', t:'historia', n:2},
+  {p:'Quin invent va permetre parlar a distància amb punts i ratlles?', b:'El telègraf', o:['El telèfon', 'La ràdio', 'El fonògraf'], e:'El telègraf, amb el codi Morse. Un missatge que trigava setmanes a creuar l\'Atlàntic va passar a arribar en minuts.', t:'historia', n:1},
+  {p:'Quina construcció romana portava aigua a Segòvia?', b:'L\'aqüeducte', o:['El circ', 'Les termes', 'El fòrum'], e:'L\'aqüeducte de Segòvia, de més de 160 arcs, s\'aguanta sense cap tipus de morter: només per l\'encaix de les pedres.', t:'historia', n:1},
+  {p:'Quin poble va portar el cavall a Amèrica?', b:'Els espanyols', o:['Els víkings', 'Els portuguesos', 'Els anglesos'], e:'Hi havia hagut cavalls a Amèrica en la prehistòria, però s\'havien extingit. Els van tornar a portar els espanyols al segle XVI.', t:'historia', n:2},
+  {p:'Quin aliment va arribar d\'Amèrica i va canviar la dieta europea?', b:'La patata', o:['El blat', 'L\'arròs', 'L\'oliva'], e:'La patata, el tomàquet, el blat de moro i el pebrot van arribar d\'Amèrica. Costa imaginar la cuina europea sense ells.', t:'historia', n:1},
+  {p:'Quin monument grec és al cim de l\'Acròpolis d\'Atenes?', b:'El Partenó', o:['El Colosseu', 'El Panteó', 'L\'oracle de Delfos'], e:'El Partenó, dedicat a la deessa Atena. Les seves columnes són lleugerament corbes perquè, de lluny, semblin perfectament rectes.', t:'historia', n:2},
+  {p:'Quin instrument feien servir els mariners per mesurar l\'altura dels astres?', b:'El sextant', o:['La brúixola', 'El baròmetre', 'El rellotge de sol'], e:'El sextant. Mesurant l\'angle d\'un astre sobre l\'horitzó es podia calcular la latitud del vaixell.', t:'historia', n:2},
+  {p:'Quin invent de Leonardo da Vinci no es va poder construir en vida seva?', b:'La màquina de volar', o:['El rellotge', 'El molí', 'La balança'], e:'Va dibuixar helicòpters i ales batents segles abans que existissin els materials i els motors per fer-los volar.', t:'historia', n:1},
+  {p:'Quina ciutat italiana va ser la capital del Renaixement?', b:'Florència', o:['Roma', 'Milà', 'Nàpols'], e:'Florència, gràcies sobretot a la família Mèdici, que va pagar bona part de l\'art d\'aquells anys.', t:'historia', n:2},
+  {p:'Quin so guarda un disc de vinil?', b:'Un solc que fa vibrar una agulla', o:['Punts magnètics', 'Codis de llum', 'Nombres digitals'], e:'El so queda gravat com un solc ondulat. L\'agulla el segueix, vibra i aquella vibració es converteix altra vegada en so.', t:'historia', n:2},
+  {p:'Quin teatre grec es feia a l\'aire lliure i tenia una acústica excel·lent?', b:'El teatre d\'Epidaure', o:['El Colosseu', 'El Partenó', 'L\'àgora'], e:'A Epidaure, des de l\'última fila se sent una moneda caure a l\'escenari. El secret és la forma de les grades, que filtra el soroll de fons.', t:'historia', n:2},
+  {p:'Quin ofici antic feia les rodes dels carros?', b:'El roder', o:['El ferrer', 'El fuster de mobles', 'El paleta'], e:'El roder era un fuster especialitzat. La roda de radis, lleugera i resistent, és un dels invents més importants de la història.', t:'historia', n:2},
+  {p:'Quin paper feien els monestirs medievals amb els llibres?', b:'Els copiaven a mà', o:['Els imprimien', 'Els venien', 'Els cremaven'], e:'Els monjos copistes reproduïen els textos un per un. Gràcies a ells van sobreviure obres gregues i llatines que si no s\'haurien perdut.', t:'historia', n:1},
+  {p:'Què és un retaule?', b:'Un conjunt de pintures darrere l\'altar', o:['Una escultura al jardí', 'Un tapís de paret', 'Una vidriera'], e:'Els retaules explicaven històries en imatges per a una població que no sabia llegir: eren el cinema de l\'època.', t:'historia', n:2},
+  {p:'Quin invent va fer possible les grans ciutats verticals?', b:'L\'ascensor segur', o:['El ciment', 'El vidre', 'L\'acer inoxidable'], e:'El fre de seguretat d\'Elisha Otis, el 1853, va fer que la gent gosés pujar a pisos alts. Sense ell no hi hauria gratacels.', t:'historia', n:2},
+  {p:'Quin idioma es feia servir per a la ciència a l\'Europa del segle XVII?', b:'El llatí', o:['El francès', 'L\'anglès', 'L\'italià'], e:'El llatí era la llengua comuna de la ciència. Newton va publicar la seva obra més important en llatí el 1687.', t:'historia', n:2},
+  {p:'Quin invent domèstic va alliberar més hores de feina a les cases?', b:'La rentadora', o:['La televisió', 'El telèfon', 'La ràdio'], e:'La rentadora automàtica. Rentar a mà la roba d\'una família podia ocupar un dia sencer cada setmana.', t:'historia', n:1},
+  {p:'Què és un mural?', b:'Una pintura feta directament sobre la paret', o:['Un quadre molt gran', 'Un dibuix sobre fusta', 'Un tapís'], e:'Es pinta sobre el mur mateix. Si es fa amb el guix encara fresc se\'n diu fresc, i llavors el color queda dins la paret per sempre.', t:'historia', n:1},
+  {p:'Quin rei va ordenar construir el Canal Imperial i altres obres il·lustrades a Espanya?', b:'Carles III', o:['Felip II', 'Carles V', 'Ferran VII'], e:'Carles III, al segle XVIII. Va impulsar carreteres, canals, l\'enllumenat i el clavegueram de Madrid.', t:'historia', n:2},
+  {p:'Quina obra de teatre catalana és una de les més representades del segle XX?', b:'Terra baixa', o:['La plaça del Diamant', 'Mirall trencat', 'El cafè de la Marina'], e:'Terra baixa, d\'Àngel Guimerà, estrenada el 1897. S\'ha traduït a desenes de llengües i se n\'han fet diverses pel·lícules.', t:'historia', n:2},
+  {p:'Quin objecte quotidià es va inventar per als astronautes i després va arribar a les cases?', b:'El velcro', o:['El microones', 'La nevera', 'La ràdio'], e:'El velcro existia abans, però la NASA el va popularitzar. La idea va sortir dels ganxets dels cards que s\'enganxen a la roba.', t:'historia', n:2},
+  {p:'Què és un dígraf?', b:'Dues lletres que representen un sol so', o:['Dues paraules juntes', 'Dues vocals seguides', 'Un accent doble'], e:'En català, ny, ll, rr, ss i qu són dígrafs: s\'escriuen amb dues lletres però sonen com una de sola.', t:'llengua', n:2},
+  {p:'Quin és el plural de *capital*?', b:'capitals', o:['capitales', 'capitalos', 'capital'], e:'Capitals. La majoria de paraules acabades en consonant afegeixen una essa.', t:'llengua', n:1},
+  {p:'Què és un gerundi?', b:'La forma del verb acabada en -ant o -ent', o:['El passat del verb', 'El futur del verb', 'L\'ordre del verb'], e:'Cantant, corrent, dormint. Indica una acció en curs i acompanya un altre verb: estava cantant.', t:'llengua', n:2},
+  {p:'Què vol dir *sobtat*?', b:'Que passa de cop', o:['Que és molt lent', 'Que és previsible', 'Que és molt fort'], e:'Un canvi sobtat és el que arriba sense avisar. Ve del verb sobtar, sorprendre.', t:'llengua', n:1},
+  {p:'Què és una locució?', b:'Un grup de paraules que funciona com una de sola', o:['Una frase molt llarga', 'Una manera de parlar regional', 'Una paraula estrangera'], e:'A poc a poc, de sobte o tot d\'una funcionen com si fossin una sola paraula dins la frase.', t:'llengua', n:2},
+  {p:'Quin és el femení de *poeta*?', b:'poetessa', o:['poeta', 'poetera', 'poetina'], e:'Poetessa, tot i que moltes escriptores prefereixen que se\'ls digui poeta, com a nom comú per a tots dos gèneres.', t:'llengua', n:2},
+  {p:'Què vol dir *peremptori*?', b:'Urgent i que no admet ajornament', o:['Que dura per sempre', 'Que és opcional', 'Que és molt antic'], e:'Un termini peremptori és el que no es pot allargar de cap manera. Ve del llatí, on volia dir destruir o acabar.', t:'llengua', n:2},
+  {p:'Què és una paraula aguda?', b:'La que té la força a l\'última síl·laba', o:['La que té la força al mig', 'La que té la força al principi', 'La que porta accent sempre'], e:'Camí, cançó, papers. Porten accent només si acaben en vocal, en vocal més essa o en -en i -in.', t:'llengua', n:2},
+  {p:'Què vol dir *escatimar*?', b:'Donar menys del que caldria', o:['Donar de més', 'Repartir a parts iguals', 'Guardar per a més tard'], e:'Escatimar és regatejar en la quantitat: escatimar esforços és fer-ne menys dels que tocaria.', t:'llengua', n:2},
+  {p:'Quin és el contrari de *eixut*?', b:'Humit', o:['Càlid', 'Fosc', 'Dolç'], e:'Eixut vol dir sec. També es diu d\'una persona de poques paraules i tracte sec.', t:'llengua', n:2},
+  {p:'Què és un verb transitiu?', b:'El que necessita un complement directe', o:['El que no té subjecte', 'El que va en passat', 'El que es conjuga irregularment'], e:'Menjar és transitiu: es menja alguna cosa. Dormir no ho és: no es dorm res.', t:'llengua', n:2},
+  {p:'Què vol dir *llepafils*?', b:'Que és molt tibat per menjar', o:['Que menja molt', 'Que cuina molt bé', 'Que menja molt de pressa'], e:'Una persona llepafils és difícil de contentar a taula. La paraula ve de llepar i fil, com qui menja de mica en mica.', t:'llengua', n:1},
+  {p:'Què és una paraula plana?', b:'La que té la força a la penúltima síl·laba', o:['La que té la força al final', 'La que no té accent', 'La que té dues síl·labes'], e:'Taula, cotxe, arbre. Són la majoria de paraules catalanes i només porten accent si acaben en certes lletres.', t:'llengua', n:2},
+  {p:'Què vol dir *atzucac*?', b:'Un carrer sense sortida', o:['Una plaça gran', 'Un pont estret', 'Una escala de cargol'], e:'Ve de l\'àrab. També es fa servir en sentit figurat: una negociació en un atzucac és la que no té sortida.', t:'llengua', n:2},
+  {p:'Què és un adjectiu demostratiu?', b:'El que indica on és una cosa respecte de qui parla', o:['El que indica la qualitat', 'El que indica la quantitat', 'El que indica el propietari'], e:'Aquest, aquell, aquests. Marquen la distància: aquest llibre el tinc a la mà; aquell és lluny.', t:'llengua', n:2},
+  {p:'Què vol dir *endur-se un ensurt*?', b:'Espantar-se de cop', o:['Alegrar-se molt', 'Cansar-se molt', 'Enfadar-se'], e:'Un ensurt és un espant sobtat i breu. La por, en canvi, pot durar molta més estona.', t:'llengua', n:1},
+  {p:'Quin és el plural de *pa*?', b:'pans', o:['pas', 'paus', 'pa'], e:'Pans. Com mà i mans, aquestes paraules recuperen en plural una consonant que havien perdut amb el temps.', t:'llengua', n:1},
+  {p:'Què és un pleonasme?', b:'Repetir una idea que ja s\'entén', o:['Una paraula composta', 'Una comparació', 'Un error d\'ortografia'], e:'Dir pujar amunt o entrar a dins és un pleonasme: el amunt i el a dins ja hi són dins del verb.', t:'llengua', n:2},
+  {p:'Què vol dir *amoïnar-se*?', b:'Preocupar-se', o:['Alegrar-se', 'Descansar', 'Afanyar-se'], e:'Amoïnar-se és preocupar-se per alguna cosa. És una paraula ben catalana i molt viva.', t:'llengua', n:1},
+  {p:'Què és el subjecte d\'una frase?', b:'Qui fa l\'acció', o:['Qui rep l\'acció', 'L\'acció mateixa', 'El lloc de l\'acció'], e:'A la frase el gat dorm, el subjecte és el gat. A vegades no s\'escriu però s\'entén: dorm.', t:'llengua', n:1},
+  {p:'Què vol dir *fer safareig*?', b:'Xafardejar', o:['Rentar la roba', 'Anar a la font', 'Netejar la casa'], e:'Ve de quan es rentava al safareig comú i s\'hi parlava de tothom. La feina ha desaparegut, l\'expressió no.', t:'llengua', n:1},
+  {p:'Què és una paraula composta?', b:'La formada per dues paraules', o:['La que té moltes síl·labes', 'La que ve d\'una altra llengua', 'La que té accent'], e:'Paraigua ve de parar i aigua; escuradents, d\'escurar i dents. En català se\'n formen moltíssimes.', t:'llengua', n:1},
+  {p:'Què vol dir *sojorn*?', b:'Una estada en un lloc', o:['Un viatge llarg', 'Un descans a mig matí', 'Una festa'], e:'Sojornar és estar-se un temps en un lloc. La sala d\'estar d\'una casa, en algunes contrades, és la sala de sojorn.', t:'llengua', n:2},
+  {p:'Quin és el contrari de *conegut*?', b:'Desconegut', o:['Famós', 'Antic', 'Proper'], e:'El prefix des- inverteix el sentit: fer i desfer, muntar i desmuntar, conegut i desconegut.', t:'llengua', n:1},
+  {p:'Què és un punt i coma?', b:'Una pausa més llarga que la coma', o:['Un final de frase', 'Un inici de llista', 'Una pregunta'], e:'Separa parts d\'una frase que ja porten comes, o dues idees molt relacionades. És el signe més oblidat de tots.', t:'llengua', n:2},
+  {p:'Què vol dir *tanmateix*?', b:'Malgrat això', o:['Per tant', 'A més a més', 'És a dir'], e:'Introdueix una objecció: plovia; tanmateix, van sortir. No vol dir el mateix que també, com de vegades es confon.', t:'llengua', n:2},
+  {p:'Quants continents coneixes que comencin per A?', b:'Tres', o:['Un', 'Dos', 'Cinc'], e:'Àfrica, Àsia i Amèrica; i si comptes l\'Antàrtida com a continent, quatre.', t:'mon', n:0},
+  {p:'De quin color és la bandera blanca?', b:'Blanca', o:['Vermella', 'Verda', 'Blava'], e:'La bandera blanca és el senyal universal de treva o de rendició, i es fa servir des de fa segles.', t:'mon', n:0},
+  {p:'Quin és el país veí d\'Espanya a l\'oest?', b:'Portugal', o:['França', 'Itàlia', 'Marroc'], e:'Portugal. A Espanya la fa de veí per tot el costat de ponent, amb la frontera terrestre més antiga d\'Europa.', t:'mon', n:0},
+  {p:'Quina és la capital de Catalunya?', b:'Barcelona', o:['Girona', 'Tarragona', 'Lleida'], e:'Barcelona. Les altres tres són també capitals de província i totes quatre tenen catedral i història romana o medieval.', t:'mon', n:0},
+  {p:'Quin animal viu als rius i té la boca molt gran?', b:'L\'hipopòtam', o:['El gat', 'L\'ovella', 'El cavall'], e:'L\'hipopòtam passa el dia dins l\'aigua per no cremar-se al sol i en surt de nit a menjar herba.', t:'mon', n:0},
+  {p:'Quantes potes té una cadira, normalment?', b:'4', o:['1', '2', '6'], e:'Quatre. Les cadires de disseny en poden tenir tres o una sola pota central amb base ampla.', t:'mon', n:0},
+  {p:'Quin temps fa quan hi ha núvols i cau aigua?', b:'Plou', o:['Neva', 'Fa sol', 'Glaça'], e:'Plou. Si fa prou fred a les capes altes, el mateix núvol pot deixar neu o calamarsa en comptes de pluja.', t:'mon', n:0},
+  {p:'Quina estació ve després de l\'estiu?', b:'La tardor', o:['La primavera', 'L\'hivern', 'Cap'], e:'La tardor, quan els dies s\'escurcen i molts arbres perden la fulla. Comença cap al 22 de setembre.', t:'mon', n:0},
+  {p:'Quin mitjà de transport vola?', b:'L\'avió', o:['El tren', 'El vaixell', 'L\'autobús'], e:'L\'avió, i també l\'helicòpter i el globus. El primer vol amb motor va ser el 1903 i va durar dotze segons.', t:'mon', n:0},
+  {p:'On viuen els camells?', b:'Al desert', o:['Al pol', 'Al mar', 'A la selva'], e:'Als deserts d\'Àsia i Àfrica. Tenen les potes amples per no enfonsar-se a la sorra i pestanyes llargues contra el vent.', t:'mon', n:0},
+  {p:'Quin és el color del cel en un dia clar?', b:'Blau', o:['Verd', 'Vermell', 'Groc'], e:'Blau, perquè l\'aire escampa els colors blaus molt més que els altres. Al capvespre, en canvi, es torna taronja.', t:'mon', n:0},
+  {p:'Quantes cares té un cub?', b:'6', o:['4', '8', '12'], e:'Sis cares quadrades, dotze arestes i vuit vèrtexs. Un dau de jugar és exactament un cub.', t:'mon', n:0},
+  {p:'Quin poble antic va construir el Colosseu?', b:'Els romans', o:['Els grecs', 'Els egipcis', 'Els víkings'], e:'Els romans. Hi cabien unes cinquanta mil persones i es podia buidar en pocs minuts gràcies als passadissos.', t:'historia', n:0},
+  {p:'Quin era el mitjà de transport dels cavallers?', b:'El cavall', o:['El cotxe', 'El tren', 'La bicicleta'], e:'El cavall, que donava nom al seu ofici. Un cavall de guerra podia costar tant com una casa.', t:'historia', n:0},
+  {p:'Amb què s\'enviaven cartes abans del correu electrònic?', b:'Amb paper i segell', o:['Per telèfon', 'Per ràdio', 'Per televisió'], e:'Amb sobre i segell. El primer segell adhesiu del món és de 1840, a Anglaterra, i portava la reina Victòria.', t:'historia', n:0},
+  {p:'Què és una fotografia antiga en blanc i negre?', b:'Una foto sense colors', o:['Un dibuix a llapis', 'Una pintura petita', 'Un gravat'], e:'Les primeres càmeres només captaven la llum i la foscor. La fotografia en color no es va popularitzar fins a mitjan segle XX.', t:'historia', n:0},
+  {p:'Què feia un sabater?', b:'Feia i adobava sabates', o:['Feia pa', 'Feia roba', 'Feia cadires'], e:'El sabater cosia i reparava el calçat. Abans les sabates es reparaven moltes vegades abans de llençar-les.', t:'historia', n:0},
+  {p:'Quin instrument es toca bufant?', b:'La flauta', o:['El violí', 'El piano', 'El tambor'], e:'La flauta, la trompeta i el clarinet són instruments de vent. El violí és de corda i el tambor, de percussió.', t:'historia', n:0},
+  {p:'Amb què es feia llum al carrer abans de l\'electricitat?', b:'Amb fanals de gas o d\'oli', o:['Amb bombetes', 'Amb miralls', 'Amb focs a terra'], e:'Hi havia una persona encarregada d\'anar encenent i apagant els fanals un per un cada dia.', t:'historia', n:0},
+  {p:'Què es feia servir per moldre el gra abans dels motors?', b:'Un molí de vent o d\'aigua', o:['Una batedora', 'Un forn', 'Una premsa'], e:'Els molins aprofitaven el vent o el corrent del riu per fer girar unes moles de pedra que esclafaven el gra.', t:'historia', n:0},
+  {p:'Què és un castell?', b:'Una construcció forta per defensar-se', o:['Una església gran', 'Un mercat cobert', 'Un pont fortificat'], e:'Els castells tenien muralles, torres i sovint un fossat. Servien de defensa i també de residència del senyor.', t:'historia', n:0},
+  {p:'Com s\'anomena la persona que fa pa?', b:'El forner', o:['El pagès', 'El carnisser', 'El paleta'], e:'El forner o flequer. El pagès conrea el blat, el moliner el mol i el forner en fa el pa: tota una cadena.', t:'historia', n:0},
+  {p:'Quin esport es juga amb una raqueta i una pilota petita?', b:'El tennis', o:['El futbol', 'El bàsquet', 'La natació'], e:'El tennis. El seu sistema de puntuació, amb quinze, trenta i quaranta, ve segurament d\'un rellotge antic de quarts.', t:'historia', n:0},
+  {p:'Què és una escola?', b:'Un lloc on s\'aprèn', o:['Un lloc on es treballa el camp', 'Un lloc on es ven menjar', 'Un lloc on es cura la gent'], e:'L\'escola obligatòria per a tothom és força recent: fa poc més de cent cinquanta anys que s\'ha anat estenent per Europa.', t:'historia', n:0},
+  {p:'Amb què es cosia la roba abans de la màquina de cosir?', b:'Amb agulla i fil', o:['Amb cola', 'Amb grapes', 'Amb claus'], e:'A mà, amb agulla i fil. Fer una camisa podia portar un dia sencer de feina.', t:'historia', n:0},
+  {p:'Quin animal donava la llana per fer els vestits antics?', b:'L\'ovella', o:['El gos', 'El gat', 'La gallina'], e:'L\'ovella. La llana es filava a casa amb una filosa i després es teixia, sovint també a casa.', t:'historia', n:0},
+  {p:'Què és un rellotge de sol?', b:'Un rellotge que marca l\'hora amb una ombra', o:['Un rellotge de polsera', 'Un rellotge de sorra', 'Un rellotge de campanar'], e:'Una vareta fa ombra sobre una superfície amb marques. Funciona perfectament, però només quan fa sol.', t:'historia', n:0},
+  {p:'Quin color s\'associa a la reialesa des de l\'antiguitat?', b:'El porpra', o:['El verd', 'El marró', 'El gris'], e:'El porpra, perquè el tint es feia amb milers de cargols de mar i costava una fortuna: només el podien pagar els reis.', t:'historia', n:0}
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -5030,8 +5527,8 @@ const TEMES_PREGUNTA = [
   { id:'barreja',  nom:'Barreja',        sub:'De tot una mica',        icona:'shuffle',   color:'#8b5cf6' },
   { id:'calcul',   nom:'Càlcul',         sub:'Números i sèries',       icona:'calculate', color:'#0ea5e9' },
   { id:'llengua',  nom:'Llengua',        sub:'Paraules i lletres',     icona:'translate', color:'#eab308' },
-  { id:'natura',   nom:'Natura i cos',   sub:'Animals, plantes, cos',  icona:'eco',       color:'#22c55e' },
-  { id:'mon',      nom:'Món',            sub:'Geografia i planeta',    icona:'public',    color:'#f97316' },
+  { id:'natura',   nom:'Natura i ciència', sub:'Animals, plantes, cos, física', icona:'eco', color:'#22c55e' },
+  { id:'mon',      nom:'Món i univers',  sub:'Geografia, Terra i cel', icona:'public',    color:'#f97316' },
   { id:'historia', nom:'Història i art', sub:'Abans, art i música',    icona:'museum',    color:'#ec4899' }
 ];
 
@@ -5062,7 +5559,7 @@ function preguntaCalcul(nivell){
   if (nivell === 0){
     const quina = Math.floor(Math.random() * 3);
     if (quina === 0){                                   // suma
-      const a = enterAtzar(7, 39), b = enterAtzar(4, 29);
+      const a = enterAtzar(7, 69), b = enterAtzar(4, 49);
       const desenes = Math.floor(b / 10) * 10, unitats = b % 10;
       return { pregunta:`Quant fan ${a} + ${b}?`, bona:a + b, numerica:true,
         explicacio: unitats
@@ -5070,11 +5567,11 @@ function preguntaCalcul(nivell){
           : `${a} + ${b} = ${a + b}. Quan el segon número acaba en zero només cal sumar les desenes.` };
     }
     if (quina === 1){                                   // resta
-      const a = enterAtzar(20, 60), b = enterAtzar(3, 19);
+      const a = enterAtzar(22, 98), b = enterAtzar(3, Math.min(29, a - 4));
       return { pregunta:`Quant fan ${a} − ${b}?`, bona:a - b, numerica:true,
         explicacio:`De ${a} en traiem ${b}. Comptant cap enrere: ${a} − 10 = ${a - 10}, i encara ${b - 10 >= 0 ? b - 10 : b} més fins a ${a - b}. També es pot comprovar al revés: ${a - b} + ${b} = ${a}.` };
     }
-    const n = enterAtzar(11, 98);                       // parell o múltiple de 5
+    const n = enterAtzar(11, 249);                      // parell o múltiple de 5
     const parell = Math.random() < .5;
     const esParell = n % 2 === 0, esCinc = n % 5 === 0;
     return parell
@@ -5087,43 +5584,43 @@ function preguntaCalcul(nivell){
   if (nivell === 1){
     const quina = Math.floor(Math.random() * 4);
     if (quina === 0){                                   // multiplicar
-      const a = enterAtzar(3, 9), b = enterAtzar(3, 9);
+      const a = enterAtzar(3, 12), b = enterAtzar(3, 12);
       return { pregunta:`Quant fan ${a} × ${b}?`, bona:a * b, numerica:true,
         explicacio:`${a} × ${b} vol dir ${b} vegades ${a}. Un truc: ${a} × ${b - 1} = ${a * (b - 1)}, i sumant-hi un ${a} més fan ${a * b}.` };
     }
     if (quina === 1){                                   // meitat
-      const n = enterAtzar(12, 48) * 2;
+      const n = enterAtzar(10, 120) * 2;
       return { pregunta:`Quina és la meitat de ${n}?`, bona:n / 2, numerica:true,
         explicacio:`La meitat de ${n} és ${n / 2}, perquè ${n / 2} + ${n / 2} = ${n}. Partir per la meitat i multiplicar per dos són operacions contràries.` };
     }
     if (quina === 2){                                   // doble
-      const n = enterAtzar(14, 60);
+      const n = enterAtzar(12, 160);
       return { pregunta:`Quin és el doble de ${n}?`, bona:n * 2, numerica:true,
         explicacio:`El doble és el mateix número dues vegades: ${n} + ${n} = ${n * 2}.` };
     }
-    const n = enterAtzar(2, 18) * 10;                   // 10 %
+    const n = enterAtzar(2, 90) * 10;                   // 10 %
     return { pregunta:`Quant és el 10 % de ${n}?`, bona:n / 10, numerica:true,
       explicacio:`El 10 % és una desena part del total. Per trobar-la n'hi ha prou de treure l'últim zero (o moure la coma un lloc): de ${n} en surt ${n / 10}.` };
   }
 
   const quina = Math.floor(Math.random() * 4);
   if (quina === 0){                                     // dues operacions
-    const a = enterAtzar(4, 12), b = enterAtzar(3, 9);
+    const a = enterAtzar(4, 19), b = enterAtzar(3, 12);
     const c = enterAtzar(5, Math.max(6, a * b - 4));
     return { pregunta:`Quant fan ${a} × ${b} − ${c}?`, bona:a * b - c, numerica:true,
       explicacio:`Primer la multiplicació i després la resta: ${a} × ${b} = ${a * b}, i ${a * b} − ${c} = ${a * b - c}. Quan hi ha multiplicacions i sumes barrejades, sempre es multiplica abans.` };
   }
   if (quina === 1){                                     // quarta part
-    const n = enterAtzar(3, 15) * 4;
+    const n = enterAtzar(3, 45) * 4;
     return { pregunta:`Quina és la quarta part de ${n}?`, bona:n / 4, numerica:true,
       explicacio:`Partir en quatre és partir per la meitat dues vegades: la meitat de ${n} és ${n / 2}, i la meitat de ${n / 2} és ${n / 4}.` };
   }
   if (quina === 2){                                     // 20 %
-    const n = enterAtzar(4, 20) * 5;
+    const n = enterAtzar(4, 70) * 5;
     return { pregunta:`Quant és el 20 % de ${n}?`, bona:n / 5, numerica:true,
       explicacio:`El 20 % és el doble del 10 %. El 10 % de ${n} és ${n / 10}, i el doble és ${n / 5}.` };
   }
-  const a = enterAtzar(12, 40), b = enterAtzar(2, 9);   // divisió
+  const a = enterAtzar(12, 70), b = enterAtzar(2, 12);  // divisió
   return { pregunta:`Quant fan ${a * b} : ${b}?`, bona:a, numerica:true,
     explicacio:`Dividir és preguntar-se quantes vegades hi cap: el ${b} cap ${a} vegades dins de ${a * b}. Es comprova multiplicant: ${a} × ${b} = ${a * b}.` };
 }
@@ -5131,37 +5628,37 @@ function preguntaCalcul(nivell){
 /* ── Sèries de números ───────────────────────────────────────── */
 function preguntaSerie(nivell){
   if (nivell === 0){
-    const inici = enterAtzar(2, 15), pas = enterAtzar(2, 7);
+    const inici = enterAtzar(2, 45), pas = enterAtzar(2, 12);
     const s = [inici, inici + pas, inici + pas * 2];
     return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:inici + pas * 3, numerica:true,
       explicacio:`De cada número al següent hi ha sempre el mateix salt: +${pas}. Per tant, ${inici + pas * 2} + ${pas} = ${inici + pas * 3}.` };
   }
   if (nivell === 1){
     if (Math.random() < .5){
-      const i = enterAtzar(2, 5), f = enterAtzar(2, 3);
+      const i = enterAtzar(2, 12), f = enterAtzar(2, 3);
       const s = [i, i * f, i * f * f];
       return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i * f * f * f, numerica:true,
         explicacio:`Aquí no se suma: es multiplica. Cada número és l'anterior per ${f}. Per tant, ${i * f * f} × ${f} = ${i * f * f * f}.` };
     }
-    const i = enterAtzar(4, 20), p = enterAtzar(3, 8);
+    const i = enterAtzar(4, 44), p = enterAtzar(3, 14);
     const s = [i, i + p, i + p - 2, i + p * 2 - 2];
     return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 2 - 4, numerica:true,
       explicacio:`La sèrie fa un pas endavant i un de cap enrere: +${p}, −2, +${p}, −2… Toca restar 2: ${i + p * 2 - 2} − 2 = ${i + p * 2 - 4}.` };
   }
   const quina = Math.floor(Math.random() * 3);
   if (quina === 0){                                     // quadrats
-    const i = enterAtzar(2, 7);
+    const i = enterAtzar(2, 16);
     const s = [i * i, (i + 1) * (i + 1), (i + 2) * (i + 2)];
     return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:(i + 3) * (i + 3), numerica:true,
       explicacio:`Són els quadrats de ${i}, ${i + 1} i ${i + 2}: cada número multiplicat per ell mateix. El següent és ${i + 3} × ${i + 3} = ${(i + 3) * (i + 3)}.` };
   }
   if (quina === 1){                                     // Fibonacci
-    const a = enterAtzar(1, 5), b = a + enterAtzar(1, 4);
+    const a = enterAtzar(1, 14), b = a + enterAtzar(1, 11);
     const s = [a, b, a + b, a + 2 * b];
     return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:2 * a + 3 * b, numerica:true,
       explicacio:`Cada número és la suma dels dos anteriors: ${a} + ${b} = ${a + b}, ${b} + ${a + b} = ${a + 2 * b}… i ara ${a + b} + ${a + 2 * b} = ${2 * a + 3 * b}.` };
   }
-  const i = enterAtzar(2, 6), p = enterAtzar(2, 4);     // salt que creix
+  const i = enterAtzar(2, 24), p = enterAtzar(2, 9);    // salt que creix
   const s = [i, i + p, i + p * 3, i + p * 6];
   return { pregunta:`${s.join(', ')}… quin número ve ara?`, bona:i + p * 10, numerica:true,
     explicacio:`El salt va creixent: +${p}, +${p * 2}, +${p * 3}… Ara toca un salt de +${p * 4}, i ${i + p * 6} + ${p * 4} = ${i + p * 10}.` };
@@ -5233,6 +5730,22 @@ function fonsDePreguntes(tema, nivell){
 
    Cada tema i nivell té la seva bossa, desada al navegador. */
 function clauBossa(tema, nivell){ return 'bossa_' + tema + '_' + nivell; }
+
+/* Les preguntes fabricades (càlcul, sèries, lletres) no surten de cap
+   llista: es construeixen cada vegada amb números nous. Tot i així es
+   recorden les últimes, perquè amb mil possibilitats diferents la primera
+   coincidència arriba cap a la trentena tirada, molt abans del que sembla. */
+const MAX_FABRICADES = 250;
+function fabricadesVistes(){
+  try { return JSON.parse(localStorage.getItem('fabricadesVistes') || '[]'); }
+  catch(e){ return []; }
+}
+function desarFabricades(noves){
+  try {
+    const totes = [...new Set(noves.concat(fabricadesVistes()))].slice(0, MAX_FABRICADES);
+    localStorage.setItem('fabricadesVistes', JSON.stringify(totes));
+  } catch(e){}
+}
 
 function llegirBossa(tema, nivell){
   try { return JSON.parse(localStorage.getItem(clauBossa(tema, nivell)) || '[]'); }
@@ -5932,10 +6445,11 @@ function iniciarQuiz(){
   const permeses = new Set(bossa.queden);
   quizLlista = [];
   const jaSortides = new Set(bossa.totes.filter(p => !permeses.has(p)));
+  fabricadesVistes().forEach(p => jaSortides.add(p));   // i les fabricades d'abans
   for (let i = 0; i < QUIZ_QUANTES; i++){
     let q = null;
     // Fins a vint intents d'aconseguir-ne una de nova abans de conformar-s'hi
-    for (let intent = 0; intent < 20; intent++){
+    for (let intent = 0; intent < 40; intent++){
       q = generarPregunta(temaQuiz, nivellQuiz, jaSortides);
       if (q && !jaSortides.has(q.pregunta)) break;
     }
@@ -5946,6 +6460,7 @@ function iniciarQuiz(){
   // Les d'aquesta partida passen a estar gastades, les últimes al davant
   desarBossa(temaQuiz, nivellQuiz,
     quizLlista.filter(q => q.delBanc).map(q => q.pregunta).concat(bossa.gastades));
+  desarFabricades(quizLlista.filter(q => !q.delBanc).map(q => q.pregunta));
 
   pintarPregunta();
 }
