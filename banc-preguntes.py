@@ -16,6 +16,11 @@ Aquest guió només serveix per a dues coses, totes dues opcionals:
       escrita (sense interrogant, amb l'explicació massa curta, amb un
       tema que no existeix...). No toca res.
 
+  python3 banc-preguntes.py --arregla preguntes.json
+      Arregla sol els dos errors més habituals: les comes que falten al
+      final de les línies i les preguntes repetides. En desa una còpia
+      d'abans, per si de cas.
+
   python3 banc-preguntes.py --escriu preguntes.json
       Torna a generar el preguntes.json a partir de la llista BANC
       d'aquest fitxer. Només cal si prefereixes escriure les preguntes
@@ -2335,6 +2340,68 @@ def js():
     return 'const BANC_PREGUNTES = [\n' + ',\n'.join(files) + '\n];\n'
 
 
+def comes_que_falten(cami):
+    """El lector de JSON només ensenya el primer error. Aquesta funció
+       troba d'un cop totes les línies que acaben en } sense la coma."""
+    with open(cami, encoding='utf-8') as f:
+        linies = f.read().split('\n')
+    fora = []
+    for i in range(len(linies) - 1):
+        ara, seg = linies[i].rstrip(), linies[i+1].lstrip()
+        if ara.endswith('}') and not ara.endswith('},') and seg.startswith('{'):
+            fora.append(i + 1)
+    return fora
+
+
+def arreglar(cami):
+    """Posa les comes que falten i treu les preguntes repetides"""
+    with open(cami, encoding='utf-8') as f:
+        text = f.read()
+    linies = text.split('\n')
+    comes = comes_que_falten(cami)
+    for n in comes:
+        linies[n-1] = linies[n-1].rstrip() + ','
+    text = '\n'.join(linies)
+
+    try:
+        dades = json.loads(text)
+    except json.JSONDecodeError as e:
+        print('Encara queda un error de format que no sé arreglar sol:')
+        print('  %s (línia %d, columna %d)' % (e.msg, e.lineno, e.colno))
+        if comes:
+            print('  (hi he posat %d comes que faltaven, però en queda un altre)' % len(comes))
+        return False
+
+    llista = dades if isinstance(dades, list) else dades.get('preguntes', [])
+    vistes, netes, repes = set(), [], []
+    for q in llista:
+        clau = q.get('p', '')
+        if clau in vistes: repes.append(clau); continue
+        vistes.add(clau); netes.append(q)
+
+    ajuda = dades.get('_com_afegir_preguntes', '') if isinstance(dades, dict) else ''
+    files = [json.dumps(q, ensure_ascii=False) for q in netes]
+    sortida = '{\n'
+    if ajuda: sortida += '  "_com_afegir_preguntes": ' + json.dumps(ajuda, ensure_ascii=False) + ',\n'
+    sortida += '  "preguntes": [\n    ' + ',\n    '.join(files) + '\n  ]\n}\n'
+
+    with open(cami + '.abans', 'w', encoding='utf-8') as f:
+        f.write(text if not comes else open(cami, encoding='utf-8').read())
+    with open(cami, 'w', encoding='utf-8') as f:
+        f.write(sortida)
+
+    print('Arreglat:')
+    if comes: print('  · %d comes afegides (línies %s)' % (len(comes), ', '.join(map(str, comes))))
+    if repes:
+        print('  · %d preguntes repetides tretes:' % len(repes))
+        for r in repes[:8]: print('        %s' % r[:70])
+        if len(repes) > 8: print('        … i %d més' % (len(repes) - 8))
+    if not comes and not repes: print('  · no hi havia res a arreglar')
+    print('  · queden %d preguntes' % len(netes))
+    print('  (La còpia d\'abans ha quedat a %s.abans)' % cami)
+    return True
+
+
 def preguntes_del_json(cami):
     """Llegeix el preguntes.json i el torna com a llista de tuples"""
     with open(cami, encoding='utf-8') as f:
@@ -2388,6 +2455,16 @@ def informe(llista):
 if __name__ == '__main__':
     args = sys.argv[1:]
 
+    if args and args[0] == '--arregla':
+        cami = args[1] if len(args) > 1 else 'preguntes.json'
+        try:
+            if not arreglar(cami): sys.exit(1)
+        except FileNotFoundError:
+            print('No trobo el fitxer', cami); sys.exit(1)
+        print()
+        informe(preguntes_del_json(cami))
+        sys.exit(0)
+
     if args and args[0] == '--escriu':
         cami = args[1] if len(args) > 1 else 'preguntes.json'
         if informe(BANC):
@@ -2405,7 +2482,18 @@ if __name__ == '__main__':
         except json.JSONDecodeError as e:
             print('El fitxer %s no és un JSON correcte.' % cami)
             print('  %s (línia %d, columna %d)' % (e.msg, e.lineno, e.colno))
-            print('  Sol ser una coma que falta o que sobra, o una cometa sense tancar.')
+            comes = comes_que_falten(cami)
+            if comes:
+                print()
+                print('  He trobat %d línia/es que acaben en } sense la coma del final:' % len(comes))
+                print('     línies %s' % ', '.join(map(str, comes)))
+                print('  Això sol passar en enganxar preguntes noves a sota de les velles:')
+                print('  la que abans era l\'última no portava coma i ara n\'hi ha de tenir.')
+                print()
+                print('  Per arreglar-ho automàticament:')
+                print('     python3 %s --arregla %s' % (sys.argv[0], cami))
+            else:
+                print('  Sol ser una coma que sobra, o una cometa sense tancar.')
             sys.exit(1)
         except FileNotFoundError:
             print('No trobo el fitxer', cami); sys.exit(1)
