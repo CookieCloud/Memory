@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
     MEMÒRIA — PWA de jocs per exercitar la memòria
-    Version: 4.91
+    Version: 4.92
 
     IMPORTANT EN PUBLICAR
     Cada cop que es pugin canvis cal tocar el número de versió en tres llocs:
@@ -14,6 +14,15 @@
     Viuen al fitxer preguntes.json, al costat d'aquest index.html. Per
     afegir-ne de noves n'hi ha prou de pujar aquell fitxer: no cal tocar
     l'index.html ni canviar de versió.
+
+    CANVIS v4.92
+    - Les preguntes noves no arribaven a qui ja havia visitat el web: el
+      navegador reaprofitava la seva pròpia còpia abans que el service
+      worker pogués anar a buscar-la. Ara el sw.js demana el fitxer amb
+      cache:'no-store' i sí que hi va
+    - Comprovat: afegint preguntes al preguntes.json i tornant a obrir el
+      web, arriben soles i sense cap avís. El rètol de "versió nova" surt
+      només quan canvia la VERSIO del sw.js, com ha de ser
 
     CANVIS v4.91
     - En un telèfon petit (360x640) la pantalla de Pregunta't no cabia:
@@ -2040,7 +2049,7 @@ body.landscape-mode .spacer{min-width:0;min-height:10px}
       <span class="divider">·</span>
       <a href="terms-of-service.html" target="_blank">Condicions del Servei</a>
       <span class="divider">·</span>
-      <span class="version" id="version">v4.91</span>
+      <span class="version" id="version">v4.92</span>
     </div>
   </footer>
 </div>

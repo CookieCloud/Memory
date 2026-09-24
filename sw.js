@@ -22,7 +22,7 @@
    baixar uns quants megues. Per canviar la música, puja-la amb un nom nou
    (com s'ha fet amb musica-record-piano.mp3) i canvia MUSICA_URL a l'index.html.
    ═══════════════════════════════════════════════════════ */
-const VERSIO   = '4.91';
+const VERSIO   = '4.92';
 const CACHE    = 'memoria-v' + VERSIO;
 const CACHE_SO = 'memoria-so';
 
@@ -99,8 +99,13 @@ self.addEventListener('fetch', e => {
                               url.pathname.endsWith('preguntes.json')));
 
   if (esPagina){
+    /* Amb cache:'no-store' el navegador no pot respondre amb la seva
+       pròpia còpia guardada: ha d'anar a buscar-ho al servidor de debò.
+       Sense això, les preguntes noves no arribaven mai a qui ja havia
+       visitat el web, perquè el navegador reaprofitava la còpia vella
+       abans que el service worker pogués fer res. */
     e.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'no-store' })
         .then(resp => {
           const copia = resp.clone();
           caches.open(CACHE).then(c => c.put(req, copia));
