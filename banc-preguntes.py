@@ -1,16 +1,57 @@
 #!/usr/bin/env python3
 """
-Banc de preguntes de cultura general del web Memòria.
+Revisor del banc de preguntes del web Memòria.
 
-Cada pregunta porta: text, resposta bona, tres respostes dolentes,
-EXPLICACIÓ, tema i nivell (0 fàcil · 1 mitjà · 2 difícil).
+════════════════════════════════════════════════════════════════════
+AVÍS: AQUEST FITXER JA NO FA FALTA PER AFEGIR PREGUNTES
 
-Criteris:
-  · només fets estables: res que depengui de l'actualitat ni de qui mana ara
+Les preguntes del web són al fitxer preguntes.json, i el web les llegeix
+directament d'allà. Per afegir-ne, obre el preguntes.json, copia una
+línia, enganxa-la a sota, canvia-la i puja el fitxer. Res més.
+
+Aquest guió només serveix per a dues coses, totes dues opcionals:
+
+  python3 banc-preguntes.py --revisa preguntes.json
+      Llegeix el preguntes.json i t'avisa si hi ha cap pregunta mal
+      escrita (sense interrogant, amb l'explicació massa curta, amb un
+      tema que no existeix...). No toca res.
+
+  python3 banc-preguntes.py --escriu preguntes.json
+      Torna a generar el preguntes.json a partir de la llista BANC
+      d'aquest fitxer. Només cal si prefereixes escriure les preguntes
+      aquí en comptes de fer-ho al .json.
+
+════════════════════════════════════════════════════════════════════
+LA PAUTA D'UNA PREGUNTA AL preguntes.json
+
+  {"p": "La pregunta acabada amb interrogant?",
+   "b": "La resposta bona",
+   "o": ["Dolenta 1", "Dolenta 2", "Dolenta 3"],
+   "e": "L'explicació, que ha d'ensenyar alguna cosa.",
+   "t": "natura",
+   "n": 1}
+
+  t = tema:   natura · mon · historia · llengua
+  n = nivell: 0 fàcil · 1 mitjà · 2 difícil
+
+  · Totes les línies acaben amb coma menys l'última.
+  · Si dins del text hi ha d'anar una cometa doble, s'escriu \\".
+  · Per posar una paraula en *cursiva*, envolta-la d'asteriscs.
+  · No cal dir enlloc quantes preguntes hi ha: el web les compta soles.
+  · Una pregunta mal escrita no trenca el joc: el web l'aparta i
+    continua amb la resta. Aquest revisor serveix per trobar-la.
+
+CONSELLS PER ESCRIURE-LES
+  · només fets estables: res que depengui de l'actualitat
   · res discutible (s'eviten "el riu més llarg del món" i companyia)
-  · l'explicació ha d'ensenyar alguna cosa, no repetir la resposta
   · les respostes dolentes han de ser creïbles, no absurdes
+  · l'explicació és el cor del joc: ha d'explicar el perquè
+  · cada 10 preguntes noves d'un tema i nivell són, aproximadament,
+    una partida més seguida sense repetir-ne cap
+════════════════════════════════════════════════════════════════════
 """
+import sys
+import json
 
 # (pregunta, bona, [dolentes], explicació, tema, nivell)
 BANC = [
@@ -2227,9 +2268,9 @@ TEMES = ['natura', 'mon', 'historia', 'llengua']
 NIVELLS = ['fàcil', 'mitjà', 'difícil']
 
 
-def comprova():
+def comprova(llista=None):
     problemes, vistes = [], set()
-    for i, (p, b, o, e, t, n) in enumerate(BANC):
+    for i, (p, b, o, e, t, n) in enumerate(llista if llista is not None else BANC):
         if p in vistes: problemes.append(f'{i}: pregunta repetida — {p}')
         vistes.add(p)
         if len(o) != 3: problemes.append(f'{i}: {len(o)} respostes dolentes — {p}')
@@ -2252,16 +2293,83 @@ def js():
     return 'const BANC_PREGUNTES = [\n' + ',\n'.join(files) + '\n];\n'
 
 
-if __name__ == '__main__':
-    mals = comprova()
-    print('preguntes:', len(BANC), '· problemes:', len(mals))
+def preguntes_del_json(cami):
+    """Llegeix el preguntes.json i el torna com a llista de tuples"""
+    with open(cami, encoding='utf-8') as f:
+        dades = json.load(f)
+    llista = dades if isinstance(dades, list) else dades.get('preguntes', [])
+    fora = []
+    for q in llista:
+        fora.append((q.get('p', ''), q.get('b', ''), q.get('o', []),
+                     q.get('e', ''), q.get('t', ''), q.get('n', -1)))
+    return fora
+
+
+def json_del_banc():
+    """Escriu la llista BANC amb el format del preguntes.json"""
+    ajuda = ("Cada línia de la llista preguntes és una pregunta. "
+             "p = la pregunta · b = la resposta bona · o = les tres respostes dolentes · "
+             "e = l'explicació que surt després de respondre · "
+             "t = el tema (natura, mon, historia, llengua) · "
+             "n = el nivell (0 fàcil, 1 mitjà, 2 difícil). "
+             "Per afegir-ne una, copia una línia sencera, enganxa-la a sota i canvia-la; "
+             "totes han d'acabar amb coma menys l'última. "
+             "Si dins del text hi ha d'anar una cometa doble, s'escriu \\\" . "
+             "Per posar una paraula en cursiva, envolta-la d'asteriscs.")
+    files = [json.dumps({"p": p, "b": b, "o": list(o), "e": e, "t": t, "n": n},
+                        ensure_ascii=False)
+             for p, b, o, e, t, n in BANC]
+    return ('{\n  "_com_afegir_preguntes": ' + json.dumps(ajuda, ensure_ascii=False) + ',\n'
+            '  "preguntes": [\n    ' + ',\n    '.join(files) + '\n  ]\n}\n')
+
+
+def informe(llista):
+    mals = comprova(llista)
+    print('preguntes:', len(llista), '· problemes:', len(mals))
     for m in mals: print('  ', m)
     print()
     print('per tema i nivell:')
     print('  %-10s %6s %6s %6s' % ('tema', 'fàcil', 'mitjà', 'difícil'))
     for t in TEMES:
-        c = [sum(1 for x in BANC if x[4] == t and x[5] == n) for n in (0, 1, 2)]
+        c = [sum(1 for x in llista if x[4] == t and x[5] == n) for n in (0, 1, 2)]
         print('  %-10s %6d %6d %6d' % (t, *c))
     print('  %-10s %6d %6d %6d' % ('TOTAL',
-          *[sum(1 for x in BANC if x[5] == n) for n in (0, 1, 2)]))
-    open('/tmp/claude-0/-home-claude/46257fec-254f-5388-a15a-a7d89661eb07/scratchpad/banc.js', 'w').write(js())
+          *[sum(1 for x in llista if x[5] == n) for n in (0, 1, 2)]))
+    print()
+    return mals
+
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+
+    if args and args[0] == '--escriu':
+        cami = args[1] if len(args) > 1 else 'preguntes.json'
+        if informe(BANC):
+            print('Hi ha preguntes per arreglar: no escric res fins que estiguin bé.')
+            sys.exit(1)
+        with open(cami, 'w', encoding='utf-8') as f:
+            f.write(json_del_banc())
+        print('%s escrit amb %d preguntes.' % (cami, len(BANC)))
+        sys.exit(0)
+
+    cami = args[1] if (args and args[0] == '--revisa' and len(args) > 1) else (args[0] if args else None)
+    if cami:
+        try:
+            llista = preguntes_del_json(cami)
+        except json.JSONDecodeError as e:
+            print('El fitxer %s no és un JSON correcte.' % cami)
+            print('  %s (línia %d, columna %d)' % (e.msg, e.lineno, e.colno))
+            print('  Sol ser una coma que falta o que sobra, o una cometa sense tancar.')
+            sys.exit(1)
+        except FileNotFoundError:
+            print('No trobo el fitxer', cami); sys.exit(1)
+        mals = informe(llista)
+        if mals:
+            print('Aquestes preguntes el web les apartarà. La resta funcionaran igual.')
+            sys.exit(1)
+        print('Tot correcte: el %s es pot pujar al web.' % cami)
+        sys.exit(0)
+
+    informe(BANC)
+    print('Per revisar el fitxer del web:')
+    print('    python3 %s --revisa preguntes.json' % sys.argv[0])

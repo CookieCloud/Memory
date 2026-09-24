@@ -11,13 +11,18 @@
    Si no canvies VERSIO, el web continuarà servint la còpia desada i la gent
    no veurà els canvis. És l'únic que has de recordar de fer.
 
+   LES PREGUNTES
+   El banc viu al fitxer preguntes.json, no dins de l'index.html. Es baixa
+   sempre de la xarxa quan n'hi ha, de manera que per publicar preguntes
+   noves n'hi ha prou de pujar aquell fitxer: no cal canviar de VERSIO.
+
    LA MÚSICA
    Els fitxers de so (.mp3) es desen en una memòria a part, CACHE_SO, que
    NO s'esborra en canviar de versió: si no, cada actualització tornaria a
    baixar uns quants megues. Per canviar la música, puja-la amb un nom nou
    (com s'ha fet amb musica-record-piano.mp3) i canvia MUSICA_URL a l'index.html.
    ═══════════════════════════════════════════════════════ */
-const VERSIO   = '4.80';
+const VERSIO   = '4.90';
 const CACHE    = 'memoria-v' + VERSIO;
 const CACHE_SO = 'memoria-so';
 
@@ -27,6 +32,7 @@ const NUCLI = [
   './',
   './index.html',
   './manifest.json',
+  './preguntes.json',
   './memory32x32.png',
   './memory180x180.png',
   './memory192x192.png',
@@ -84,8 +90,13 @@ self.addEventListener('fetch', e => {
 
   /* L'HTML i la llista de fotos: primer la xarxa. Així els canvis arriben de
      seguida i, si no hi ha connexió, se serveix la còpia desada. */
+  /* L'HTML, la llista de fotos i el banc de preguntes: primer la xarxa,
+     perquè les preguntes noves arribin de seguida sense haver de canviar
+     de versió. Sense connexió se serveix la còpia desada. */
   const esPagina = req.mode === 'navigate' ||
-                   (propi && (url.pathname.endsWith('.html') || url.pathname.endsWith('fotos.json')));
+                   (propi && (url.pathname.endsWith('.html') ||
+                              url.pathname.endsWith('fotos.json') ||
+                              url.pathname.endsWith('preguntes.json')));
 
   if (esPagina){
     e.respondWith(
